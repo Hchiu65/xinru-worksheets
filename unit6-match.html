@@ -30,6 +30,32 @@
     letter-spacing: 1px;
   }
 
+  /* Round tabs */
+  .round-tabs {
+    display: flex;
+    background: #1e4a6e;
+    padding: 0 12px;
+    gap: 6px;
+  }
+  .round-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 15px;
+    color: rgba(255,255,255,.55);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    letter-spacing: 1px;
+    transition: color .15s, border-color .15s;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .round-tab.active {
+    color: #fff;
+    border-bottom-color: #fff;
+    font-weight: bold;
+  }
+
   /* Progress bar */
   .progress-bar {
     background: #ddd;
@@ -185,6 +211,7 @@
   第六單元　成語連連看
   <small>點選左欄成語 → 再點右欄語意配對</small>
 </header>
+<div class="round-tabs" id="round-tabs"></div>
 <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
 <div class="round-label" id="round-label"></div>
 
@@ -251,6 +278,28 @@ let leftSelected = null;
 let matchedCount = 0;
 let totalMatched = 0;
 let wrongCount = 0;
+// per-round matched count (for progress bar continuity)
+const roundMatched = new Array(ROUNDS.length).fill(0);
+
+function buildTabs() {
+  const container = document.getElementById('round-tabs');
+  container.innerHTML = '';
+  ROUNDS.forEach((r, i) => {
+    const tab = document.createElement('div');
+    tab.className = 'round-tab' + (i === currentRound ? ' active' : '');
+    tab.textContent = `第 ${i + 1} 輪（${r.length} 題）`;
+    tab.addEventListener('click', () => switchRound(i));
+    container.appendChild(tab);
+  });
+}
+
+function switchRound(idx) {
+  if (idx === currentRound) return;
+  // Save current round's matched count
+  roundMatched[currentRound] = matchedCount;
+  currentRound = idx;
+  buildRound(currentRound);
+}
 
 function shuffle(arr) {
   const a = [...arr];
@@ -266,6 +315,7 @@ function buildRound(roundIdx) {
   matchedCount = 0;
   leftSelected = null;
   wrongCount = 0;
+  buildTabs();
 
   const leftWords = shuffle(pairs.map((p, i) => ({ ...p, idx: i })));
   const rightWords = shuffle(pairs.map((p, i) => ({ ...p, idx: i })));
@@ -354,7 +404,9 @@ function updateScore() {
 }
 
 function updateProgress() {
-  const pct = Math.round((totalMatched / TOTAL_PAIRS) * 100);
+  // Sum matched across all rounds (use current round's live count)
+  const otherMatched = roundMatched.reduce((s, v, i) => s + (i === currentRound ? 0 : v), 0);
+  const pct = Math.round(((otherMatched + matchedCount) / TOTAL_PAIRS) * 100);
   document.getElementById('prog').style.width = pct + '%';
 }
 
@@ -376,20 +428,22 @@ function nextRound() {
   const isLast = currentRound === ROUNDS.length - 1;
   if (isLast) {
     currentRound = 0;
-    totalMatched = 0;
+    roundMatched.fill(0);
     buildRound(0);
   } else {
+    roundMatched[currentRound] = pairs.length;
     currentRound++;
     buildRound(currentRound);
   }
 }
 
 function restartRound() {
-  totalMatched -= matchedCount;
+  roundMatched[currentRound] = 0;
   buildRound(currentRound);
 }
 
 // Start
+buildTabs();
 buildRound(0);
 </script>
 </body>
