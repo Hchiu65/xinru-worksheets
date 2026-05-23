@@ -48,6 +48,12 @@ header {
   padding: 6px 14px; font-size: 20px; font-weight: bold;
   white-space: nowrap;
 }
+.btn-home {
+  background: rgba(255,255,255,.2); border: none; border-radius: 8px;
+  color: #fff; font-size: 20px; padding: 7px 9px; cursor: pointer;
+  text-decoration: none; flex-shrink: 0; line-height: 1;
+  display: flex; align-items: center;
+}
 
 /* ── Tabs ── */
 .round-tabs { display: flex; background: #1e4a6e; padding: 0 10px; gap: 4px; }
@@ -215,6 +221,7 @@ header {
 
 <!-- Header -->
 <header>
+  <a href="index.html" class="btn-home" title="回主頁">🏠</a>
   <div class="hdr-title">
     第六單元　成語連連看
     <small>🔊 點成語聽讀音 → 再點右欄語意配對</small>
@@ -515,7 +522,7 @@ function onRightClick(el) {
     leftSelected.classList.add('matched');
     el.classList.add('matched');
 
-    const earned=firstTry ? 15 : 8;
+    const earned=firstTry ? 5 : 3;
     addStars(earned);
     showStarPop(el, '+'+earned+' ⭐');
 
