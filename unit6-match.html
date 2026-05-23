@@ -217,7 +217,7 @@ header {
 <header>
   <div class="hdr-title">
     第六單元　成語連連看
-    <small>點左欄成語 → 點右欄語意配對</small>
+    <small>🔊 點成語聽讀音 → 再點右欄語意配對</small>
   </div>
   <div class="hdr-stars">⭐ <span id="hdr-star-count">0</span></div>
 </header>
@@ -229,7 +229,7 @@ header {
 <!-- Game area -->
 <div id="game-area">
   <div class="match-grid">
-    <div class="col-header">成　語</div>
+    <div class="col-header">成　語 🔊</div>
     <div class="col-header">語　意</div>
     <div id="left-col"></div>
     <div id="right-col"></div>
@@ -247,7 +247,7 @@ header {
   </div>
   <div id="challenge-timer">60</div>
   <div class="match-grid">
-    <div class="col-header">成　語</div>
+    <div class="col-header">成　語 🔊</div>
     <div class="col-header">語　意</div>
     <div id="c-left-col"></div>
     <div id="c-right-col"></div>
@@ -354,6 +354,23 @@ let challengeSecondsLeft = 60;
 let challengeLeftSelected = null;
 let challengeMatchedCount = 0;
 let challengeWrongCount = 0;
+
+/* ── 朗讀成語（教育部注音標準，zh-TW，語速 0.8） ── */
+function speakWord(word) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(word);
+  utter.lang = 'zh-TW';
+  utter.rate = 0.8;
+  utter.pitch = 1.0;
+  const doSpeak = () => {
+    const voices = speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang === 'zh-TW') || voices.find(v => v.lang.startsWith('zh'));
+    if (v) utter.voice = v;
+    speechSynthesis.speak(utter);
+  };
+  speechSynthesis.getVoices().length ? doSpeak() : (speechSynthesis.onvoiceschanged = doSpeak);
+}
 
 /* ── Storage helpers ── */
 function getStars() { return parseInt(localStorage.getItem('xr_stars') || '0'); }
@@ -466,6 +483,7 @@ function makeCard(text,cls,idx) {
 /* ── Match logic ── */
 function onLeftClick(el) {
   if(el.classList.contains('matched')||el.classList.contains('disabled')) return;
+  speakWord(el.textContent);
   if(leftSelected===el){ el.classList.remove('selected'); leftSelected=null; return; }
   if(leftSelected) leftSelected.classList.remove('selected');
   leftSelected=el;
@@ -641,6 +659,7 @@ function startChallenge() {
 
 function onChallengeLeft(el) {
   if(el.classList.contains('matched')) return;
+  speakWord(el.textContent);
   if(challengeLeftSelected===el){ el.classList.remove('selected'); challengeLeftSelected=null; return; }
   if(challengeLeftSelected) challengeLeftSelected.classList.remove('selected');
   challengeLeftSelected=el;
