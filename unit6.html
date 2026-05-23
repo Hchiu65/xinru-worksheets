@@ -171,8 +171,34 @@
 <script>
 let selected = null;
 
-// 所有卡片資料：{ chipId, word, answer }
 const CARDS = [];
+
+/* ── 語意對照表（供錯題紀錄使用） ── */
+const MEANINGS = {
+  '獨樹一幟':'獨具特色，與眾不同','暴戾之氣':'兇猛殘暴的神情或氣息',
+  '雕欄玉砌':'建築雕飾精美華麗','敷衍了事':'隨便應付，態度不認真',
+  '選舉賄賂':'以財物換取選票的不法行為','遭逢厄運':'碰上不幸的命運，遇到災難',
+  '醍醐灌頂':'聽了高明的話，如獲啟示','暴殄天物':'任意糟蹋，浪費珍貴物品',
+  '慘遭蹂躪':'遭到強力踐踏、迫害','濃妝豔抹':'化妝濃重，打扮妖豔',
+  '感慨萬千':'心中感觸極多，百感交集','經濟蕭條':'經濟不景氣，百業衰退',
+  '惺惺相惜':'才能相當的人互相敬重愛護','絕不寬貸':'絕對不原諒，嚴厲處置',
+  '集思廣益':'集合眾人智慧，廣泛獲益','滄海一粟':'比喻極其微小，微不足道',
+  '辭不達意':'說的話未能清楚表達心意','暗箭難防':'暗中傷人的手段，難以防備',
+  '肆無忌憚':'毫無顧忌，放肆妄為','越俎代庖':'超越本分，代替別人做事',
+  '敬請笑納':'請對方接受贈品的客套語','脾氣暴躁':'性情急躁，容易動怒',
+  '噤若寒蟬':'不敢作聲，沉默無言','經驗老到':'經驗豐富，老練熟悉',
+  '虛無縹緲':'空虛不實，模糊難以辨識','騷擾鄰居':'打擾、侵擾鄰居的安寧'
+};
+
+/* ── 錯題紀錄 ── */
+function recordMistake(word) {
+  const all = JSON.parse(localStorage.getItem('xr_mistakes') || '{}');
+  if (!all[word]) all[word] = { word, meaning: MEANINGS[word]||'', wrongCount:0, practiceCount:0, lastWrong:'', mastered:false };
+  all[word].wrongCount++;
+  all[word].lastWrong = new Date().toLocaleDateString('zh-TW');
+  if (MEANINGS[word]) all[word].meaning = MEANINGS[word];
+  localStorage.setItem('xr_mistakes', JSON.stringify(all));
+}
 
 /* ── 朗讀成語（教育部注音標準，zh-TW，語速 0.8） ── */
 function speakWord(word) {
@@ -241,6 +267,7 @@ function checkAll() {
       b.classList.add('correct'); correct++;
     } else {
       b.classList.add('wrong');
+      recordMistake(b.dataset.answer);
     }
   });
   document.getElementById('score-display').textContent = correct + '/' + blanks.length;

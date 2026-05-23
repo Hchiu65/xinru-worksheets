@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>錯題本</title>
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: "標楷體","DFKai-SB",serif;
+  background: #f0f4f8; margin: 0; padding: 0 0 40px; color: #222;
+}
+header {
+  background: #c0392b; color: #fff;
+  padding: 16px 16px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hdr-left h1 { margin: 0; font-size: 22px; letter-spacing: 2px; }
+.hdr-left p  { margin: 3px 0 0; font-size: 13px; opacity: .8; }
+.hdr-badge {
+  background: rgba(255,255,255,.2); border-radius: 20px;
+  padding: 7px 16px; font-size: 22px; font-weight: bold; white-space: nowrap;
+}
+
+/* Tabs */
+.tabs { display: flex; background: #922b21; }
+.tab {
+  flex: 1; text-align: center; padding: 11px 0; font-size: 16px;
+  color: rgba(255,255,255,.5); cursor: pointer;
+  border-bottom: 3px solid transparent;
+  user-select: none; transition: color .15s;
+}
+.tab.active { color: #fff; border-bottom-color: #fff; font-weight: bold; }
+
+/* ── 錯題列表 ── */
+#list-view { padding: 12px; }
+
+.empty-msg {
+  text-align: center; padding: 40px 20px;
+  color: #aaa; font-size: 18px; line-height: 2;
+}
+
+.mistake-item {
+  background: #fff; border-radius: 12px; padding: 14px 16px;
+  margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,.07);
+  display: flex; align-items: center; gap: 12px;
+}
+.mi-count {
+  flex-shrink: 0; width: 40px; height: 40px;
+  border-radius: 50%; background: #f8d7da;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: bold; color: #c0392b;
+}
+.mi-count.mastered { background: #d4edda; color: #28a745; }
+.mi-body { flex: 1; min-width: 0; }
+.mi-word    { font-size: 20px; font-weight: bold; }
+.mi-meaning { font-size: 14px; color: #666; margin-top: 2px; line-height: 1.4; }
+.mi-meta    { font-size: 12px; color: #aaa; margin-top: 4px; }
+.mi-actions { flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; }
+.btn-speak {
+  padding: 7px 12px; border: 2px solid #2c5f8a; border-radius: 8px;
+  background: #fff; color: #2c5f8a; font-size: 15px; cursor: pointer;
+  font-family: inherit;
+}
+.btn-master {
+  padding: 7px 12px; border: none; border-radius: 8px;
+  background: #d4edda; color: #28a745; font-size: 13px; cursor: pointer;
+  font-family: inherit; font-weight: bold;
+}
+.btn-master.undo { background: #f8d7da; color: #c0392b; }
+
+.action-bar {
+  display: flex; gap: 10px; margin-bottom: 14px;
+}
+.btn-practice-all {
+  flex: 1; padding: 14px; background: #c0392b; color: #fff;
+  border: none; border-radius: 10px; font-size: 18px; font-family: inherit;
+  cursor: pointer; font-weight: bold; letter-spacing: 1px;
+}
+.btn-clear-mastered {
+  flex: 0 0 auto; padding: 14px 16px; background: #eee; color: #888;
+  border: none; border-radius: 10px; font-size: 15px; font-family: inherit;
+  cursor: pointer;
+}
+
+/* Sort bar */
+.sort-bar {
+  display: flex; gap: 8px; margin-bottom: 12px; align-items: center;
+  font-size: 14px; color: #888;
+}
+.sort-btn {
+  padding: 5px 12px; border: 1.5px solid #ccc; border-radius: 20px;
+  background: #fff; font-size: 13px; cursor: pointer; font-family: inherit;
+}
+.sort-btn.active { border-color: #c0392b; color: #c0392b; background: #fef0ee; }
+
+/* Stats bar */
+.stats-bar {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px; margin-bottom: 14px;
+}
+.stat-box {
+  background: #fff; border-radius: 10px; padding: 12px 8px;
+  text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.stat-val   { font-size: 24px; font-weight: bold; color: #c0392b; }
+.stat-val.green { color: #28a745; }
+.stat-label { font-size: 12px; color: #888; margin-top: 2px; }
+
+/* ── 練習模式 ── */
+#practice-view { display: none; padding: 10px; }
+
+.practice-header {
+  background: #fff; border-radius: 12px; padding: 14px;
+  margin-bottom: 10px; text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.08);
+}
+.practice-header h3 { margin: 0 0 4px; color: #c0392b; font-size: 20px; }
+.practice-header p  { margin: 0; color: #666; font-size: 14px; }
+#practice-score-bar {
+  font-size: 18px; font-weight: bold; color: #c0392b;
+  text-align: center; margin: 8px 0 4px;
+}
+
+.match-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin-bottom: 10px;
+}
+.col-header {
+  text-align: center; font-size: 14px; color: #c0392b;
+  padding: 4px 0 8px; border-bottom: 2px solid #c0392b;
+  letter-spacing: 2px;
+}
+#p-left-col, #p-right-col { display: flex; flex-direction: column; gap: 8px; }
+
+.card {
+  background: #fff; border: 2.5px solid #d5b8b8; border-radius: 12px;
+  padding: 12px 8px; cursor: pointer; text-align: center;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 58px; line-height: 1.4;
+  transition: background .15s, border-color .15s, transform .1s;
+  user-select: none; -webkit-user-select: none;
+}
+.word-card { font-size: 22px; font-weight: bold; }
+.mean-card { font-size: 16px; }
+.card:active:not(.matched):not(.disabled) { transform: scale(.96); }
+.card.selected { background: #fef0ee; border-color: #c0392b; box-shadow: 0 0 0 2.5px #c0392b; }
+.card.matched  { background: #d4edda; border-color: #28a745; color: #155724; cursor: default; }
+.card.wrong    { background: #f8d7da; border-color: #dc3545; animation: shake .35s ease; }
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)}
+  40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
+}
+
+/* Practice complete overlay */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.55); align-items: center; justify-content: center;
+  z-index: 500;
+}
+.overlay.show { display: flex; }
+.result-box {
+  background: #fff; border-radius: 18px; padding: 28px 24px;
+  width: 88%; max-width: 340px; text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+}
+.result-box h2  { margin: 0 0 8px; color: #c0392b; font-size: 22px; }
+.result-box .big{ font-size: 44px; font-weight: bold; color: #c0392b; margin: 8px 0; }
+.result-box .sub{ font-size: 15px; color: #888; margin-bottom: 18px; }
+.btn-row { display: flex; gap: 10px; }
+.btn-primary { flex:1; padding:13px; background:#c0392b; color:#fff; border:none; border-radius:10px; font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold; }
+.btn-secondary{ flex:1; padding:13px; background:#eee; color:#555; border:none; border-radius:10px; font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold; }
+
+/* Star pop */
+.star-pop {
+  position: fixed; font-size: 18px; font-weight: bold; color: #28a745;
+  pointer-events: none; z-index: 600;
+  animation: floatUp .8s ease forwards;
+}
+@keyframes floatUp {
+  from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-60px)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-left">
+    <h1>📝 錯題本</h1>
+    <p>累積所有遊戲的答錯紀錄</p>
+  </div>
+  <div class="hdr-badge">×<span id="total-wrong">0</span></div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" id="tab-list" onclick="showList()">全部錯題</div>
+  <div class="tab" id="tab-practice" onclick="showPractice()">練習模式</div>
+</div>
+
+<!-- List view -->
+<div id="list-view">
+  <div class="stats-bar" id="stats-bar"></div>
+  <div class="action-bar">
+    <button class="btn-practice-all" onclick="showPractice()">▶ 開始練習錯題</button>
+    <button class="btn-clear-mastered" onclick="clearMastered()">清除已熟練</button>
+  </div>
+  <div class="sort-bar">
+    排序：
+    <button class="sort-btn active" id="sort-wrong" onclick="setSortMode('wrong')">錯誤次數↓</button>
+    <button class="sort-btn" id="sort-date" onclick="setSortMode('date')">最近錯誤</button>
+    <button class="sort-btn" id="sort-alpha" onclick="setSortMode('alpha')">字母順序</button>
+  </div>
+  <div id="mistake-list"></div>
+</div>
+
+<!-- Practice view -->
+<div id="practice-view">
+  <div class="practice-header">
+    <h3>🔄 錯題練習</h3>
+    <p id="practice-desc">從錯題中挑選題目，配對成語與語意</p>
+  </div>
+  <div id="practice-score-bar"></div>
+  <div class="match-grid">
+    <div class="col-header">成　語 🔊</div>
+    <div class="col-header">語　意</div>
+    <div id="p-left-col"></div>
+    <div id="p-right-col"></div>
+  </div>
+</div>
+
+<!-- Practice complete overlay -->
+<div class="overlay" id="result-overlay">
+  <div class="result-box">
+    <h2>✅ 練習完成！</h2>
+    <div class="big" id="result-score"></div>
+    <div class="sub" id="result-sub"></div>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="closeResult(); showPractice()">再練一次</button>
+      <button class="btn-primary" onclick="closeResult(); showList()">返回列表</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let sortMode = 'wrong';
+let practiceLeftSel = null;
+let practiceMatched = 0;
+let practiceWrong = 0;
+let practicePairs = [];
+
+/* ── Storage ── */
+function getMistakes() { return JSON.parse(localStorage.getItem('xr_mistakes') || '{}'); }
+function saveMistakes(obj) { localStorage.setItem('xr_mistakes', JSON.stringify(obj)); }
+
+/* ── TTS ── */
+function speakWord(word) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(word);
+  utter.lang = 'zh-TW'; utter.rate = 0.8; utter.pitch = 1.0;
+  const doSpeak = () => {
+    const voices = speechSynthesis.getVoices();
+    const v = voices.find(v=>v.lang==='zh-TW') || voices.find(v=>v.lang.startsWith('zh'));
+    if (v) utter.voice = v;
+    speechSynthesis.speak(utter);
+  };
+  speechSynthesis.getVoices().length ? doSpeak() : (speechSynthesis.onvoiceschanged = doSpeak);
+}
+
+/* ── Tabs ── */
+function showList() {
+  document.getElementById('list-view').style.display = 'block';
+  document.getElementById('practice-view').style.display = 'none';
+  document.getElementById('tab-list').className = 'tab active';
+  document.getElementById('tab-practice').className = 'tab';
+  renderList();
+}
+
+function showPractice() {
+  const all = getMistakes();
+  const pool = Object.values(all).filter(m => !m.mastered && m.meaning);
+  if (!pool.length) {
+    alert('沒有待練習的錯題！全部已熟練 🎉');
+    return;
+  }
+  document.getElementById('list-view').style.display = 'none';
+  document.getElementById('practice-view').style.display = 'block';
+  document.getElementById('tab-list').className = 'tab';
+  document.getElementById('tab-practice').className = 'tab active';
+  buildPractice(pool);
+}
+
+/* ── List view ── */
+function setSortMode(mode) {
+  sortMode = mode;
+  ['wrong','date','alpha'].forEach(m => {
+    document.getElementById('sort-'+m).className = 'sort-btn'+(m===mode?' active':'');
+  });
+  renderList();
+}
+
+function renderList() {
+  const all = getMistakes();
+  const items = Object.values(all);
+  document.getElementById('total-wrong').textContent = items.filter(i=>!i.mastered).length;
+
+  // Stats
+  const totalItems = items.length;
+  const mastered = items.filter(i=>i.mastered).length;
+  const maxWrong = items.length ? Math.max(...items.map(i=>i.wrongCount)) : 0;
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat-box"><div class="stat-val">${totalItems}</div><div class="stat-label">總錯題數</div></div>
+    <div class="stat-box"><div class="stat-val green">${mastered}</div><div class="stat-label">已熟練</div></div>
+    <div class="stat-box"><div class="stat-val">${maxWrong}</div><div class="stat-label">最高錯誤次</div></div>
+  `;
+
+  if (!items.length) {
+    document.getElementById('mistake-list').innerHTML =
+      '<div class="empty-msg">目前沒有錯題紀錄<br>去玩遊戲並答錯才會記錄在這裡 💪</div>';
+    return;
+  }
+
+  // Sort
+  if (sortMode === 'wrong') items.sort((a,b) => b.wrongCount - a.wrongCount);
+  else if (sortMode === 'date') items.sort((a,b) => (b.lastWrong||'').localeCompare(a.lastWrong||''));
+  else items.sort((a,b) => a.word.localeCompare(b.word));
+
+  let html = '';
+  items.forEach(m => {
+    const isMastered = !!m.mastered;
+    html += `<div class="mistake-item">
+      <div class="mi-count${isMastered?' mastered':''}">${isMastered?'✓':m.wrongCount}</div>
+      <div class="mi-body">
+        <div class="mi-word">${m.word}</div>
+        <div class="mi-meaning">${m.meaning||'—'}</div>
+        <div class="mi-meta">錯誤 ${m.wrongCount} 次　練習 ${m.practiceCount||0} 次　${m.lastWrong?'最近：'+m.lastWrong:''}</div>
+      </div>
+      <div class="mi-actions">
+        <button class="btn-speak" onclick="speakWord('${m.word}')">🔊</button>
+        <button class="btn-master${isMastered?' undo':''}" onclick="toggleMaster('${m.word}')">
+          ${isMastered?'取消熟練':'標記熟練'}
+        </button>
+      </div>
+    </div>`;
+  });
+  document.getElementById('mistake-list').innerHTML = html;
+}
+
+function toggleMaster(word) {
+  const all = getMistakes();
+  if (all[word]) all[word].mastered = !all[word].mastered;
+  saveMistakes(all);
+  renderList();
+}
+
+function clearMastered() {
+  if (!confirm('確定要刪除所有「已熟練」的錯題嗎？')) return;
+  const all = getMistakes();
+  Object.keys(all).forEach(k => { if (all[k].mastered) delete all[k]; });
+  saveMistakes(all);
+  renderList();
+}
+
+/* ── Practice mode ── */
+function shuffle(a) {
+  const b=[...a];
+  for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}
+  return b;
+}
+
+function buildPractice(pool) {
+  // Pick up to 8, sorted by wrongCount desc
+  const sorted = [...pool].sort((a,b)=>b.wrongCount-a.wrongCount);
+  const batch = sorted.slice(0,8);
+  practicePairs = batch.map((m,i)=>({word:m.word, meaning:m.meaning, idx:i}));
+  practiceMatched = 0; practiceWrong = 0; practiceLeftSel = null;
+
+  document.getElementById('practice-desc').textContent =
+    `共 ${batch.length} 題（最多錯誤的題目優先）`;
+  document.getElementById('practice-score-bar').textContent = '';
+
+  const leftItems  = shuffle(practicePairs.map(p=>({...p})));
+  const rightItems = shuffle(practicePairs.map(p=>({...p})));
+
+  const lc = document.getElementById('p-left-col');
+  const rc = document.getElementById('p-right-col');
+  lc.innerHTML = ''; rc.innerHTML = '';
+
+  leftItems.forEach(p => {
+    const el = makeCard(p.word, 'word-card', p.idx);
+    el.onclick = () => onPracticeLeft(el);
+    lc.appendChild(el);
+  });
+  rightItems.forEach(p => {
+    const el = makeCard(p.meaning, 'mean-card', p.idx);
+    el.onclick = () => onPracticeRight(el);
+    rc.appendChild(el);
+  });
+
+  updatePracticeScore();
+}
+
+function makeCard(text, cls, idx) {
+  const el = document.createElement('div');
+  el.className = `card ${cls}`;
+  el.textContent = text;
+  el.dataset.idx = idx;
+  return el;
+}
+
+function updatePracticeScore() {
+  document.getElementById('practice-score-bar').textContent =
+    practicePairs.length ? `${practiceMatched} / ${practicePairs.length}` : '';
+}
+
+function onPracticeLeft(el) {
+  if (el.classList.contains('matched')) return;
+  speakWord(el.textContent);
+  if (practiceLeftSel === el) { el.classList.remove('selected'); practiceLeftSel = null; return; }
+  if (practiceLeftSel) practiceLeftSel.classList.remove('selected');
+  practiceLeftSel = el;
+  el.classList.add('selected');
+}
+
+function onPracticeRight(el) {
+  if (el.classList.contains('matched')) return;
+  if (!practiceLeftSel) return;
+  const li = parseInt(practiceLeftSel.dataset.idx);
+  const ri = parseInt(el.dataset.idx);
+  if (li === ri) {
+    practiceLeftSel.classList.remove('selected');
+    practiceLeftSel.classList.add('matched');
+    el.classList.add('matched');
+    // Record practice success
+    const all = getMistakes();
+    const word = practicePairs[li].word;
+    if (all[word]) {
+      all[word].practiceCount = (all[word].practiceCount||0) + 1;
+      if (all[word].practiceCount >= 3) all[word].mastered = true;
+      saveMistakes(all);
+    }
+    showStarPop(el, '✓ 答對！');
+    practiceLeftSel = null;
+    practiceMatched++;
+    updatePracticeScore();
+    if (practiceMatched === practicePairs.length) setTimeout(showPracticeResult, 500);
+  } else {
+    practiceWrong++;
+    // Increment wrongCount again for practice mistakes
+    const all = getMistakes();
+    const word = practicePairs[li].word;
+    if (all[word]) { all[word].wrongCount++; all[word].lastWrong = new Date().toLocaleDateString('zh-TW'); saveMistakes(all); }
+    const wl = practiceLeftSel;
+    wl.classList.add('wrong'); el.classList.add('wrong');
+    practiceLeftSel.classList.remove('selected'); practiceLeftSel = null;
+    setTimeout(() => { wl.classList.remove('wrong'); el.classList.remove('wrong'); }, 500);
+  }
+}
+
+function showStarPop(el, text) {
+  const rect = el.getBoundingClientRect();
+  const pop = document.createElement('div');
+  pop.className = 'star-pop';
+  pop.textContent = text;
+  pop.style.left = (rect.left + rect.width/2 - 30) + 'px';
+  pop.style.top  = (rect.top - 10) + 'px';
+  document.body.appendChild(pop);
+  setTimeout(() => pop.remove(), 900);
+}
+
+function showPracticeResult() {
+  const all = getMistakes();
+  const newMastered = Object.values(all).filter(m=>m.mastered).length;
+  document.getElementById('result-score').textContent = `${practiceMatched}/${practicePairs.length} 答對`;
+  document.getElementById('result-sub').textContent =
+    practiceWrong === 0 ? '零失誤！太厲害了 🏆' :
+    `失誤 ${practiceWrong} 次。累積3次練習成功可標記為熟練。`;
+  document.getElementById('result-overlay').classList.add('show');
+  document.getElementById('total-wrong').textContent =
+    Object.values(getMistakes()).filter(m=>!m.mastered).length;
+}
+
+function closeResult() {
+  document.getElementById('result-overlay').classList.remove('show');
+}
+
+/* ── Init ── */
+showList();
+</script>
+</body>
+</html>

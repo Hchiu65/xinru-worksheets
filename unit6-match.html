@@ -354,6 +354,17 @@ let challengeSecondsLeft = 60;
 let challengeLeftSelected = null;
 let challengeMatchedCount = 0;
 let challengeWrongCount = 0;
+let challengePool = [];
+
+/* ── 錯題紀錄 ── */
+function recordMistake(word, meaning) {
+  const all = JSON.parse(localStorage.getItem('xr_mistakes') || '{}');
+  if (!all[word]) all[word] = { word, meaning: meaning||'', wrongCount:0, practiceCount:0, lastWrong:'', mastered:false };
+  all[word].wrongCount++;
+  all[word].lastWrong = new Date().toLocaleDateString('zh-TW');
+  if (meaning) all[word].meaning = meaning;
+  localStorage.setItem('xr_mistakes', JSON.stringify(all));
+}
 
 /* ── 朗讀成語（教育部注音標準，zh-TW，語速 0.8） ── */
 function speakWord(word) {
@@ -524,6 +535,7 @@ function onRightClick(el) {
     leftSelected.dataset.hasMistake='1';
     streak=0;
     document.getElementById('streak-banner').style.display='none';
+    recordMistake(pairs[li].word, pairs[li].meaning);
     const wl=leftSelected;
     wl.classList.add('wrong'); el.classList.add('wrong');
     leftSelected.classList.remove('selected'); leftSelected=null;
@@ -626,7 +638,8 @@ function startChallenge() {
   document.getElementById('challenge-area').style.display='block';
 
   // Pick 4 from each round randomly
-  const pool=[...shuffle(ROUNDS[0]).slice(0,4), ...shuffle(ROUNDS[1]).slice(0,4)];
+  challengePool=[...shuffle(ROUNDS[0]).slice(0,4), ...shuffle(ROUNDS[1]).slice(0,4)];
+  const pool=challengePool;
   const leftCards=shuffle(pool.map((p,i)=>({...p,idx:i})));
   const rightCards=shuffle(pool.map((p,i)=>({...p,idx:i})));
 
@@ -680,6 +693,7 @@ function onChallengeRight(el) {
     if(challengeMatchedCount===8) { clearInterval(challengeTimer); endChallenge(true); }
   } else {
     challengeWrongCount++;
+    recordMistake(challengePool[li].word, challengePool[li].meaning);
     const wl=challengeLeftSelected;
     wl.classList.add('wrong'); el.classList.add('wrong');
     challengeLeftSelected.classList.remove('selected'); challengeLeftSelected=null;

@@ -139,10 +139,11 @@ body {
     <div class="ab-icon">🏪</div>
     <div class="ab-label">兌換商店</div>
   </a>
-  <div class="action-btn" onclick="showHistory()">
-    <div class="ab-icon">📊</div>
-    <div class="ab-label">我的紀錄</div>
-  </div>
+  <a class="action-btn" href="mistakes.html" style="position:relative">
+    <div class="ab-icon">📝</div>
+    <div class="ab-label">錯題本</div>
+    <span id="mistake-badge" style="display:none;position:absolute;top:8px;right:8px;background:#c0392b;color:#fff;border-radius:50%;width:22px;height:22px;font-size:13px;font-family:sans-serif;display:flex;align-items:center;justify-content:center;font-weight:bold"></span>
+  </a>
   <div class="action-btn" onclick="resetData()">
     <div class="ab-icon">🔄</div>
     <div class="ab-label">換人遊玩</div>
@@ -306,6 +307,14 @@ function saveName() {
 document.getElementById('modal-input').addEventListener('keydown',e=>{ if(e.key==='Enter') saveName(); });
 
 render();
+
+// 錯題數量紅點
+(function() {
+  const all = JSON.parse(localStorage.getItem('xr_mistakes') || '{}');
+  const pending = Object.values(all).filter(m => !m.mastered).length;
+  const badge = document.getElementById('mistake-badge');
+  if (badge && pending > 0) { badge.textContent = pending; badge.style.display = 'flex'; }
+})();
 </script>
 </body>
 </html>
