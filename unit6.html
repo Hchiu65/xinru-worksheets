@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>第六單元 互動練習</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: "標楷體", "DFKai-SB", serif;
+    font-size: 18px;
+    line-height: 1.8;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 0 0 80px;
+    color: #222;
+  }
+  header {
+    background: #2c5f8a;
+    color: #fff;
+    text-align: center;
+    padding: 20px 16px 14px;
+    font-size: 22px;
+    letter-spacing: 3px;
+  }
+  header small { display: block; font-size: 14px; opacity: .75; margin-top: 4px; letter-spacing: 1px; }
+
+  .section { background: #fff; border-radius: 12px; margin: 16px 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .section-title { font-size: 16px; font-weight: bold; color: #2c5f8a; border-left: 4px solid #2c5f8a; padding-left: 10px; margin-bottom: 12px; }
+
+  /* 詞庫 */
+  .word-bank {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    background: #eef2f7; border-radius: 8px; padding: 10px 12px; margin-bottom: 16px;
+  }
+  .chip {
+    background: #fff; border: 2px solid #2c5f8a; border-radius: 20px;
+    padding: 6px 14px; font-size: 16px; cursor: pointer;
+    transition: background .15s, opacity .15s;
+    user-select: none; -webkit-user-select: none;
+  }
+  .chip.selected  { background: #2c5f8a; color: #fff; }
+  .chip.used      { opacity: .28; pointer-events: none; }
+
+  /* 題目 */
+  ol { margin: 0; padding-left: 26px; }
+  ol li { margin-bottom: 10px; font-size: 17px; line-height: 2; }
+
+  .blank {
+    display: inline-block;
+    min-width: 96px; height: 36px;
+    border-bottom: 2.5px solid #555;
+    vertical-align: bottom;
+    margin: 0 4px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 16px;
+    padding: 0 4px;
+    border-radius: 4px 4px 0 0;
+    transition: background .15s;
+  }
+  .blank:empty::after { content: "　　"; opacity: 0; }
+  .blank.highlight  { background: #dceeff; }
+  .blank.correct    { background: #d4edda; border-color: #28a745; color: #155724; }
+  .blank.wrong      { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+
+  /* 底部按鈕 */
+  .toolbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    display: flex; gap: 12px; padding: 12px 16px;
+    background: #fff; border-top: 1px solid #ddd;
+    box-shadow: 0 -2px 8px rgba(0,0,0,.1);
+  }
+  .btn {
+    flex: 1; padding: 14px; border: none; border-radius: 10px;
+    font-size: 17px; font-family: inherit; cursor: pointer;
+    font-weight: bold; letter-spacing: 1px;
+  }
+  .btn-check { background: #2c5f8a; color: #fff; }
+  .btn-reset { background: #eee; color: #555; }
+  #score-display {
+    flex: 0 0 auto; display: flex; align-items: center;
+    font-size: 18px; font-weight: bold; color: #2c5f8a;
+    min-width: 60px; justify-content: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  第六單元　課後練習
+  <small>點選詞語 → 點空格填入 ｜ 再點空格可清除</small>
+</header>
+
+<!-- 詞語填空 1 -->
+<div class="section">
+  <div class="section-title">（一）詞語填空 1　請將下列答案填入正確空格。</div>
+  <div class="word-bank" id="bank-1">
+    <span class="chip" id="c1-1" data-word="獨樹一幟" onclick="selectChip(this)">獨樹一幟</span>
+    <span class="chip" id="c1-2" data-word="暴戾之氣" onclick="selectChip(this)">暴戾之氣</span>
+    <span class="chip" id="c1-3" data-word="雕欄玉砌" onclick="selectChip(this)">雕欄玉砌</span>
+    <span class="chip" id="c1-4" data-word="敷衍了事" onclick="selectChip(this)">敷衍了事</span>
+    <span class="chip" id="c1-5" data-word="選舉賄賂" onclick="selectChip(this)">選舉賄賂</span>
+    <span class="chip" id="c1-6" data-word="遭逢厄運" onclick="selectChip(this)">遭逢厄運</span>
+    <span class="chip" id="c1-7" data-word="醍醐灌頂" onclick="selectChip(this)">醍醐灌頂</span>
+    <span class="chip" id="c1-8" data-word="暴殄天物" onclick="selectChip(this)">暴殄天物</span>
+    <span class="chip" id="c1-9" data-word="慘遭蹂躪" onclick="selectChip(this)">慘遭蹂躪</span>
+    <span class="chip" id="c1-10" data-word="濃妝豔抹" onclick="selectChip(this)">濃妝豔抹</span>
+  </div>
+  <ol>
+    <li>這件事要好好解釋一下，別以為隨便使用三言兩語就可以（<span class="blank" data-answer="敷衍了事" onclick="tapBlank(this)"></span>）。</li>
+    <li>地痞流氓面帶（<span class="blank" data-answer="暴戾之氣" onclick="tapBlank(this)"></span>），民眾避之唯恐不及。</li>
+    <li>一粥一飯當思來之不易，不能浪費，（<span class="blank" data-answer="暴殄天物" onclick="tapBlank(this)"></span>）。</li>
+    <li>他真是（<span class="blank" data-answer="遭逢厄運" onclick="tapBlank(this)"></span>），要不然怎麼會發生這種事呢？</li>
+    <li>年輕的女孩自有一份清新脫俗的氣質，不宜（<span class="blank" data-answer="濃妝豔抹" onclick="tapBlank(this)"></span>）。</li>
+    <li>這家飯店的裝潢（<span class="blank" data-answer="雕欄玉砌" onclick="tapBlank(this)"></span>），吸引許多旅客投宿。</li>
+    <li>二次大戰時，日本發動侵華戰爭，中國有不少城市被日軍（<span class="blank" data-answer="慘遭蹂躪" onclick="tapBlank(this)"></span>）。</li>
+    <li>這位候選人為了當選，私下進行（<span class="blank" data-answer="選舉賄賂" onclick="tapBlank(this)"></span>）。</li>
+    <li>他的一席話猶如（<span class="blank" data-answer="醍醐灌頂" onclick="tapBlank(this)"></span>），令人茅塞頓開。</li>
+    <li>皇宮裡一棟棟的建築，各個（<span class="blank" data-answer="獨樹一幟" onclick="tapBlank(this)"></span>）、氣度不凡。</li>
+  </ol>
+</div>
+
+<!-- 詞語填空 2 -->
+<div class="section">
+  <div class="section-title">（二）詞語填空 2　請將下列答案填入正確空格。</div>
+  <div class="word-bank" id="bank-2">
+    <span class="chip" id="c2-1" data-word="感慨萬千" onclick="selectChip(this)">感慨萬千</span>
+    <span class="chip" id="c2-2" data-word="經濟蕭條" onclick="selectChip(this)">經濟蕭條</span>
+    <span class="chip" id="c2-3" data-word="惺惺相惜" onclick="selectChip(this)">惺惺相惜</span>
+    <span class="chip" id="c2-4" data-word="絕不寬貸" onclick="selectChip(this)">絕不寬貸</span>
+    <span class="chip" id="c2-5" data-word="集思廣益" onclick="selectChip(this)">集思廣益</span>
+    <span class="chip" id="c2-6" data-word="滄海一粟" onclick="selectChip(this)">滄海一粟</span>
+    <span class="chip" id="c2-7" data-word="辭不達意" onclick="selectChip(this)">辭不達意</span>
+    <span class="chip" id="c2-8" data-word="暗箭難防" onclick="selectChip(this)">暗箭難防</span>
+    <span class="chip" id="c2-9" data-word="肆無忌憚" onclick="selectChip(this)">肆無忌憚</span>
+    <span class="chip" id="c2-10" data-word="越俎代庖" onclick="selectChip(this)">越俎代庖</span>
+    <span class="chip" id="c2-11" data-word="敬請笑納" onclick="selectChip(this)">敬請笑納</span>
+    <span class="chip" id="c2-12" data-word="脾氣暴躁" onclick="selectChip(this)">脾氣暴躁</span>
+    <span class="chip" id="c2-13" data-word="噤若寒蟬" onclick="selectChip(this)">噤若寒蟬</span>
+    <span class="chip" id="c2-14" data-word="經驗老到" onclick="selectChip(this)">經驗老到</span>
+    <span class="chip" id="c2-15" data-word="虛無縹緲" onclick="selectChip(this)">虛無縹緲</span>
+    <span class="chip" id="c2-16" data-word="騷擾鄰居" onclick="selectChip(this)">騷擾鄰居</span>
+  </div>
+  <ol>
+    <li>第一次犯錯，尚可原諒，如果再犯，就（<span class="blank" data-answer="絕不寬貸" onclick="tapBlank(this)"></span>）。</li>
+    <li>他的（<span class="blank" data-answer="脾氣暴躁" onclick="tapBlank(this)"></span>），不太容易相處。</li>
+    <li>他置身濃霧之中，只覺得一切景物都變得（<span class="blank" data-answer="虛無縹緲" onclick="tapBlank(this)"></span>），無法辨識。</li>
+    <li>他太緊張，說起話來（<span class="blank" data-answer="辭不達意" onclick="tapBlank(this)"></span>）。</li>
+    <li>老闆的要求不多，他只希望所有員工都能各司其職，不要（<span class="blank" data-answer="越俎代庖" onclick="tapBlank(this)"></span>）。</li>
+    <li>為了校慶表演，班長要大家（<span class="blank" data-answer="集思廣益" onclick="tapBlank(this)"></span>），想出創新的花樣，希望能有更完美的演出。</li>
+    <li>他每次提及過去不幸的遭遇，都不免（<span class="blank" data-answer="感慨萬千" onclick="tapBlank(this)"></span>）。</li>
+    <li>他因忌意（<span class="blank" data-answer="騷擾鄰居" onclick="tapBlank(this)"></span>），於是被強制變更住處。</li>
+    <li>一點小意思，不成敬意，（<span class="blank" data-answer="敬請笑納" onclick="tapBlank(this)"></span>）！</li>
+    <li>正是明槍易躲，（<span class="blank" data-answer="暗箭難防" onclick="tapBlank(this)"></span>）。</li>
+    <li>地球雖大，但從整個宇宙來看就像（<span class="blank" data-answer="滄海一粟" onclick="tapBlank(this)"></span>）般的微小。</li>
+    <li>爸爸正在氣頭上，大家都（<span class="blank" data-answer="噤若寒蟬" onclick="tapBlank(this)"></span>），深怕再惹他生氣。</li>
+    <li>因（<span class="blank" data-answer="經濟蕭條" onclick="tapBlank(this)"></span>）導致各大企業關閉，生產縮小而失業擴大，各種社會問題隨之產生。</li>
+    <li>看著他切菜的手法，像是（<span class="blank" data-answer="經驗老到" onclick="tapBlank(this)"></span>）的知名廚師。</li>
+    <li>這些歹徒真是無法無天，竟敢在光天化日之下（<span class="blank" data-answer="肆無忌憚" onclick="tapBlank(this)"></span>）地持槍搶劫。</li>
+    <li>共同走過艱艱辛歲月的他們，發展出（<span class="blank" data-answer="惺惺相惜" onclick="tapBlank(this)"></span>）的情誼，視對方為知己。</li>
+  </ol>
+</div>
+
+<div class="toolbar">
+  <button class="btn btn-check" onclick="checkAll()">對答案</button>
+  <div id="score-display"></div>
+  <button class="btn btn-reset" onclick="resetAll()">重設</button>
+</div>
+
+<script>
+let selected = null;
+
+// 所有卡片資料：{ chipId, word, answer }
+const CARDS = [];
+
+function selectChip(el) {
+  if (el.classList.contains('used')) return;
+  if (selected === el) {
+    el.classList.remove('selected');
+    selected = null;
+    return;
+  }
+  if (selected) selected.classList.remove('selected');
+  selected = el;
+  el.classList.add('selected');
+}
+
+function tapBlank(el) {
+  if (selected) {
+    // 若空格已有詞，先退回詞庫
+    if (el.dataset.chipId) returnChip(el.dataset.chipId);
+    // 填入
+    el.textContent = selected.dataset.word;
+    el.dataset.chipId = selected.id;
+    selected.classList.add('used');
+    selected.classList.remove('selected');
+    selected = null;
+    el.classList.remove('correct', 'wrong', 'highlight');
+  } else if (el.dataset.chipId) {
+    // 點已填的空格 → 清除
+    returnChip(el.dataset.chipId);
+    el.textContent = '';
+    delete el.dataset.chipId;
+    el.classList.remove('correct', 'wrong');
+  }
+}
+
+function returnChip(chipId) {
+  const chip = document.getElementById(chipId);
+  if (chip) { chip.classList.remove('used', 'selected'); }
+}
+
+function checkAll() {
+  const blanks = document.querySelectorAll('.blank');
+  let correct = 0;
+  blanks.forEach(b => {
+    b.classList.remove('correct', 'wrong');
+    const filled = b.dataset.chipId
+      ? document.getElementById(b.dataset.chipId)?.dataset.word
+      : '';
+    if (filled && filled === b.dataset.answer) {
+      b.classList.add('correct'); correct++;
+    } else {
+      b.classList.add('wrong');
+    }
+  });
+  document.getElementById('score-display').textContent = correct + '/' + blanks.length;
+}
+
+function resetAll() {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('used','selected'));
+  document.querySelectorAll('.blank').forEach(b => {
+    b.textContent = '';
+    delete b.dataset.chipId;
+    b.classList.remove('correct','wrong','highlight');
+  });
+  selected = null;
+  document.getElementById('score-display').textContent = '';
+}
+</script>
+</body>
+</html>
