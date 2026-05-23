@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>兌換商店</title>
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: "標楷體","DFKai-SB",serif;
+  background: #f0f4f8; margin: 0; padding: 0 0 40px; color: #222;
+}
+header {
+  background: #2c5f8a; color: #fff;
+  padding: 16px 16px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hdr-left h1 { margin: 0; font-size: 22px; letter-spacing: 2px; }
+.hdr-left p  { margin: 2px 0 0; font-size: 13px; opacity: .75; }
+.star-badge {
+  background: rgba(255,255,255,.18); border-radius: 20px;
+  padding: 8px 16px; font-size: 24px; font-weight: bold;
+}
+.back-btn {
+  display: inline-block; margin: 12px 14px 0;
+  color: #2c5f8a; font-size: 16px; cursor: pointer;
+  text-decoration: none; font-family: inherit;
+}
+
+/* Tabs */
+.tabs { display: flex; background: #1e4a6e; padding: 0 10px; }
+.tab {
+  flex: 1; text-align: center; padding: 10px 0; font-size: 15px;
+  color: rgba(255,255,255,.5); cursor: pointer;
+  border-bottom: 3px solid transparent; transition: color .15s;
+  user-select: none;
+}
+.tab.active { color: #fff; border-bottom-color: #fff; font-weight: bold; }
+
+/* Section */
+.section-label {
+  font-size: 14px; color: #888; letter-spacing: 2px;
+  padding: 14px 14px 6px;
+}
+
+/* Grid */
+.shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 12px; }
+
+/* Item card */
+.item-card {
+  background: #fff; border-radius: 14px; padding: 16px 12px;
+  text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  position: relative;
+}
+.item-icon { font-size: 40px; line-height: 1.1; margin-bottom: 6px; }
+.item-name { font-size: 17px; font-weight: bold; margin-bottom: 4px; }
+.item-desc { font-size: 13px; color: #888; margin-bottom: 10px; line-height: 1.4; }
+.item-cost { font-size: 18px; color: #f5a623; font-weight: bold; margin-bottom: 10px; }
+
+.btn-buy {
+  width: 100%; padding: 10px; border: none; border-radius: 8px;
+  background: #2c5f8a; color: #fff; font-size: 16px; font-family: inherit;
+  cursor: pointer; font-weight: bold;
+}
+.btn-buy:disabled { background: #ccc; cursor: default; }
+.btn-owned { width: 100%; padding: 10px; border: none; border-radius: 8px;
+  background: #d4edda; color: #155724; font-size: 15px; font-family: inherit; }
+.btn-redeem {
+  width: 100%; padding: 10px; border: none; border-radius: 8px;
+  background: #e67e22; color: #fff; font-size: 15px; font-family: inherit;
+  cursor: pointer; font-weight: bold; margin-top: 6px;
+}
+
+/* Voucher modal */
+#voucher-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.6); align-items: center; justify-content: center;
+  z-index: 800; flex-direction: column;
+}
+#voucher-overlay.show { display: flex; }
+.voucher-box {
+  background: #fff; border-radius: 18px; padding: 32px 24px;
+  width: 88%; max-width: 340px; text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,.25);
+  border: 3px dashed #f5a623;
+}
+.voucher-box h2 { margin: 0 0 8px; color: #c0392b; font-size: 22px; }
+.voucher-icon  { font-size: 64px; margin: 10px 0; }
+.voucher-name  { font-size: 22px; font-weight: bold; margin-bottom: 4px; }
+.voucher-player{ font-size: 15px; color: #888; margin-bottom: 6px; }
+.voucher-date  { font-size: 14px; color: #aaa; margin-bottom: 16px; }
+.voucher-note  { background: #fff8e1; border-radius: 8px; padding: 10px; font-size: 14px; color: #7a4a00; margin-bottom: 16px; }
+.btn-close-v {
+  width: 100%; padding: 13px; background: #2c5f8a; color: #fff;
+  border: none; border-radius: 10px; font-size: 17px; font-family: inherit;
+  cursor: pointer; font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-left">
+    <h1>🏪 兌換商店</h1>
+    <p>用星星換獎勵</p>
+  </div>
+  <div class="star-badge">⭐ <span id="star-display">0</span></div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('badges')" id="tab-badges">動物徽章</div>
+  <div class="tab" onclick="showTab('titles')" id="tab-titles">稱　號</div>
+  <div class="tab" onclick="showTab('rewards')" id="tab-rewards">加分贈品</div>
+</div>
+
+<a class="back-btn" onclick="history.back()">← 返回</a>
+
+<div id="shop-content"></div>
+
+<!-- Voucher overlay -->
+<div id="voucher-overlay">
+  <div class="voucher-box">
+    <h2>🎫 兌換憑證</h2>
+    <div class="voucher-icon" id="v-icon"></div>
+    <div class="voucher-name" id="v-name"></div>
+    <div class="voucher-player" id="v-player"></div>
+    <div class="voucher-date" id="v-date"></div>
+    <div class="voucher-note">請將此畫面出示給老師，<br>老師確認後即可領取獎勵。</div>
+    <button class="btn-close-v" onclick="closeVoucher()">老師已確認，關閉</button>
+  </div>
+</div>
+
+<script>
+const SHOP = {
+  badges: [
+    { id:'b_panda',    icon:'🐼', name:'小熊貓',   cost:50,  desc:'裝備後顯示在主頁' },
+    { id:'b_fox',      icon:'🦊', name:'小狐狸',   cost:50,  desc:'機靈的狐狸徽章' },
+    { id:'b_penguin',  icon:'🐧', name:'企　鵝',   cost:60,  desc:'可愛企鵝徽章' },
+    { id:'b_butterfly',icon:'🦋', name:'蝴　蝶',   cost:60,  desc:'美麗蝴蝶徽章' },
+    { id:'b_tiger',    icon:'🐯', name:'小老虎',   cost:80,  desc:'威猛老虎徽章' },
+    { id:'b_lion',     icon:'🦁', name:'小獅子',   cost:80,  desc:'霸氣獅子徽章' },
+    { id:'b_dragon',   icon:'🐉', name:'神　龍',   cost:150, desc:'傳說神龍徽章' },
+    { id:'b_unicorn',  icon:'🦄', name:'獨角獸',   cost:150, desc:'夢幻獨角獸徽章' },
+  ],
+  titles: [
+    { id:'t_expert', icon:'🏅', name:'成語小達人', cost:100, desc:'顯示在主頁的稱號' },
+    { id:'t_master', icon:'🥇', name:'成語大師',   cost:200, desc:'更高級的稱號' },
+    { id:'t_king',   icon:'👑', name:'成語無敵王', cost:350, desc:'最高榮耀稱號' },
+  ],
+  rewards: [
+    { id:'r_sticker1', icon:'🌟', name:'貼紙一張',       cost:80,  desc:'老師實體發放貼紙', consumable:true },
+    { id:'r_sticker3', icon:'✨', name:'貼紙豪華包×3',   cost:200, desc:'三張貼紙同時發放', consumable:true },
+    { id:'r_score3',   icon:'📝', name:'課堂加分 +3分',  cost:120, desc:'下次考試加3分',   consumable:true },
+    { id:'r_score5',   icon:'📚', name:'課堂加分 +5分',  cost:200, desc:'下次考試加5分',   consumable:true },
+  ]
+};
+
+function getStars()   { return parseInt(localStorage.getItem('xr_stars')||'0'); }
+function getOwned()   { return JSON.parse(localStorage.getItem('xr_owned')||'{}'); }
+function getEquipped(){ return JSON.parse(localStorage.getItem('xr_equipped')||'{}'); }
+function getRedeemed(){ return JSON.parse(localStorage.getItem('xr_redeemed')||'[]'); }
+function getName()    { return localStorage.getItem('xr_name')||'同學'; }
+
+let currentTab = 'badges';
+
+function showTab(tab) {
+  currentTab = tab;
+  ['badges','titles','rewards'].forEach(t => {
+    document.getElementById('tab-'+t).className = 'tab'+(t===tab?' active':'');
+  });
+  renderTab(tab);
+}
+
+function renderTab(tab) {
+  const items = SHOP[tab];
+  const owned = getOwned();
+  const stars = getStars();
+  const redeemed = getRedeemed();
+  document.getElementById('star-display').textContent = stars;
+
+  let html = '<div class="shop-grid">';
+  items.forEach(item => {
+    const isOwned = owned[item.id];
+    const canAfford = stars >= item.cost;
+    const redeemedCount = redeemed.filter(r=>r.id===item.id).length;
+
+    html += `<div class="item-card">
+      <div class="item-icon">${item.icon}</div>
+      <div class="item-name">${item.name}</div>
+      <div class="item-desc">${item.desc}</div>
+      <div class="item-cost">⭐ ${item.cost}</div>`;
+
+    if (item.consumable) {
+      // Consumable: can buy multiple times
+      html += `<button class="btn-buy" ${canAfford?'':'disabled'} onclick="buyConsumable('${item.id}')">兌換</button>`;
+      if (redeemedCount > 0) {
+        html += `<button class="btn-redeem" onclick="showVoucher('${item.id}')">出示憑證（已兌換${redeemedCount}次）</button>`;
+      }
+    } else if (isOwned) {
+      html += `<button class="btn-owned" disabled>✓ 已擁有</button>`;
+      if (tab==='badges') {
+        const eq = getEquipped();
+        if (eq.badge===item.id) {
+          html += `<button class="btn-buy" style="background:#888;margin-top:6px" onclick="unequip('badge')">取消裝備</button>`;
+        } else {
+          html += `<button class="btn-buy" style="background:#4caf50;margin-top:6px" onclick="equip('badge','${item.id}')">裝備</button>`;
+        }
+      }
+    } else {
+      html += `<button class="btn-buy" ${canAfford?'':'disabled'} onclick="buyItem('${item.id}')">購買</button>`;
+    }
+
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('shop-content').innerHTML = html;
+}
+
+function buyItem(id) {
+  const item = findItem(id);
+  const stars = getStars();
+  if (!item || stars < item.cost) return;
+  localStorage.setItem('xr_stars', stars - item.cost);
+  const owned = getOwned();
+  owned[id] = true;
+  localStorage.setItem('xr_owned', JSON.stringify(owned));
+  renderTab(currentTab);
+  document.getElementById('star-display').textContent = getStars();
+}
+
+function buyConsumable(id) {
+  const item = findItem(id);
+  const stars = getStars();
+  if (!item || stars < item.cost) return;
+  localStorage.setItem('xr_stars', stars - item.cost);
+  const redeemed = getRedeemed();
+  redeemed.push({ id, date: new Date().toLocaleDateString('zh-TW'), used: false });
+  localStorage.setItem('xr_redeemed', JSON.stringify(redeemed));
+  renderTab(currentTab);
+  showVoucher(id);
+}
+
+function equip(type, id) {
+  const eq = getEquipped();
+  eq[type] = id;
+  localStorage.setItem('xr_equipped', JSON.stringify(eq));
+  renderTab(currentTab);
+}
+
+function unequip(type) {
+  const eq = getEquipped();
+  delete eq[type];
+  localStorage.setItem('xr_equipped', JSON.stringify(eq));
+  renderTab(currentTab);
+}
+
+function showVoucher(id) {
+  const item = findItem(id);
+  if (!item) return;
+  document.getElementById('v-icon').textContent   = item.icon;
+  document.getElementById('v-name').textContent   = item.name;
+  document.getElementById('v-player').textContent = '玩家：' + getName();
+  document.getElementById('v-date').textContent   = '日期：' + new Date().toLocaleDateString('zh-TW');
+  document.getElementById('voucher-overlay').classList.add('show');
+}
+
+function closeVoucher() {
+  document.getElementById('voucher-overlay').classList.remove('show');
+}
+
+function findItem(id) {
+  for (const cat of Object.values(SHOP)) {
+    const f = cat.find(i=>i.id===id);
+    if (f) return f;
+  }
+  return null;
+}
+
+// Init
+renderTab('badges');
+</script>
+</body>
+</html>

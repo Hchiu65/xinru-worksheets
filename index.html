@@ -2,99 +2,310 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>興儒六私國文班 互動練習卷</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>興儒六私國文班 學習中心</title>
 <style>
-  * { box-sizing: border-box; }
-  body {
-    font-family: "標楷體", "DFKai-SB", serif;
-    background: #f4f6f9;
-    margin: 0;
-    padding: 0 0 60px;
-    color: #222;
-  }
-  header {
-    background: #2c5f8a;
-    color: #fff;
-    text-align: center;
-    padding: 28px 16px 20px;
-    font-size: 24px;
-    letter-spacing: 4px;
-  }
-  header small {
-    display: block;
-    font-size: 14px;
-    opacity: .75;
-    margin-top: 6px;
-    letter-spacing: 1px;
-  }
-  .container { max-width: 600px; margin: 0 auto; padding: 20px 16px; }
-  h2 {
-    font-size: 16px;
-    color: #2c5f8a;
-    border-left: 4px solid #2c5f8a;
-    padding-left: 10px;
-    margin: 28px 0 12px;
-  }
-  .card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #fff;
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
-    text-decoration: none;
-    color: #222;
-    transition: box-shadow .15s, transform .1s;
-  }
-  .card:active { transform: scale(.98); box-shadow: 0 1px 4px rgba(0,0,0,.1); }
-  .card-title { font-size: 18px; font-weight: bold; }
-  .card-sub { font-size: 13px; color: #888; margin-top: 4px; }
-  .arrow {
-    font-size: 22px;
-    color: #2c5f8a;
-    flex-shrink: 0;
-    margin-left: 12px;
-  }
-  .badge {
-    display: inline-block;
-    background: #e8f0f8;
-    color: #2c5f8a;
-    border-radius: 20px;
-    font-size: 12px;
-    padding: 2px 10px;
-    margin-top: 4px;
-  }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: "標楷體","DFKai-SB",serif;
+  background: #f0f4f8; margin: 0; padding: 0 0 40px; color: #222;
+}
+
+/* ── Hero / Profile ── */
+.hero {
+  background: linear-gradient(135deg,#2c5f8a,#1e4a6e);
+  color: #fff; padding: 20px 16px 24px;
+}
+.hero-row { display: flex; align-items: center; justify-content: space-between; }
+.player-info h2 { margin: 0; font-size: 24px; letter-spacing: 2px; }
+.player-info p  { margin: 4px 0 0; font-size: 14px; opacity: .75; }
+.star-total {
+  background: rgba(255,255,255,.18); border-radius: 20px;
+  padding: 8px 18px; font-size: 26px; font-weight: bold;
+}
+.badge-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
+.equipped-badge {
+  background: rgba(255,255,255,.15); border-radius: 12px;
+  padding: 6px 14px; font-size: 22px;
+}
+.equipped-title {
+  background: rgba(245,166,35,.25); border-radius: 12px;
+  padding: 6px 14px; font-size: 15px; font-weight: bold;
+  color: #ffd970; letter-spacing: 1px;
+}
+.edit-name {
+  font-size: 13px; opacity: .65; cursor: pointer;
+  margin-top: 2px; display: inline-block;
+  text-decoration: underline;
+}
+
+/* ── Quick action buttons ── */
+.action-row { display: flex; gap: 10px; padding: 14px 12px 0; }
+.action-btn {
+  flex: 1; text-align: center; padding: 14px 8px;
+  background: #fff; border-radius: 12px; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08); text-decoration: none; color: #222;
+  transition: transform .1s;
+}
+.action-btn:active { transform: scale(.96); }
+.action-btn .ab-icon { font-size: 28px; margin-bottom: 4px; }
+.action-btn .ab-label{ font-size: 15px; color: #2c5f8a; font-weight: bold; }
+
+/* ── Section title ── */
+.sec-title {
+  font-size: 15px; color: #2c5f8a; font-weight: bold;
+  border-left: 4px solid #2c5f8a; padding-left: 10px;
+  margin: 18px 14px 10px; letter-spacing: 1px;
+}
+
+/* ── Unit cards ── */
+.unit-card {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #fff; border-radius: 14px; padding: 16px 18px;
+  margin: 0 12px 10px; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  text-decoration: none; color: #222; cursor: pointer;
+  transition: transform .1s;
+}
+.unit-card:active { transform: scale(.98); }
+.unit-card .uc-left  .uc-title{ font-size: 19px; font-weight: bold; }
+.unit-card .uc-left  .uc-sub  { font-size: 14px; color: #888; margin-top: 3px; }
+.unit-card .uc-arrow { font-size: 22px; color: #2c5f8a; flex-shrink: 0; }
+.tag {
+  display: inline-block; font-size: 12px; padding: 2px 10px;
+  border-radius: 20px; margin-top: 5px; margin-right: 4px;
+}
+.tag-game  { background: #e8f4e8; color: #2e7d32; }
+.tag-fill  { background: #e8f0f8; color: #2c5f8a; }
+
+/* ── Records ── */
+.record-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 12px; }
+.record-card {
+  background: #fff; border-radius: 12px; padding: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.07); text-align: center;
+}
+.record-card .r-label{ font-size: 13px; color: #888; margin-bottom: 4px; }
+.record-card .r-value{ font-size: 22px; font-weight: bold; color: #2c5f8a; }
+.record-card .r-sub  { font-size: 12px; color: #aaa; margin-top: 2px; }
+
+/* ── History ── */
+.history-item {
+  background: #fff; border-radius: 10px; padding: 12px 14px;
+  margin: 0 12px 8px; box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.hi-left { font-size: 15px; color: #444; }
+.hi-right{ font-size: 16px; font-weight: bold; color: #f5a623; }
+
+/* ── Name modal ── */
+#name-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.5); align-items: center; justify-content: center;
+  z-index: 900;
+}
+#name-modal.show { display: flex; }
+.modal-box {
+  background: #fff; border-radius: 16px; padding: 28px 24px;
+  width: 290px; text-align: center;
+}
+.modal-box h3 { margin: 0 0 12px; color: #2c5f8a; font-size: 20px; }
+#modal-input {
+  width: 100%; padding: 12px; font-size: 20px; font-family: inherit;
+  border: 2px solid #b0c8e0; border-radius: 10px; margin-bottom: 12px; text-align: center;
+}
+.modal-btn {
+  width: 100%; padding: 13px; background: #2c5f8a; color: #fff;
+  border: none; border-radius: 10px; font-size: 18px; font-family: inherit;
+  cursor: pointer; font-weight: bold;
+}
 </style>
 </head>
 <body>
-<header>
-  興儒六私國文班
-  <small>互動練習卷 · 點選單元開始作答</small>
-</header>
-<div class="container">
-  <h2>第六冊</h2>
 
-  <a class="card" href="unit6.html">
-    <div>
-      <div class="card-title">第六單元　詞語填空練習</div>
-      <div class="card-sub">26 題填空，點選詞語填入空格</div>
-      <span class="badge">互動填答</span>
+<!-- Profile hero -->
+<div class="hero">
+  <div class="hero-row">
+    <div class="player-info">
+      <h2 id="player-name">同學</h2>
+      <span class="edit-name" onclick="openNameModal()">✏ 修改名字</span>
     </div>
-    <div class="arrow">▶</div>
-  </a>
-
-  <a class="card" href="unit6-match.html">
-    <div>
-      <div class="card-title">第六單元　成語語意連連看</div>
-      <div class="card-sub">26 題配對，兩輪闖關</div>
-      <span class="badge">遊戲</span>
-    </div>
-    <div class="arrow">▶</div>
-  </a>
-
+    <div class="star-total">⭐ <span id="star-count">0</span></div>
+  </div>
+  <div class="badge-row" id="badge-row"></div>
 </div>
+
+<!-- Quick actions -->
+<div class="action-row">
+  <a class="action-btn" href="shop.html">
+    <div class="ab-icon">🏪</div>
+    <div class="ab-label">兌換商店</div>
+  </a>
+  <div class="action-btn" onclick="showHistory()">
+    <div class="ab-icon">📊</div>
+    <div class="ab-label">我的紀錄</div>
+  </div>
+  <div class="action-btn" onclick="resetData()">
+    <div class="ab-icon">🔄</div>
+    <div class="ab-label">換人遊玩</div>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="sec-title">學習統計</div>
+<div class="record-grid" id="record-grid"></div>
+
+<!-- Units -->
+<div class="sec-title">第六冊 練習題目</div>
+
+<a class="unit-card" href="unit6.html">
+  <div class="uc-left">
+    <div class="uc-title">第六單元　詞語填空</div>
+    <div class="uc-sub">26 題填空練習</div>
+    <span class="tag tag-fill">填空練習</span>
+  </div>
+  <div class="uc-arrow">▶</div>
+</a>
+
+<a class="unit-card" href="unit6-match.html">
+  <div class="uc-left">
+    <div class="uc-title">第六單元　成語連連看</div>
+    <div class="uc-sub">兩輪26題配對 + 終極挑戰</div>
+    <span class="tag tag-game">遊戲</span>
+    <span class="tag tag-fill">⭐ 可得星星</span>
+  </div>
+  <div class="uc-arrow">▶</div>
+</a>
+
+<!-- History section (hidden by default) -->
+<div id="history-section" style="display:none">
+  <div class="sec-title">最近遊玩紀錄</div>
+  <div id="history-list"></div>
+</div>
+
+<!-- Name modal -->
+<div id="name-modal">
+  <div class="modal-box">
+    <h3>輸入你的名字</h3>
+    <input id="modal-input" type="text" maxlength="10" placeholder="我的名字">
+    <button class="modal-btn" onclick="saveName()">確認</button>
+  </div>
+</div>
+
+<script>
+function getStars()   { return parseInt(localStorage.getItem('xr_stars')||'0'); }
+function getName()    { return localStorage.getItem('xr_name')||''; }
+function getOwned()   { return JSON.parse(localStorage.getItem('xr_owned')||'{}'); }
+function getEquipped(){ return JSON.parse(localStorage.getItem('xr_equipped')||'{}'); }
+function getRecords() { return JSON.parse(localStorage.getItem('xr_records')||'[]'); }
+
+const BADGES = {
+  b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',
+  b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'
+};
+const TITLES = {
+  t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王'
+};
+
+function render() {
+  // Name
+  const name = getName();
+  document.getElementById('player-name').textContent = name || '點這裡設定名字';
+  if (!name) openNameModal();
+
+  // Stars
+  document.getElementById('star-count').textContent = getStars();
+
+  // Equipped badges / title
+  const eq = getEquipped();
+  const owned = getOwned();
+  let badgeHtml = '';
+  if (eq.badge && owned[eq.badge]) {
+    badgeHtml += `<span class="equipped-badge">${BADGES[eq.badge]||'?'}</span>`;
+  }
+  if (eq.title && owned[eq.title]) {
+    badgeHtml += `<span class="equipped-title">${TITLES[eq.title]||''}</span>`;
+  }
+  // All owned badges (not equipped as title)
+  Object.keys(owned).forEach(id => {
+    if (BADGES[id] && id !== eq.badge) {
+      badgeHtml += `<span class="equipped-badge" style="opacity:.5">${BADGES[id]}</span>`;
+    }
+  });
+  if (!badgeHtml) badgeHtml = '<span style="font-size:14px;opacity:.6">還沒有徽章，去商店兌換！</span>';
+  document.getElementById('badge-row').innerHTML = badgeHtml;
+
+  // Stats
+  const records = getRecords();
+  const plays = records.length;
+  const bestAcc = plays ? Math.max(...records.map(r=>r.accuracy||0)) : 0;
+  const totalStarsEarned = records.reduce((s,r)=>s+(r.stars||0),0);
+  document.getElementById('record-grid').innerHTML = `
+    <div class="record-card">
+      <div class="r-label">遊玩次數</div>
+      <div class="r-value">${plays}</div>
+      <div class="r-sub">次</div>
+    </div>
+    <div class="record-card">
+      <div class="r-label">最佳正確率</div>
+      <div class="r-value">${bestAcc}%</div>
+      <div class="r-sub">歷史最高</div>
+    </div>
+    <div class="record-card">
+      <div class="r-label">目前星星</div>
+      <div class="r-value">${getStars()}</div>
+      <div class="r-sub">⭐ 可去商店花</div>
+    </div>
+    <div class="record-card">
+      <div class="r-label">累積獲得</div>
+      <div class="r-value">${totalStarsEarned}</div>
+      <div class="r-sub">⭐ 總計</div>
+    </div>
+  `;
+}
+
+function showHistory() {
+  const sec = document.getElementById('history-section');
+  const isHidden = sec.style.display==='none';
+  sec.style.display = isHidden?'block':'none';
+  if (!isHidden) return;
+
+  const records = getRecords();
+  if (!records.length) {
+    document.getElementById('history-list').innerHTML =
+      '<p style="text-align:center;color:#aaa;padding:10px">還沒有紀錄，快去玩！</p>';
+    return;
+  }
+  let html = '';
+  records.slice(0,10).forEach(r => {
+    html += `<div class="history-item">
+      <div class="hi-left">${r.date} ${r.unit==='unit6-match'?'成語連連看':'填空練習'}</div>
+      <div class="hi-right">+${r.stars||0} ⭐</div>
+    </div>`;
+  });
+  document.getElementById('history-list').innerHTML = html;
+}
+
+function resetData() {
+  if (!confirm('確定要換人遊玩嗎？\n（會清除目前的名字，星星和徽章保留）')) return;
+  localStorage.removeItem('xr_name');
+  location.reload();
+}
+
+function openNameModal() {
+  document.getElementById('modal-input').value = getName();
+  document.getElementById('name-modal').classList.add('show');
+  setTimeout(()=>document.getElementById('modal-input').focus(),100);
+}
+
+function saveName() {
+  const val = document.getElementById('modal-input').value.trim();
+  if (!val) return;
+  localStorage.setItem('xr_name', val);
+  document.getElementById('name-modal').classList.remove('show');
+  render();
+}
+document.getElementById('modal-input').addEventListener('keydown',e=>{ if(e.key==='Enter') saveName(); });
+
+render();
+</script>
 </body>
 </html>
