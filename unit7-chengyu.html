@@ -142,6 +142,7 @@ ol li { margin-bottom:6px; }
 
 <script>
 const GAME_ID = 'u7chengyu';
+const GAME_SOURCE = '第七單元　成語填空';
 const FB_URL  = 'https://xinru-class-default-rtdb.firebaseio.com';
 const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空'};
 function getCDs(){return JSON.parse(localStorage.getItem('xr_cooldowns')||'{}');}
@@ -194,14 +195,20 @@ const MEANINGS = {
 function getStars(){return parseInt(localStorage.getItem('xr_stars')||'0');}
 function addStars(n){const s=getStars()+n;localStorage.setItem('xr_stars',s);document.getElementById('star-display').textContent=s;}
 function getSentence(b){
-  const li=b.closest('li');if(!li)return'';
+  const li=b.closest('li');if(!li)return b.dataset.answer;
   const clone=li.cloneNode(true);const blk=clone.querySelector('.blank');
-  if(blk)blk.textContent='＿';return clone.textContent.trim();
+  if(blk)blk.textContent='（＿）';
+  const text=clone.textContent.trim();
+  const bi=text.indexOf('（＿）');
+  if(bi<0||text.length<=18)return text;
+  const s=Math.max(0,bi-6),e=Math.min(text.length,bi+9);
+  return(s>0?'…':'')+text.slice(s,e)+(e<text.length?'…':'');
 }
 function recordMistake(word,question){
   const all=JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
-  if(!all[word])all[word]={word,question:question||word,meaning:MEANINGS[word]||'',wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
+  if(!all[word])all[word]={word,question:question||word,meaning:MEANINGS[word]||'',source:GAME_SOURCE,wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
   if(question&&!all[word].question)all[word].question=question;
+  if(!all[word].source)all[word].source=GAME_SOURCE;
   all[word].wrongCount++;all[word].lastWrong=new Date().toLocaleDateString('zh-TW');
   if(MEANINGS[word])all[word].meaning=MEANINGS[word];
   localStorage.setItem('xr_mistakes',JSON.stringify(all));

@@ -46,33 +46,40 @@ header {
 }
 
 .mistake-item {
-  background: #fff; border-radius: 12px; padding: 14px 16px;
-  margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,.07);
-  display: flex; align-items: center; gap: 12px;
+  background: #fff; border-radius: 10px; padding: 9px 12px;
+  margin-bottom: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.07);
+  display: flex; align-items: center; gap: 10px;
 }
 .mi-count {
-  flex-shrink: 0; width: 40px; height: 40px;
+  flex-shrink: 0; width: 32px; height: 32px;
   border-radius: 50%; background: #f8d7da;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px; font-weight: bold; color: #c0392b;
+  font-size: 14px; font-weight: bold; color: #c0392b;
 }
 .mi-count.mastered { background: #d4edda; color: #28a745; }
 .mi-body { flex: 1; min-width: 0; }
-.mi-word    { font-size: 20px; font-weight: bold; }
-.mi-meaning { font-size: 14px; color: #666; margin-top: 2px; line-height: 1.4; }
-.mi-meta    { font-size: 12px; color: #aaa; margin-top: 4px; }
-.mi-actions { flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; }
+.mi-source { font-size: 11px; color: #c0392b; margin-bottom: 1px; letter-spacing: .5px; }
+.mi-word    { font-size: 17px; font-weight: bold; line-height: 1.3; }
+.mi-meaning { font-size: 13px; color: #666; margin-top: 1px; line-height: 1.35; }
+.mi-meta    { font-size: 11px; color: #aaa; margin-top: 2px; }
+.mi-actions { flex-shrink: 0; display: flex; flex-direction: column; gap: 5px; }
 .btn-speak {
-  padding: 7px 12px; border: 2px solid #2c5f8a; border-radius: 8px;
-  background: #fff; color: #2c5f8a; font-size: 15px; cursor: pointer;
+  padding: 5px 10px; border: 1.5px solid #2c5f8a; border-radius: 7px;
+  background: #fff; color: #2c5f8a; font-size: 14px; cursor: pointer;
   font-family: inherit;
 }
 .btn-master {
-  padding: 7px 12px; border: none; border-radius: 8px;
-  background: #d4edda; color: #28a745; font-size: 13px; cursor: pointer;
+  padding: 5px 10px; border: none; border-radius: 7px;
+  background: #d4edda; color: #28a745; font-size: 12px; cursor: pointer;
   font-family: inherit; font-weight: bold;
 }
 .btn-master.undo { background: #f8d7da; color: #c0392b; }
+.unit-header {
+  font-size: 13px; font-weight: bold; color: #c0392b;
+  padding: 10px 4px 4px; letter-spacing: 1px; border-bottom: 1.5px solid #f5c6c6;
+  margin-bottom: 6px; margin-top: 8px;
+}
+.unit-header:first-child { margin-top: 0; }
 
 .action-bar {
   display: flex; gap: 10px; margin-bottom: 14px;
@@ -212,9 +219,9 @@ header {
   </div>
   <div class="sort-bar">
     排序：
-    <button class="sort-btn active" id="sort-wrong" onclick="setSortMode('wrong')">錯誤次數↓</button>
+    <button class="sort-btn active" id="sort-unit" onclick="setSortMode('unit')">依單元</button>
+    <button class="sort-btn" id="sort-wrong" onclick="setSortMode('wrong')">錯誤次數↓</button>
     <button class="sort-btn" id="sort-date" onclick="setSortMode('date')">最近錯誤</button>
-    <button class="sort-btn" id="sort-alpha" onclick="setSortMode('alpha')">字母順序</button>
   </div>
   <div id="mistake-list"></div>
 </div>
@@ -248,7 +255,12 @@ header {
 </div>
 
 <script>
-let sortMode = 'wrong';
+let sortMode = 'unit';
+const UNIT_ORDER = [
+  '第六單元　詞語填空','第六單元　成語連連看',
+  '第七單元　字音辨正','第七單元　找錯別字','第七單元　成語填空',
+  '第七單元　作業練習　改錯字','第七單元　作業練習　字音辨字','第七單元　作業練習　字彙練習'
+];
 let practiceLeftSel = null;
 let practiceMatched = 0;
 let practiceWrong = 0;
@@ -299,7 +311,7 @@ function showPractice() {
 /* ── List view ── */
 function setSortMode(mode) {
   sortMode = mode;
-  ['wrong','date','alpha'].forEach(m => {
+  ['unit','wrong','date'].forEach(m => {
     document.getElementById('sort-'+m).className = 'sort-btn'+(m===mode?' active':'');
   });
   renderList();
@@ -327,24 +339,40 @@ function renderList() {
   }
 
   // Sort
-  if (sortMode === 'wrong') items.sort((a,b) => b.wrongCount - a.wrongCount);
-  else if (sortMode === 'date') items.sort((a,b) => (b.lastWrong||'').localeCompare(a.lastWrong||''));
-  else items.sort((a,b) => a.word.localeCompare(b.word));
+  if (sortMode === 'unit') {
+    items.sort((a,b) => {
+      const ai = UNIT_ORDER.indexOf(a.source||''); const bi2 = UNIT_ORDER.indexOf(b.source||'');
+      const ao = ai<0?999:ai, bo = bi2<0?999:bi2;
+      return ao !== bo ? ao - bo : b.wrongCount - a.wrongCount;
+    });
+  } else if (sortMode === 'wrong') {
+    items.sort((a,b) => b.wrongCount - a.wrongCount);
+  } else {
+    items.sort((a,b) => (b.lastWrong||'').localeCompare(a.lastWrong||''));
+  }
 
   let html = '';
+  let lastSource = null;
   items.forEach(m => {
     const isMastered = !!m.mastered;
+    const src = m.source || '';
+    if (sortMode === 'unit' && src !== lastSource) {
+      html += `<div class="unit-header">📘 ${src||'其他'}</div>`;
+      lastSource = src;
+    }
+    const wkey = encodeURIComponent(m.word);
     html += `<div class="mistake-item">
       <div class="mi-count${isMastered?' mastered':''}">${isMastered?'✓':m.wrongCount}</div>
       <div class="mi-body">
+        ${src && sortMode!=='unit' ? `<div class="mi-source">${src}</div>` : ''}
         <div class="mi-word">${m.question || m.word}</div>
         <div class="mi-meaning">${m.meaning||'—'}</div>
-        <div class="mi-meta">錯誤 ${m.wrongCount} 次　練習 ${m.practiceCount||0} 次　${m.lastWrong?'最近：'+m.lastWrong:''}</div>
+        <div class="mi-meta">錯誤 ${m.wrongCount} 次　${m.lastWrong?'最近：'+m.lastWrong:''}</div>
       </div>
       <div class="mi-actions">
-        <button class="btn-speak" onclick="speakWord('${m.word}')">🔊</button>
-        <button class="btn-master${isMastered?' undo':''}" onclick="toggleMaster('${m.word}')">
-          ${isMastered?'取消熟練':'標記熟練'}
+        <button class="btn-speak" onclick="speakWord(decodeURIComponent('${wkey}'))">🔊</button>
+        <button class="btn-master${isMastered?' undo':''}" onclick="toggleMaster(decodeURIComponent('${wkey}'))">
+          ${isMastered?'取消':'熟練'}
         </button>
       </div>
     </div>`;

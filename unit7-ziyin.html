@@ -197,6 +197,7 @@ header {
 <script>
 // ── Cooldown / Cloud ──────────────────────────────────────────────────────────
 const GAME_ID = 'u7ziyin';
+const GAME_SOURCE = '第七單元　字音辨正';
 const FB_URL  = 'https://xinru-class-default-rtdb.firebaseio.com';
 const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空'};
 function getCDs(){return JSON.parse(localStorage.getItem('xr_cooldowns')||'{}');}
@@ -266,8 +267,9 @@ function addStars(n) {
 function recordMistake(char, meaning, question) {
   const all = JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
   const key = char;
-  if (!all[key]) all[key] = { word:char, question:question||char, meaning, wrongCount:0, practiceCount:0, lastWrong:'', mastered:false };
+  if (!all[key]) all[key] = { word:char, question:question||char, meaning, source:GAME_SOURCE, wrongCount:0, practiceCount:0, lastWrong:'', mastered:false };
   if (question && !all[key].question) all[key].question = question;
+  if (!all[key].source) all[key].source = GAME_SOURCE;
   all[key].wrongCount++;
   all[key].lastWrong = new Date().toLocaleDateString('zh-TW');
   localStorage.setItem('xr_mistakes', JSON.stringify(all));
