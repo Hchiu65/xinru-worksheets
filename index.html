@@ -3,290 +3,352 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>興儒六私國文班 學習中心</title>
+<title>興儒六私國文班</title>
 <style>
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
 body {
   font-family: "標楷體","DFKai-SB",serif;
-  background: #f0f4f8; margin: 0; padding: 0 0 40px; color: #222;
+  background: #f0f4ff;
+  color: #333;
+  padding-bottom: 36px;
 }
 
-/* ── Hero / Profile ── */
+/* ── Hero ── */
 .hero {
-  background: linear-gradient(135deg,#2c5f8a,#1e4a6e);
-  color: #fff; padding: 20px 16px 24px;
+  background: linear-gradient(140deg, #667eea 0%, #9b59b6 100%);
+  padding: 22px 18px 48px;
+  position: relative; overflow: hidden;
 }
-.hero-row { display: flex; align-items: center; justify-content: space-between; }
-.player-info h2 { margin: 0; font-size: 24px; letter-spacing: 2px; }
-.player-info p  { margin: 4px 0 0; font-size: 14px; opacity: .75; }
-.star-total {
-  background: rgba(255,255,255,.18); border-radius: 20px;
-  padding: 8px 18px; font-size: 26px; font-weight: bold;
+.hero::after {
+  content: '✦';
+  position: absolute; font-size: 120px; opacity: .06;
+  bottom: -20px; right: -10px; color: #fff; pointer-events: none;
 }
-.badge-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
-.equipped-badge {
-  background: rgba(255,255,255,.15); border-radius: 12px;
-  padding: 6px 14px; font-size: 22px;
+.hero-row { display: flex; align-items: center; gap: 14px; }
+.avatar {
+  width: 54px; height: 54px; border-radius: 50%;
+  background: rgba(255,255,255,.25); border: 2px solid rgba(255,255,255,.45);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: bold; color: #fff; flex-shrink: 0;
 }
-.equipped-title {
-  background: rgba(245,166,35,.25); border-radius: 12px;
-  padding: 6px 14px; font-size: 15px; font-weight: bold;
-  color: #ffd970; letter-spacing: 1px;
+.hero-info { flex: 1; min-width: 0; }
+.hero-name { font-size: 22px; color: #fff; font-weight: bold; letter-spacing: 1px; }
+.hero-edit  { font-size: 12px; color: rgba(255,255,255,.6); cursor: pointer; margin-top: 3px; text-decoration: underline; }
+.star-pill  {
+  background: rgba(255,255,255,.18); border: 1.5px solid rgba(255,255,255,.35);
+  border-radius: 22px; padding: 7px 14px;
+  display: flex; align-items: center; gap: 5px;
+  color: #fff; font-size: 20px; font-weight: bold; white-space: nowrap;
 }
-.edit-name {
-  font-size: 13px; opacity: .65; cursor: pointer;
-  margin-top: 2px; display: inline-block;
-  text-decoration: underline;
+.badge-row  { display: flex; gap: 7px; margin-top: 13px; flex-wrap: wrap; align-items: center; }
+.badge-chip {
+  background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3);
+  border-radius: 20px; padding: 4px 10px; font-size: 18px; color: #fff;
+}
+.title-chip {
+  background: rgba(255,215,0,.22); border: 1px solid rgba(255,215,0,.45);
+  border-radius: 20px; padding: 4px 12px;
+  font-size: 13px; color: #ffd700; font-weight: bold;
+}
+.no-badge { font-size: 13px; color: rgba(255,255,255,.45); margin-top: 6px; }
+
+/* ── Action row (floating over hero) ── */
+.actions {
+  display: flex; gap: 10px;
+  padding: 0 14px;
+  margin-top: -28px;
+}
+.act-card {
+  flex: 1; background: #fff; border-radius: 18px;
+  padding: 14px 8px 12px; text-align: center;
+  box-shadow: 0 6px 20px rgba(102,126,234,.18);
+  text-decoration: none; color: #333; cursor: pointer;
+  position: relative; transition: transform .12s;
+}
+.act-card:active { transform: scale(.94); }
+.act-icon {
+  width: 48px; height: 48px; border-radius: 13px; margin: 0 auto 8px;
+  display: flex; align-items: center; justify-content: center; font-size: 24px;
+}
+.i-shop    { background: linear-gradient(135deg,#f093fb,#f5576c); }
+.i-mistake { background: linear-gradient(135deg,#fda085,#f6d365); }
+.i-switch  { background: linear-gradient(135deg,#a8edea,#66a6ff); }
+.act-label { font-size: 14px; font-weight: bold; color: #666; }
+.err-dot {
+  position: absolute; top: 9px; right: 9px;
+  background: #e74c3c; color: #fff; border-radius: 50%;
+  width: 20px; height: 20px; font-size: 11px; font-family: sans-serif;
+  display: flex; align-items: center; justify-content: center; font-weight: bold;
 }
 
-/* ── Quick action buttons ── */
-.action-row { display: flex; gap: 10px; padding: 14px 12px 0; }
-.action-btn {
-  flex: 1; text-align: center; padding: 14px 8px;
-  background: #fff; border-radius: 12px; cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,.08); text-decoration: none; color: #222;
-  transition: transform .1s;
+/* ── Section heading ── */
+.sec-head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 22px 16px 10px; font-size: 16px; font-weight: bold; color: #555;
 }
-.action-btn:active { transform: scale(.96); }
-.action-btn .ab-icon { font-size: 28px; margin-bottom: 4px; }
-.action-btn .ab-label{ font-size: 15px; color: #2c5f8a; font-weight: bold; }
+.sec-dot { width: 6px; height: 6px; border-radius: 50%; background: #667eea; flex-shrink: 0; }
 
-/* ── Section title ── */
-.sec-title {
-  font-size: 15px; color: #2c5f8a; font-weight: bold;
-  border-left: 4px solid #2c5f8a; padding-left: 10px;
-  margin: 18px 14px 10px; letter-spacing: 1px;
+/* ── Stats ── */
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 14px; }
+.stat-box {
+  background: #fff; border-radius: 16px; padding: 16px 12px;
+  text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,.06);
 }
+.stat-val { font-size: 28px; font-weight: bold; }
+.stat-lbl { font-size: 12px; color: #bbb; margin-top: 2px; }
+.stat-sub { font-size: 12px; margin-top: 3px; }
+.v-purple { color: #667eea; }
+.v-green  { color: #2ecc71; }
+.v-gold   { color: #f39c12; }
+.v-pink   { color: #e84393; }
 
 /* ── Unit cards ── */
+.unit-list { padding: 0 14px; display: flex; flex-direction: column; gap: 10px; }
 .unit-card {
-  display: flex; align-items: center; justify-content: space-between;
-  background: #fff; border-radius: 14px; padding: 16px 18px;
-  margin: 0 12px 10px; box-shadow: 0 2px 8px rgba(0,0,0,.08);
-  text-decoration: none; color: #222; cursor: pointer;
-  transition: transform .1s;
+  background: #fff; border-radius: 18px; padding: 16px 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  display: flex; align-items: center; gap: 13px;
+  text-decoration: none; color: #333; transition: transform .1s;
 }
-.unit-card:active { transform: scale(.98); }
-.unit-card .uc-left  .uc-title{ font-size: 19px; font-weight: bold; }
-.unit-card .uc-left  .uc-sub  { font-size: 14px; color: #888; margin-top: 3px; }
-.unit-card .uc-arrow { font-size: 22px; color: #2c5f8a; flex-shrink: 0; }
-.tag {
-  display: inline-block; font-size: 12px; padding: 2px 10px;
-  border-radius: 20px; margin-top: 5px; margin-right: 4px;
+.unit-card:active { transform: scale(.97); }
+.unit-emoji {
+  width: 50px; height: 50px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; flex-shrink: 0;
 }
-.tag-game  { background: #e8f4e8; color: #2e7d32; }
-.tag-fill  { background: #e8f0f8; color: #2c5f8a; }
-
-/* ── Records ── */
-.record-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 12px; }
-.record-card {
-  background: #fff; border-radius: 12px; padding: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,.07); text-align: center;
-}
-.record-card .r-label{ font-size: 13px; color: #888; margin-bottom: 4px; }
-.record-card .r-value{ font-size: 22px; font-weight: bold; color: #2c5f8a; }
-.record-card .r-sub  { font-size: 12px; color: #aaa; margin-top: 2px; }
+.ue-blue  { background: linear-gradient(135deg,#e0e7ff,#c7d2fe); }
+.ue-teal  { background: linear-gradient(135deg,#d1fae5,#a7f3d0); }
+.unit-body { flex: 1; min-width: 0; }
+.unit-title { font-size: 17px; font-weight: bold; }
+.unit-desc  { font-size: 13px; color: #aaa; margin-top: 2px; }
+.unit-tags  { display: flex; gap: 5px; margin-top: 7px; flex-wrap: wrap; }
+.tag { font-size: 11px; padding: 3px 9px; border-radius: 20px; }
+.tg-blue  { background: #eef2ff; color: #667eea; }
+.tg-green { background: #ecfdf5; color: #059669; }
+.tg-gold  { background: #fffbeb; color: #d97706; }
+.unit-arr { font-size: 22px; color: #d0d0d0; flex-shrink: 0; }
 
 /* ── History ── */
-.history-item {
-  background: #fff; border-radius: 10px; padding: 12px 14px;
-  margin: 0 12px 8px; box-shadow: 0 1px 4px rgba(0,0,0,.06);
-  display: flex; justify-content: space-between; align-items: center;
+.hist-toggle {
+  display: block; text-align: center; margin: 12px 14px 0;
+  padding: 11px; background: #fff; border-radius: 12px; cursor: pointer;
+  font-size: 14px; color: #aaa; box-shadow: 0 1px 6px rgba(0,0,0,.06);
 }
-.hi-left { font-size: 15px; color: #444; }
-.hi-right{ font-size: 16px; font-weight: bold; color: #f5a623; }
+.hist-item {
+  background: #fff; border-radius: 12px; padding: 12px 14px;
+  margin: 0 14px 8px;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05); font-size: 14px;
+}
+.hi-right { font-weight: bold; color: #f39c12; font-size: 15px; }
 
 /* ── Name modal ── */
 #name-modal {
   display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.5); align-items: center; justify-content: center;
-  z-index: 900;
+  background: rgba(50,30,80,.5);
+  align-items: center; justify-content: center; z-index: 900;
 }
 #name-modal.show { display: flex; }
 .modal-box {
-  background: #fff; border-radius: 16px; padding: 28px 24px;
-  width: 290px; text-align: center;
+  background: #fff; border-radius: 22px; padding: 30px 24px;
+  width: 290px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,.2);
 }
-.modal-box h3 { margin: 0 0 12px; color: #2c5f8a; font-size: 20px; }
+.modal-emoji { font-size: 42px; margin-bottom: 8px; }
+.modal-box h3 { color: #667eea; font-size: 20px; margin-bottom: 4px; }
+.modal-box p  { font-size: 14px; color: #bbb; margin-bottom: 16px; }
 #modal-input {
   width: 100%; padding: 12px; font-size: 20px; font-family: inherit;
-  border: 2px solid #b0c8e0; border-radius: 10px; margin-bottom: 12px; text-align: center;
+  border: 2px solid #e0e7ff; border-radius: 12px; margin-bottom: 14px;
+  text-align: center; outline: none;
 }
+#modal-input:focus { border-color: #667eea; }
 .modal-btn {
-  width: 100%; padding: 13px; background: #2c5f8a; color: #fff;
-  border: none; border-radius: 10px; font-size: 18px; font-family: inherit;
-  cursor: pointer; font-weight: bold;
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg,#667eea,#9b59b6);
+  color: #fff; border: none; border-radius: 12px;
+  font-size: 18px; font-family: inherit; cursor: pointer; font-weight: bold;
 }
 </style>
 </head>
 <body>
 
-<!-- Profile hero -->
+<!-- Hero section -->
 <div class="hero">
   <div class="hero-row">
-    <div class="player-info">
-      <h2 id="player-name">同學</h2>
-      <span class="edit-name" onclick="openNameModal()">✏ 修改名字</span>
+    <div class="avatar" id="avatar">😊</div>
+    <div class="hero-info">
+      <div class="hero-name" id="player-name">—</div>
+      <div class="hero-edit" onclick="openNameModal()">✏ 修改名字</div>
     </div>
-    <div class="star-total">⭐ <span id="star-count">0</span></div>
+    <div class="star-pill">⭐ <span id="star-count">0</span></div>
   </div>
   <div class="badge-row" id="badge-row"></div>
 </div>
 
-<!-- Quick actions -->
-<div class="action-row">
-  <a class="action-btn" href="shop.html">
-    <div class="ab-icon">🏪</div>
-    <div class="ab-label">兌換商店</div>
+<!-- Action buttons -->
+<div class="actions">
+  <a class="act-card" href="shop.html">
+    <div class="act-icon i-shop">🏪</div>
+    <div class="act-label">兌換商店</div>
   </a>
-  <a class="action-btn" href="mistakes.html" style="position:relative">
-    <div class="ab-icon">📝</div>
-    <div class="ab-label">錯題本</div>
-    <span id="mistake-badge" style="display:none;position:absolute;top:8px;right:8px;background:#c0392b;color:#fff;border-radius:50%;width:22px;height:22px;font-size:13px;font-family:sans-serif;display:flex;align-items:center;justify-content:center;font-weight:bold"></span>
+  <a class="act-card" href="mistakes.html" id="mistake-card">
+    <div class="act-icon i-mistake">📝</div>
+    <div class="act-label">錯題本</div>
   </a>
-  <div class="action-btn" onclick="resetData()">
-    <div class="ab-icon">🔄</div>
-    <div class="ab-label">換人遊玩</div>
+  <div class="act-card" onclick="resetData()">
+    <div class="act-icon i-switch">🔄</div>
+    <div class="act-label">換人遊玩</div>
   </div>
 </div>
 
 <!-- Stats -->
-<div class="sec-title">學習統計</div>
-<div class="record-grid" id="record-grid"></div>
+<div class="sec-head"><div class="sec-dot"></div>學習統計</div>
+<div class="stats" id="stats-grid"></div>
 
 <!-- Units -->
-<div class="sec-title">第六冊 練習題目</div>
+<div class="sec-head"><div class="sec-dot"></div>第六冊　練習題目</div>
+<div class="unit-list">
+  <a class="unit-card" href="unit6.html">
+    <div class="unit-emoji ue-blue">📝</div>
+    <div class="unit-body">
+      <div class="unit-title">第六單元　詞語填空</div>
+      <div class="unit-desc">26 題，點選詞語填入空格</div>
+      <div class="unit-tags">
+        <span class="tag tg-blue">填空練習</span>
+        <span class="tag tg-gold">⭐ 可得星星</span>
+      </div>
+    </div>
+    <div class="unit-arr">›</div>
+  </a>
 
-<a class="unit-card" href="unit6.html">
-  <div class="uc-left">
-    <div class="uc-title">第六單元　詞語填空</div>
-    <div class="uc-sub">26 題填空練習</div>
-    <span class="tag tag-fill">填空練習</span>
-  </div>
-  <div class="uc-arrow">▶</div>
-</a>
-
-<a class="unit-card" href="unit6-match.html">
-  <div class="uc-left">
-    <div class="uc-title">第六單元　成語連連看</div>
-    <div class="uc-sub">兩輪26題配對 + 終極挑戰</div>
-    <span class="tag tag-game">遊戲</span>
-    <span class="tag tag-fill">⭐ 可得星星</span>
-  </div>
-  <div class="uc-arrow">▶</div>
-</a>
-
-<!-- History section (hidden by default) -->
-<div id="history-section" style="display:none">
-  <div class="sec-title">最近遊玩紀錄</div>
-  <div id="history-list"></div>
+  <a class="unit-card" href="unit6-match.html">
+    <div class="unit-emoji ue-teal">🎮</div>
+    <div class="unit-body">
+      <div class="unit-title">第六單元　成語連連看</div>
+      <div class="unit-desc">兩輪 26 題配對＋終極挑戰</div>
+      <div class="unit-tags">
+        <span class="tag tg-green">遊戲</span>
+        <span class="tag tg-gold">⭐ 可得星星</span>
+      </div>
+    </div>
+    <div class="unit-arr">›</div>
+  </a>
 </div>
+
+<!-- History -->
+<div class="hist-toggle" id="hist-toggle" onclick="toggleHistory()">▾ 查看遊玩紀錄</div>
+<div id="history-section" style="display:none;margin-top:8px"></div>
 
 <!-- Name modal -->
 <div id="name-modal">
   <div class="modal-box">
-    <h3>輸入你的名字</h3>
+    <div class="modal-emoji">👋</div>
+    <h3>你好！</h3>
+    <p>請輸入你的名字開始學習</p>
     <input id="modal-input" type="text" maxlength="10" placeholder="我的名字">
-    <button class="modal-btn" onclick="saveName()">確認</button>
+    <button class="modal-btn" onclick="saveName()">開始 ▶</button>
   </div>
 </div>
 
 <script>
-function getStars()   { return parseInt(localStorage.getItem('xr_stars')||'0'); }
-function getName()    { return localStorage.getItem('xr_name')||''; }
-function getOwned()   { return JSON.parse(localStorage.getItem('xr_owned')||'{}'); }
-function getEquipped(){ return JSON.parse(localStorage.getItem('xr_equipped')||'{}'); }
-function getRecords() { return JSON.parse(localStorage.getItem('xr_records')||'[]'); }
+const BADGES = { b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄' };
+const TITLES = { t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王' };
+const AVATARS = ['😊','😄','🌟','🐼','🦊','🐯','🐉','🦄'];
 
-const BADGES = {
-  b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',
-  b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'
-};
-const TITLES = {
-  t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王'
-};
+function getStars()    { return parseInt(localStorage.getItem('xr_stars')||'0'); }
+function getName()     { return localStorage.getItem('xr_name')||''; }
+function getOwned()    { return JSON.parse(localStorage.getItem('xr_owned')||'{}'); }
+function getEquipped() { return JSON.parse(localStorage.getItem('xr_equipped')||'{}'); }
+function getRecords()  { return JSON.parse(localStorage.getItem('xr_records')||'[]'); }
+function getMistakes() { return JSON.parse(localStorage.getItem('xr_mistakes')||'{}'); }
 
 function render() {
-  // Name
   const name = getName();
-  document.getElementById('player-name').textContent = name || '點這裡設定名字';
-  if (!name) openNameModal();
+  if (!name) { openNameModal(); return; }
 
-  // Stars
-  document.getElementById('star-count').textContent = getStars();
-
-  // Equipped badges / title
+  // Avatar: pick based on equipped badge, else default
   const eq = getEquipped();
   const owned = getOwned();
+  const emojiList = Object.keys(BADGES);
+  const avatarEmoji = (eq.badge && owned[eq.badge]) ? BADGES[eq.badge] : '😊';
+  document.getElementById('avatar').textContent = avatarEmoji;
+  document.getElementById('player-name').textContent = name;
+  document.getElementById('star-count').textContent  = getStars();
+
+  // Badges + title
   let badgeHtml = '';
-  if (eq.badge && owned[eq.badge]) {
-    badgeHtml += `<span class="equipped-badge">${BADGES[eq.badge]||'?'}</span>`;
-  }
-  if (eq.title && owned[eq.title]) {
-    badgeHtml += `<span class="equipped-title">${TITLES[eq.title]||''}</span>`;
-  }
-  // All owned badges (not equipped as title)
+  if (eq.badge && owned[eq.badge]) badgeHtml += `<span class="badge-chip">${BADGES[eq.badge]}</span>`;
+  if (eq.title && owned[eq.title]) badgeHtml += `<span class="title-chip">${TITLES[eq.title]}</span>`;
+  // All other owned badges dim
   Object.keys(owned).forEach(id => {
-    if (BADGES[id] && id !== eq.badge) {
-      badgeHtml += `<span class="equipped-badge" style="opacity:.5">${BADGES[id]}</span>`;
-    }
+    if (BADGES[id] && id !== eq.badge) badgeHtml += `<span class="badge-chip" style="opacity:.4">${BADGES[id]}</span>`;
   });
-  if (!badgeHtml) badgeHtml = '<span style="font-size:14px;opacity:.6">還沒有徽章，去商店兌換！</span>';
-  document.getElementById('badge-row').innerHTML = badgeHtml;
+  document.getElementById('badge-row').innerHTML =
+    badgeHtml || '<span class="no-badge">還沒有徽章，去商店換！</span>';
+
+  // Mistake badge
+  const pending = Object.values(getMistakes()).filter(m=>!m.mastered).length;
+  const mc = document.getElementById('mistake-card');
+  const existing = mc.querySelector('.err-dot');
+  if (existing) existing.remove();
+  if (pending > 0) {
+    const dot = document.createElement('div');
+    dot.className = 'err-dot';
+    dot.textContent = pending;
+    mc.appendChild(dot);
+  }
 
   // Stats
   const records = getRecords();
   const plays = records.length;
   const bestAcc = plays ? Math.max(...records.map(r=>r.accuracy||0)) : 0;
-  const totalStarsEarned = records.reduce((s,r)=>s+(r.stars||0),0);
-  document.getElementById('record-grid').innerHTML = `
-    <div class="record-card">
-      <div class="r-label">遊玩次數</div>
-      <div class="r-value">${plays}</div>
-      <div class="r-sub">次</div>
+  const totalEarned = records.reduce((s,r)=>s+(r.stars||0),0);
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-box">
+      <div class="stat-val v-purple">${plays}</div>
+      <div class="stat-lbl">遊玩次數</div>
+      <div class="stat-sub" style="color:#bbb">次</div>
     </div>
-    <div class="record-card">
-      <div class="r-label">最佳正確率</div>
-      <div class="r-value">${bestAcc}%</div>
-      <div class="r-sub">歷史最高</div>
+    <div class="stat-box">
+      <div class="stat-val v-green">${bestAcc}%</div>
+      <div class="stat-lbl">最佳正確率</div>
+      <div class="stat-sub" style="color:#bbb">歷史最高</div>
     </div>
-    <div class="record-card">
-      <div class="r-label">目前星星</div>
-      <div class="r-value">${getStars()}</div>
-      <div class="r-sub">⭐ 可去商店花</div>
+    <div class="stat-box">
+      <div class="stat-val v-gold">${getStars()}</div>
+      <div class="stat-lbl">目前星星</div>
+      <div class="stat-sub" style="color:#f39c12">⭐ 可去商店花</div>
     </div>
-    <div class="record-card">
-      <div class="r-label">累積獲得</div>
-      <div class="r-value">${totalStarsEarned}</div>
-      <div class="r-sub">⭐ 總計</div>
+    <div class="stat-box">
+      <div class="stat-val v-pink">${totalEarned}</div>
+      <div class="stat-lbl">累積獲得</div>
+      <div class="stat-sub" style="color:#bbb">⭐ 總計</div>
     </div>
   `;
 }
 
-function showHistory() {
+let histShown = false;
+function toggleHistory() {
+  histShown = !histShown;
   const sec = document.getElementById('history-section');
-  const isHidden = sec.style.display==='none';
-  sec.style.display = isHidden?'block':'none';
-  if (!isHidden) return;
-
+  const toggle = document.getElementById('hist-toggle');
+  if (!histShown) { sec.style.display = 'none'; toggle.textContent = '▾ 查看遊玩紀錄'; return; }
+  toggle.textContent = '▴ 收起紀錄';
   const records = getRecords();
   if (!records.length) {
-    document.getElementById('history-list').innerHTML =
-      '<p style="text-align:center;color:#aaa;padding:10px">還沒有紀錄，快去玩！</p>';
-    return;
+    sec.innerHTML = '<p style="text-align:center;color:#bbb;padding:14px">還沒有紀錄，快去玩！🎮</p>';
+  } else {
+    sec.innerHTML = records.slice(0,10).map(r=>`
+      <div class="hist-item">
+        <div>${r.date} &nbsp; ${r.unit==='unit6-match'?'🎮 成語連連看':'📝 詞語填空'}</div>
+        <div class="hi-right">+${r.stars||0} ⭐</div>
+      </div>`).join('');
   }
-  let html = '';
-  records.slice(0,10).forEach(r => {
-    html += `<div class="history-item">
-      <div class="hi-left">${r.date} ${r.unit==='unit6-match'?'成語連連看':'填空練習'}</div>
-      <div class="hi-right">+${r.stars||0} ⭐</div>
-    </div>`;
-  });
-  document.getElementById('history-list').innerHTML = html;
+  sec.style.display = 'block';
 }
 
 function resetData() {
-  if (!confirm('確定要換人遊玩嗎？\n（會清除目前的名字，星星和徽章保留）')) return;
+  if (!confirm('確定要換人遊玩嗎？\n（清除名字，星星和徽章保留）')) return;
   localStorage.removeItem('xr_name');
   location.reload();
 }
@@ -294,27 +356,20 @@ function resetData() {
 function openNameModal() {
   document.getElementById('modal-input').value = getName();
   document.getElementById('name-modal').classList.add('show');
-  setTimeout(()=>document.getElementById('modal-input').focus(),100);
+  setTimeout(() => document.getElementById('modal-input').focus(), 100);
 }
 
 function saveName() {
-  const val = document.getElementById('modal-input').value.trim();
-  if (!val) return;
-  localStorage.setItem('xr_name', val);
+  const v = document.getElementById('modal-input').value.trim();
+  if (!v) return;
+  localStorage.setItem('xr_name', v);
   document.getElementById('name-modal').classList.remove('show');
   render();
 }
-document.getElementById('modal-input').addEventListener('keydown',e=>{ if(e.key==='Enter') saveName(); });
+
+document.getElementById('modal-input').addEventListener('keydown', e => { if (e.key==='Enter') saveName(); });
 
 render();
-
-// 錯題數量紅點
-(function() {
-  const all = JSON.parse(localStorage.getItem('xr_mistakes') || '{}');
-  const pending = Object.values(all).filter(m => !m.mastered).length;
-  const badge = document.getElementById('mistake-badge');
-  if (badge && pending > 0) { badge.textContent = pending; badge.style.display = 'flex'; }
-})();
 </script>
 </body>
 </html>
