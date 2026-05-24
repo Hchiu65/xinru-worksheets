@@ -266,7 +266,6 @@ function showQ() {
     grid.appendChild(btn);
   });
 
-  speak(item.char);
 }
 
 function onPick(btn, picked, item) {
@@ -283,7 +282,6 @@ function onPick(btn, picked, item) {
     const mb = document.getElementById('meaning-box');
     mb.textContent = `💡 ${item.char}：${item.meaning}`;
     mb.classList.add('show');
-    speak(item.char);
     showFeedback(true, earned, item);
   } else {
     btn.classList.add('wrong');
