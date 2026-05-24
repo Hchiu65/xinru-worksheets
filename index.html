@@ -235,6 +235,46 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
   </a>
 </div>
 
+<div class="sec-head"><div class="sec-dot"></div>第七單元　作業練習</div>
+<div class="unit-list">
+  <a class="unit-card" href="unit7-gaicuo.html" data-gid="u7gaicuo">
+    <div class="unit-emoji ue-red">✏️</div>
+    <div class="unit-body">
+      <div class="unit-title">改錯字</div>
+      <div class="unit-desc">22 題，找出成語中的錯字並改正</div>
+      <div class="unit-tags">
+        <span class="tag tg-red">改錯字</span>
+        <span class="tag tg-gold">⭐ 得星星</span>
+      </div>
+    </div>
+    <div class="unit-arr">›</div>
+  </a>
+  <a class="unit-card" href="unit7-bopomo.html" data-gid="u7bopomo">
+    <div class="unit-emoji ue-blue">🔤</div>
+    <div class="unit-body">
+      <div class="unit-title">字音辨字</div>
+      <div class="unit-desc">39 題，根據注音選出正確的字</div>
+      <div class="unit-tags">
+        <span class="tag tg-blue">字音</span>
+        <span class="tag tg-gold">⭐ 得星星</span>
+      </div>
+    </div>
+    <div class="unit-arr">›</div>
+  </a>
+  <a class="unit-card" href="unit7-vocab.html" data-gid="u7vocab">
+    <div class="unit-emoji ue-purple">📖</div>
+    <div class="unit-body">
+      <div class="unit-title">字彙練習</div>
+      <div class="unit-desc">41 題，看字義選出正確的字</div>
+      <div class="unit-tags">
+        <span class="tag tg-purple">字彙</span>
+        <span class="tag tg-gold">⭐ 得星星</span>
+      </div>
+    </div>
+    <div class="unit-arr">›</div>
+  </a>
+</div>
+
 <div class="hist-toggle" id="hist-toggle" onclick="toggleHistory()">▾ 查看遊玩紀錄</div>
 <div id="history-section" style="display:none;margin-top:6px"></div>
 
@@ -271,7 +311,7 @@ const FB_URL = "https://xinru-class-default-rtdb.firebaseio.com";
 const BADGES = {b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'};
 const TITLES  = {t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王'};
 const MEDALS  = ['🥇','🥈','🥉'];
-const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字'};
+const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)'};
 
 function getStars()    { return parseInt(localStorage.getItem('xr_stars')||'0'); }
 function getName()     { return localStorage.getItem('xr_name')||''; }
