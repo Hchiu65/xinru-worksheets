@@ -312,7 +312,7 @@ function renderAll(players, myName) {
         ${isMe ? '<div class="you-tag">👈 你</div>' : ''}
         <div class="medal">${medal}</div>
         <div class="p-badge">${p.badge||'🐣'}</div>
-        <div class="p-name">${p.name||'?'}</div>
+        <div class="p-name">${p.name||p.key||'?'}</div>
         <div class="p-title">${p.title||''}</div>
         <div class="p-stars">⭐ ${(p.stars||0).toLocaleString()}</div>
         ${p.acc!=null ? `<div class="p-acc">最高正確率 ${p.acc}%</div>` : ''}
@@ -334,7 +334,7 @@ function renderAll(players, myName) {
       <div class="rank-num">${medal||('#'+(i+1))}</div>
       <div class="rank-badge-icon">${p.badge||'🐣'}</div>
       <div class="rank-info">
-        <div class="rank-name">${p.name||'?'}${isMe?' 👈':''}</div>
+        <div class="rank-name">${p.name||p.key||'?'}${isMe?' 👈':''}</div>
         <div class="rank-title">${p.title||''}</div>
         ${redeemed.length ? `<div class="redeemed-chips">${redeemed.map(r=>`<span class="chip">${r}</span>`).join('')}</div>` : ''}
       </div>
