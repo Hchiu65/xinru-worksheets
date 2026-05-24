@@ -36,7 +36,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 .no-badge   { font-size:12px; color:rgba(255,255,255,.45); margin-top:4px; }
 
 /* Action row */
-.actions { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; padding:12px 12px 0; }
+.actions { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; padding:0 12px; margin-top:8px; }
 .act-card {
   background:#fff; border-radius:16px; padding:11px 6px 10px;
   text-align:center; box-shadow:0 5px 18px rgba(102,126,234,.16);
@@ -133,6 +133,18 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 </style>
 </head>
 <body>
+
+<div class="hero">
+  <div class="hero-row">
+    <div class="avatar" id="avatar">😊</div>
+    <div class="hero-info">
+      <div class="hero-name" id="player-name">—</div>
+      <div class="hero-edit" onclick="signOut()">🔄 切換帳號</div>
+    </div>
+    <div class="star-pill">⭐ <span id="star-count">0</span></div>
+  </div>
+  <div class="badge-row" id="badge-row"></div>
+</div>
 
 <!-- Hub row: shortcuts + stats -->
 <div class="actions">
