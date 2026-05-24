@@ -122,9 +122,8 @@ header {
 /* Spinner */
 .spinner {
   text-align: center; padding: 40px;
-  font-size: 28px; animation: spin 1s linear infinite;
+  font-size: 28px; color: #888;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
 
 /* Last updated */
 .updated-bar {
@@ -234,9 +233,12 @@ async function syncSelf() {
 }
 
 // ── Load & render leaderboard ─────────────────────────────────────────────────
-let autoRefreshTimer = null;
+let isLoading = false;
 
 async function loadLeaderboard() {
+  if (isLoading) return;
+  isLoading = true;
+
   const statusEl = document.getElementById('status-bar');
   const contentEl = document.getElementById('lb-content');
   const setupEl   = document.getElementById('setup-panel');
@@ -248,18 +250,15 @@ async function loadLeaderboard() {
     statusEl.className = 'status-bar error';
     statusEl.textContent = '排行榜需要設定 Firebase 才能使用（見下方說明）';
     document.getElementById('updated-bar').textContent = '';
+    isLoading = false;
     return;
   }
 
   setupEl.style.display = 'none';
-  const isFirstLoad = !contentEl.dataset.loaded;
-  if (isFirstLoad) {
-    contentEl.innerHTML = '<div class="spinner">⏳</div>';
-    statusEl.textContent = '載入中...';
-  }
+  contentEl.innerHTML = '<div class="spinner">⌛</div>';
   statusEl.className = 'status-bar';
+  statusEl.textContent = '載入中...';
 
-  // Sync self first
   await syncSelf();
 
   try {
@@ -270,6 +269,7 @@ async function loadLeaderboard() {
     if (!raw) {
       contentEl.innerHTML = `<div class="empty-state"><div class="big">🏜️</div><p>還沒有玩家資料<br>快去答題賺星星！</p></div>`;
       statusEl.textContent = '';
+      isLoading = false;
       return;
     }
 
@@ -282,7 +282,6 @@ async function loadLeaderboard() {
     document.getElementById('updated-bar').textContent =
       '最後更新：' + new Date().toLocaleTimeString('zh-TW');
 
-    contentEl.dataset.loaded = '1';
     renderAll(players, myUID);
 
   } catch(e) {
@@ -291,9 +290,7 @@ async function loadLeaderboard() {
     contentEl.innerHTML = `<div class="empty-state"><div class="big">📡</div><p>無法連線到伺服器<br>請稍後再試</p></div>`;
   }
 
-  // Auto-refresh every 30s
-  clearTimeout(autoRefreshTimer);
-  autoRefreshTimer = setTimeout(loadLeaderboard, 30000);
+  isLoading = false;
 }
 
 function renderAll(players, myUID) {
