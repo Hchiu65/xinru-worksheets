@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>管理後台 — 興儒國文班</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333; padding-bottom:40px; }
+
+/* ── 密碼頁 ── */
+#gate {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(140deg,#667eea,#9b59b6);
+}
+.gate-box {
+  background:#fff; border-radius:22px; padding:36px 28px;
+  width:300px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,.25);
+}
+.gate-box h2 { color:#667eea; font-size:22px; margin-bottom:6px; }
+.gate-box p  { font-size:13px; color:#aaa; margin-bottom:20px; }
+.gate-input {
+  width:100%; padding:12px; font-size:18px; font-family:inherit;
+  border:2px solid #e0e7ff; border-radius:11px; margin-bottom:12px;
+  text-align:center; outline:none; letter-spacing:4px;
+}
+.gate-input:focus { border-color:#667eea; }
+.gate-btn {
+  width:100%; padding:13px; background:linear-gradient(135deg,#667eea,#9b59b6);
+  color:#fff; border:none; border-radius:11px; font-size:17px;
+  font-family:inherit; cursor:pointer; font-weight:bold;
+}
+.gate-err { color:#e74c3c; font-size:13px; margin-top:8px; min-height:18px; }
+
+/* ── 主介面 ── */
+#app { display:none; }
+
+header {
+  background:linear-gradient(140deg,#667eea,#9b59b6);
+  padding:14px 16px; display:flex; align-items:center;
+  justify-content:space-between; color:#fff;
+}
+header h1 { font-size:18px; letter-spacing:1px; }
+.hdr-right { display:flex; gap:10px; align-items:center; }
+.btn-sm {
+  padding:6px 14px; border-radius:20px; border:none; cursor:pointer;
+  font-size:13px; font-family:inherit; font-weight:bold;
+}
+.btn-export  { background:#fff; color:#667eea; }
+.btn-csv     { background:rgba(255,255,255,.25); color:#fff; border:1.5px solid rgba(255,255,255,.5); }
+.btn-import  { background:rgba(255,255,255,.25); color:#fff; border:1.5px solid rgba(255,255,255,.5); }
+.btn-logout  { background:rgba(0,0,0,.18); color:#fff; }
+
+/* ── 統計 bar ── */
+.stat-bar {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
+  padding:12px;
+}
+.stat-card {
+  background:#fff; border-radius:12px; padding:12px 10px; text-align:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.07);
+}
+.stat-card .val { font-size:26px; font-weight:bold; color:#667eea; }
+.stat-card .lbl { font-size:12px; color:#aaa; margin-top:2px; }
+
+/* ── 工具列 ── */
+.toolbar {
+  display:flex; gap:8px; padding:0 12px 12px; align-items:center; flex-wrap:wrap;
+}
+.search-input {
+  flex:1; min-width:160px; padding:8px 12px; border:1.5px solid #dde; border-radius:20px;
+  font-size:14px; font-family:inherit; outline:none;
+}
+.search-input:focus { border-color:#667eea; }
+.sort-sel {
+  padding:8px 10px; border:1.5px solid #dde; border-radius:20px;
+  font-size:13px; font-family:inherit; background:#fff; outline:none; cursor:pointer;
+}
+
+/* ── 學生卡片 ── */
+.student-list { padding:0 12px; display:flex; flex-direction:column; gap:8px; }
+
+.stu-card {
+  background:#fff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,.07);
+  overflow:hidden;
+}
+.stu-header {
+  display:flex; align-items:center; gap:12px; padding:12px 14px;
+  cursor:pointer; user-select:none;
+}
+.stu-rank {
+  width:30px; height:30px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; font-weight:bold; flex-shrink:0;
+  background:#f0f4ff; color:#667eea;
+}
+.stu-rank.gold   { background:#fff8e1; color:#f39c12; }
+.stu-rank.silver { background:#f5f5f5; color:#888; }
+.stu-rank.bronze { background:#fff3e0; color:#c0692a; }
+.stu-name { flex:1; font-size:16px; font-weight:bold; }
+.stu-stars { color:#f39c12; font-weight:bold; font-size:15px; white-space:nowrap; }
+.stu-arr { color:#ccc; font-size:18px; transition:transform .2s; }
+.stu-arr.open { transform:rotate(90deg); }
+
+.stu-detail {
+  display:none; border-top:1px solid #f0f0f0; padding:12px 14px;
+  background:#fafbff;
+}
+.stu-detail.open { display:block; }
+
+.detail-grid {
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px;
+}
+.d-box {
+  background:#fff; border-radius:10px; padding:10px 8px; text-align:center;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.d-val { font-size:20px; font-weight:bold; color:#667eea; }
+.d-lbl { font-size:11px; color:#aaa; margin-top:2px; }
+
+.detail-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.btn-action {
+  padding:8px 16px; border-radius:20px; border:none; cursor:pointer;
+  font-size:13px; font-family:inherit; font-weight:bold;
+}
+.btn-reset-cd  { background:#fff3cd; color:#856404; }
+.btn-reset-stars { background:#f8d7da; color:#721c24; }
+.btn-view-mistakes { background:#d1ecf1; color:#0c5460; }
+.btn-reset-all { background:#f8d7da; color:#721c24; }
+
+.mistakes-panel {
+  display:none; margin-top:12px; background:#fff; border-radius:10px;
+  padding:10px; max-height:200px; overflow-y:auto;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.mistakes-panel.open { display:block; }
+.mist-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:5px 0; border-bottom:1px solid #f0f0f0; font-size:13px;
+}
+.mist-row:last-child { border-bottom:none; }
+.mist-word { font-weight:bold; }
+.mist-cnt  { color:#c0392b; font-size:12px; }
+
+/* ── 備份日誌 ── */
+.backup-section { margin:12px; }
+.backup-title {
+  font-size:14px; font-weight:bold; color:#555; margin-bottom:8px;
+  padding-left:4px; border-left:3px solid #667eea; padding-left:8px;
+}
+.backup-list { display:flex; flex-direction:column; gap:6px; }
+.backup-item {
+  background:#fff; border-radius:10px; padding:10px 14px;
+  display:flex; justify-content:space-between; align-items:center;
+  box-shadow:0 1px 4px rgba(0,0,0,.06); font-size:13px;
+}
+.backup-time { color:#888; }
+.backup-size { color:#667eea; font-weight:bold; }
+.btn-restore {
+  padding:4px 12px; border-radius:14px; border:1.5px solid #667eea;
+  background:#fff; color:#667eea; font-size:12px; cursor:pointer;
+  font-family:inherit; font-weight:bold;
+}
+
+/* ── 確認 modal ── */
+#confirm-modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(50,30,80,.55); align-items:center; justify-content:center; z-index:900;
+}
+#confirm-modal.show { display:flex; }
+.confirm-box {
+  background:#fff; border-radius:18px; padding:28px 22px;
+  width:300px; text-align:center; box-shadow:0 8px 30px rgba(0,0,0,.2);
+}
+.confirm-box h3 { color:#c0392b; font-size:18px; margin-bottom:10px; }
+.confirm-box p  { font-size:14px; color:#555; line-height:1.6; margin-bottom:18px; }
+.confirm-warning {
+  background:#fff3cd; border-radius:8px; padding:10px;
+  font-size:13px; color:#856404; margin-bottom:16px; line-height:1.5;
+}
+.confirm-count { font-size:13px; color:#aaa; margin-bottom:12px; }
+.confirm-btns { display:flex; gap:10px; }
+.btn-cancel  { flex:1; padding:12px; background:#eee; color:#555; border:none; border-radius:10px; font-size:16px; font-family:inherit; cursor:pointer; font-weight:bold; }
+.btn-danger  { flex:1; padding:12px; background:#c0392b; color:#fff; border:none; border-radius:10px; font-size:16px; font-family:inherit; cursor:pointer; font-weight:bold; }
+.btn-danger:disabled { background:#ccc; cursor:not-allowed; }
+
+/* ── import 隱藏 input ── */
+#file-input { display:none; }
+
+.empty-msg { text-align:center; color:#aaa; padding:30px; font-size:15px; }
+</style>
+</head>
+<body>
+
+<!-- 密碼頁 -->
+<div id="gate">
+  <div class="gate-box">
+    <div style="font-size:40px;margin-bottom:10px">🔐</div>
+    <h2>管理後台</h2>
+    <p>請輸入管理員密碼</p>
+    <input class="gate-input" id="pw-input" type="password" placeholder="••••••" maxlength="20"
+      onkeydown="if(event.key==='Enter')tryLogin()">
+    <button class="gate-btn" onclick="tryLogin()">進入</button>
+    <div class="gate-err" id="gate-err"></div>
+  </div>
+</div>
+
+<!-- 主介面 -->
+<div id="app">
+  <header>
+    <h1>🛠 管理後台</h1>
+    <div class="hdr-right">
+      <button class="btn-sm btn-export" onclick="exportJSON()">⬇ 備份 JSON</button>
+      <button class="btn-sm btn-csv"    onclick="exportCSV()">📊 匯出 CSV</button>
+      <label  class="btn-sm btn-import" for="file-input" style="cursor:pointer">⬆ 還原備份</label>
+      <button class="btn-sm btn-logout" onclick="logout()">登出</button>
+    </div>
+  </header>
+  <input type="file" id="file-input" accept=".json" onchange="importJSON(this)">
+
+  <div class="stat-bar" id="stat-bar"></div>
+  <div class="toolbar">
+    <input class="search-input" id="search-box" placeholder="🔍 搜尋學生姓名…" oninput="renderStudents()">
+    <select class="sort-sel" id="sort-sel" onchange="renderStudents()">
+      <option value="stars">星星↓</option>
+      <option value="name">姓名</option>
+      <option value="records">遊玩次數↓</option>
+      <option value="mistakes">錯題數↓</option>
+      <option value="updated">最近活躍</option>
+    </select>
+  </div>
+  <div class="student-list" id="student-list"></div>
+
+  <div class="backup-section" style="margin-top:20px">
+    <div class="backup-title">📦 本地備份紀錄</div>
+    <div class="backup-list" id="backup-list"></div>
+  </div>
+</div>
+
+<!-- 確認 modal（雙重確認） -->
+<div id="confirm-modal">
+  <div class="confirm-box">
+    <h3 id="confirm-title">⚠️ 確認操作</h3>
+    <p id="confirm-desc"></p>
+    <div class="confirm-warning" id="confirm-warning"></div>
+    <div class="confirm-count" id="confirm-count"></div>
+    <div class="confirm-btns">
+      <button class="btn-cancel" onclick="closeConfirm()">取消</button>
+      <button class="btn-danger" id="confirm-btn" onclick="confirmStep()">確認</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const FB_URL = 'https://xinru-class-default-rtdb.firebaseio.com';
+const ADMIN_PW_KEY = 'xr_admin_pw';
+const DEFAULT_PW = 'xinru2025';
+
+let allData = {};
+let confirmAction = null;
+let confirmPhase  = 0;
+
+/* ── 密碼 ── */
+function tryLogin() {
+  const pw = document.getElementById('pw-input').value;
+  const stored = localStorage.getItem(ADMIN_PW_KEY) || DEFAULT_PW;
+  if (pw === stored) {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadAll();
+  } else {
+    document.getElementById('gate-err').textContent = '密碼錯誤，請再試一次';
+    document.getElementById('pw-input').value = '';
+  }
+}
+function logout() {
+  document.getElementById('gate').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('gate-err').textContent = '';
+}
+
+/* ── 載入資料 ── */
+async function loadAll() {
+  document.getElementById('student-list').innerHTML = '<div class="empty-msg">載入中…</div>';
+  try {
+    const res = await fetch(`${FB_URL}/accounts.json`);
+    const raw = await res.json();
+    allData = raw || {};
+    renderStats();
+    renderStudents();
+    renderBackupList();
+  } catch(e) {
+    document.getElementById('student-list').innerHTML = '<div class="empty-msg">⚠️ 無法連線到資料庫</div>';
+  }
+}
+
+function getStudents() {
+  return Object.entries(allData).map(([name, d]) => ({
+    name,
+    stars:    d.stars    || 0,
+    records:  (d.records || []).length,
+    mistakes: Object.keys(d.mistakes || {}).filter(k => !(d.mistakes[k].mastered)).length,
+    updated:  d.updated  || 0,
+    cooldowns: d.cooldowns || {},
+    raw: d
+  }));
+}
+
+/* ── 統計 ── */
+function renderStats() {
+  const students = getStudents();
+  const total = students.length;
+  const totalStars = students.reduce((s,p) => s + p.stars, 0);
+  const totalPlays = students.reduce((s,p) => s + p.records, 0);
+  const totalMist  = students.reduce((s,p) => s + p.mistakes, 0);
+  document.getElementById('stat-bar').innerHTML = `
+    <div class="stat-card"><div class="val">${total}</div><div class="lbl">學生人數</div></div>
+    <div class="stat-card"><div class="val" style="color:#f39c12">${totalStars}</div><div class="lbl">全班星星總計</div></div>
+    <div class="stat-card"><div class="val" style="color:#2ecc71">${totalPlays}</div><div class="lbl">全班遊玩次數</div></div>
+    <div class="stat-card"><div class="val" style="color:#e74c3c">${totalMist}</div><div class="lbl">全班待複習錯題</div></div>`;
+}
+
+/* ── 學生列表 ── */
+function renderStudents() {
+  let students = getStudents();
+  const q = document.getElementById('search-box').value.trim();
+  if (q) students = students.filter(s => s.name.includes(q));
+  const sort = document.getElementById('sort-sel').value;
+  if (sort === 'stars')   students.sort((a,b) => b.stars - a.stars);
+  if (sort === 'name')    students.sort((a,b) => a.name.localeCompare(b.name));
+  if (sort === 'records') students.sort((a,b) => b.records - a.records);
+  if (sort === 'mistakes')students.sort((a,b) => b.mistakes - a.mistakes);
+  if (sort === 'updated') students.sort((a,b) => b.updated - a.updated);
+
+  const el = document.getElementById('student-list');
+  if (!students.length) { el.innerHTML = '<div class="empty-msg">查無學生資料</div>'; return; }
+
+  el.innerHTML = students.map((s, i) => {
+    const rankCls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    const rankIcon= i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
+    const locked = Object.values(s.cooldowns).filter(g=>g.locked&&(g.unlockBy||[]).length<2).length;
+    const lastOn = s.updated ? new Date(s.updated).toLocaleDateString('zh-TW') : '—';
+    return `
+    <div class="stu-card" id="card-${encodeURIComponent(s.name)}">
+      <div class="stu-header" onclick="toggleDetail('${encodeURIComponent(s.name)}')">
+        <div class="stu-rank ${rankCls}">${rankIcon}</div>
+        <div class="stu-name">${s.name}</div>
+        <div style="font-size:12px;color:#aaa;margin-right:8px">最近：${lastOn}</div>
+        <div class="stu-stars">⭐ ${s.stars}</div>
+        <div class="stu-arr" id="arr-${encodeURIComponent(s.name)}">›</div>
+      </div>
+      <div class="stu-detail" id="det-${encodeURIComponent(s.name)}">
+        <div class="detail-grid">
+          <div class="d-box"><div class="d-val" style="color:#f39c12">${s.stars}</div><div class="d-lbl">目前星星</div></div>
+          <div class="d-box"><div class="d-val" style="color:#2ecc71">${s.records}</div><div class="d-lbl">遊玩次數</div></div>
+          <div class="d-box"><div class="d-val" style="color:#e74c3c">${s.mistakes}</div><div class="d-lbl">待複習錯題</div></div>
+          <div class="d-box"><div class="d-val" style="color:#9b59b6">${locked}</div><div class="d-lbl">被鎖關卡數</div></div>
+          <div class="d-box"><div class="d-val" style="color:#3498db">${Object.keys(s.raw.mistakes||{}).length}</div><div class="d-lbl">總錯題數</div></div>
+          <div class="d-box"><div class="d-val" style="color:#16a085">${Object.values(s.raw.mistakes||{}).filter(m=>m.mastered).length}</div><div class="d-lbl">已熟練題數</div></div>
+        </div>
+        <div class="detail-actions">
+          <button class="btn-action btn-reset-cd"
+            onclick="askReset('resetCD','${encodeURIComponent(s.name)}','${s.name}')">🔓 解除冷卻鎖定</button>
+          <button class="btn-action btn-reset-stars"
+            onclick="askReset('resetStars','${encodeURIComponent(s.name)}','${s.name}')">⭐ 歸零星星</button>
+          <button class="btn-action btn-view-mistakes"
+            onclick="toggleMistakes('${encodeURIComponent(s.name)}')">📝 查看錯題</button>
+          <button class="btn-action btn-reset-all"
+            onclick="askReset('resetAll','${encodeURIComponent(s.name)}','${s.name}')">🗑 清除全部資料</button>
+        </div>
+        <div class="mistakes-panel" id="mist-${encodeURIComponent(s.name)}">
+          ${renderMistakes(s.raw.mistakes||{})}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderMistakes(mistakes) {
+  const items = Object.values(mistakes).sort((a,b)=>b.wrongCount-a.wrongCount);
+  if (!items.length) return '<div style="text-align:center;color:#aaa;padding:10px">沒有錯題紀錄</div>';
+  return items.map(m => `
+    <div class="mist-row">
+      <span class="mist-word">${m.question||m.word}</span>
+      <span class="mist-cnt">錯 ${m.wrongCount} 次 ${m.mastered?'✅':''}</span>
+    </div>`).join('');
+}
+
+function toggleDetail(key) {
+  const det = document.getElementById(`det-${key}`);
+  const arr = document.getElementById(`arr-${key}`);
+  det.classList.toggle('open');
+  arr.classList.toggle('open');
+}
+
+function toggleMistakes(key) {
+  document.getElementById(`mist-${key}`).classList.toggle('open');
+}
+
+/* ── 雙重確認機制 ── */
+const CONFIRM_CONFIGS = {
+  resetCD: {
+    title: '⚠️ 解除冷卻鎖定',
+    desc:  (name) => `確定要解除「${name}」的所有關卡冷卻鎖定？`,
+    warning: '此操作將清除該學生所有 cooldown 紀錄，讓其可重新遊玩所有已鎖定關卡。',
+    danger: false
+  },
+  resetStars: {
+    title: '⚠️ 歸零星星',
+    desc:  (name) => `確定要將「${name}」的星星歸零？`,
+    warning: '⚠️ 此操作不可還原！學生的星星數將變為 0，購買紀錄不受影響。',
+    danger: true
+  },
+  resetAll: {
+    title: '🗑 清除全部資料',
+    desc:  (name) => `確定要清除「${name}」的所有資料？`,
+    warning: '⚠️ 這將永久刪除該學生的星星、遊玩紀錄、錯題本、冷卻狀態等所有資料，無法還原！建議先匯出 JSON 備份。',
+    danger: true
+  },
+  importRestore: {
+    title: '⬆ 還原備份資料',
+    desc:  () => '確定要從備份檔案還原全班資料？',
+    warning: '⚠️ 此操作將覆蓋 Firebase 中所有學生的現有資料。建議先匯出目前資料備份後再執行。',
+    danger: true
+  }
+};
+
+let confirmPayload = null;
+
+function askReset(action, key, name) {
+  const cfg = CONFIRM_CONFIGS[action];
+  confirmAction  = action;
+  confirmPayload = { key, name };
+  confirmPhase   = 1;
+  document.getElementById('confirm-title').textContent   = cfg.title;
+  document.getElementById('confirm-desc').textContent    = cfg.desc(name);
+  document.getElementById('confirm-warning').textContent = cfg.warning;
+  document.getElementById('confirm-count').textContent   = '第 1 次確認，共需確認 2 次';
+  document.getElementById('confirm-btn').textContent     = '我確認，繼續';
+  document.getElementById('confirm-btn').disabled        = false;
+  document.getElementById('confirm-modal').classList.add('show');
+}
+
+function confirmStep() {
+  if (confirmPhase === 1) {
+    confirmPhase = 2;
+    document.getElementById('confirm-count').textContent = '⚠️ 第 2 次確認（最後機會取消）';
+    document.getElementById('confirm-btn').textContent   = '是，確定執行';
+    document.getElementById('confirm-btn').style.background = '#8b0000';
+  } else if (confirmPhase === 2) {
+    closeConfirm();
+    executeAction(confirmAction, confirmPayload);
+  }
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-modal').classList.remove('show');
+  confirmPhase = 0; confirmAction = null; confirmPayload = null;
+  document.getElementById('confirm-btn').style.background = '';
+}
+
+async function executeAction(action, payload) {
+  const { key, name } = payload;
+  const decoded = decodeURIComponent(name);
+  try {
+    if (action === 'resetCD') {
+      await fetch(`${FB_URL}/accounts/${encodeURIComponent(decoded)}/cooldowns.json`,
+        { method:'PUT', headers:{'Content-Type':'application/json'}, body:'{}' });
+      alert(`✅ 已解除「${decoded}」的冷卻鎖定`);
+    } else if (action === 'resetStars') {
+      await fetch(`${FB_URL}/accounts/${encodeURIComponent(decoded)}/stars.json`,
+        { method:'PUT', headers:{'Content-Type':'application/json'}, body:'0' });
+      alert(`✅ 已將「${decoded}」的星星歸零`);
+    } else if (action === 'resetAll') {
+      await fetch(`${FB_URL}/accounts/${encodeURIComponent(decoded)}.json`, { method:'DELETE' });
+      alert(`✅ 已清除「${decoded}」的全部資料`);
+    } else if (action === 'importRestore') {
+      const data = payload.data;
+      await fetch(`${FB_URL}/accounts.json`,
+        { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+      alert('✅ 備份還原完成');
+    }
+    loadAll();
+  } catch(e) {
+    alert('❌ 操作失敗：' + e.message);
+  }
+}
+
+/* ── 匯出 JSON ── */
+function exportJSON() {
+  const ts = new Date().toISOString().slice(0,16).replace('T','_').replace(':','-');
+  const json = JSON.stringify(allData, null, 2);
+  const blob = new Blob([json], { type:'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `xinru_backup_${ts}.json`; a.click();
+  URL.revokeObjectURL(url);
+  saveBackupRecord(ts, json.length);
+}
+
+/* ── 匯出 CSV ── */
+function exportCSV() {
+  const rows = [['姓名','星星','遊玩次數','待複習錯題','最後上線']];
+  getStudents().sort((a,b)=>b.stars-a.stars).forEach(s => {
+    const last = s.updated ? new Date(s.updated).toLocaleDateString('zh-TW') : '—';
+    rows.push([s.name, s.stars, s.records, s.mistakes, last]);
+  });
+  const csv = '﻿' + rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type:'text/csv;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `xinru_students_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ── 匯入 JSON 還原 ── */
+function importJSON(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    let data;
+    try { data = JSON.parse(e.target.result); } catch { alert('❌ 檔案格式錯誤'); return; }
+    confirmAction  = 'importRestore';
+    confirmPayload = { data };
+    confirmPhase   = 1;
+    const cfg = CONFIRM_CONFIGS.importRestore;
+    document.getElementById('confirm-title').textContent   = cfg.title;
+    document.getElementById('confirm-desc').textContent    = cfg.desc();
+    document.getElementById('confirm-warning').textContent = cfg.warning;
+    document.getElementById('confirm-count').textContent   = '第 1 次確認，共需確認 2 次';
+    document.getElementById('confirm-btn').textContent     = '我確認，繼續';
+    document.getElementById('confirm-btn').disabled        = false;
+    document.getElementById('confirm-modal').classList.add('show');
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+/* ── 本地備份紀錄 ── */
+function saveBackupRecord(ts, byteLen) {
+  const logs = JSON.parse(localStorage.getItem('xr_backup_log') || '[]');
+  logs.unshift({ ts, size: Math.round(byteLen/1024*10)/10 });
+  if (logs.length > 10) logs.pop();
+  localStorage.setItem('xr_backup_log', JSON.stringify(logs));
+  renderBackupList();
+}
+
+function renderBackupList() {
+  const logs = JSON.parse(localStorage.getItem('xr_backup_log') || '[]');
+  const el = document.getElementById('backup-list');
+  if (!logs.length) { el.innerHTML = '<div style="color:#aaa;font-size:13px;padding:6px">尚無備份紀錄</div>'; return; }
+  el.innerHTML = logs.map(l => `
+    <div class="backup-item">
+      <span class="backup-time">📦 ${l.ts.replace('_',' ')}</span>
+      <span class="backup-size">${l.size} KB</span>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>
