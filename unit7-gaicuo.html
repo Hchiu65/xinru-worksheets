@@ -172,9 +172,10 @@ const GAICUO = [
 let order=[], idx=0, sessionStars=0, mistakeThis=false, totalCorrect=0, anyMistake=false;
 function getStars(){return parseInt(localStorage.getItem('xr_stars')||'0');}
 function addStars(n){const s=getStars()+n;localStorage.setItem('xr_stars',s);document.getElementById('star-display').textContent=s;sessionStars+=n;}
-function recordMistake(word,meaning){
+function recordMistake(word,meaning,question){
   const all=JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
-  if(!all[word])all[word]={word,meaning,wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
+  if(!all[word])all[word]={word,question:question||word,meaning,wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
+  if(question&&!all[word].question)all[word].question=question;
   all[word].wrongCount++;all[word].lastWrong=new Date().toLocaleDateString('zh-TW');
   localStorage.setItem('xr_mistakes',JSON.stringify(all));
 }
@@ -216,7 +217,7 @@ function onPick(btn,picked,item){
     speak(item.full); showFeedback(true,earned,item);
   } else {
     btn.classList.add('wrong');
-    if(!mistakeThis){mistakeThis=true;anyMistake=true;recordMistake(item.full,item.meaning);}
+    if(!mistakeThis){mistakeThis=true;anyMistake=true;recordMistake(item.full,item.meaning,item.wrong);}
     setTimeout(()=>{btn.classList.remove('wrong');btn.disabled=false;btns.forEach(b=>{if(b!==btn)b.disabled=false;});},500);
   }
 }

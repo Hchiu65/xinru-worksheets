@@ -193,9 +193,15 @@ const MEANINGS = {
 
 function getStars(){return parseInt(localStorage.getItem('xr_stars')||'0');}
 function addStars(n){const s=getStars()+n;localStorage.setItem('xr_stars',s);document.getElementById('star-display').textContent=s;}
-function recordMistake(word){
+function getSentence(b){
+  const li=b.closest('li');if(!li)return'';
+  const clone=li.cloneNode(true);const blk=clone.querySelector('.blank');
+  if(blk)blk.textContent='＿';return clone.textContent.trim();
+}
+function recordMistake(word,question){
   const all=JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
-  if(!all[word])all[word]={word,meaning:MEANINGS[word]||'',wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
+  if(!all[word])all[word]={word,question:question||word,meaning:MEANINGS[word]||'',wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
+  if(question&&!all[word].question)all[word].question=question;
   all[word].wrongCount++;all[word].lastWrong=new Date().toLocaleDateString('zh-TW');
   if(MEANINGS[word])all[word].meaning=MEANINGS[word];
   localStorage.setItem('xr_mistakes',JSON.stringify(all));
@@ -248,7 +254,7 @@ function checkAll(){
     b.classList.remove('correct','wrong');
     const filled=b.dataset.chipId?document.getElementById(b.dataset.chipId)?.dataset.word:'';
     if(filled&&filled===b.dataset.answer){b.classList.add('correct');correct++;}
-    else{b.classList.add('wrong');hadMistake=true;recordMistake(b.dataset.answer);}
+    else{b.classList.add('wrong');hadMistake=true;recordMistake(b.dataset.answer,getSentence(b));}
   });
   const total=blanks.length;
   document.getElementById('score-display').textContent=`${correct} / ${total}`;

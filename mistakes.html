@@ -337,7 +337,7 @@ function renderList() {
     html += `<div class="mistake-item">
       <div class="mi-count${isMastered?' mastered':''}">${isMastered?'✓':m.wrongCount}</div>
       <div class="mi-body">
-        <div class="mi-word">${m.word}</div>
+        <div class="mi-word">${m.question || m.word}</div>
         <div class="mi-meaning">${m.meaning||'—'}</div>
         <div class="mi-meta">錯誤 ${m.wrongCount} 次　練習 ${m.practiceCount||0} 次　${m.lastWrong?'最近：'+m.lastWrong:''}</div>
       </div>

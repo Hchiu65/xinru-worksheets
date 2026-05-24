@@ -263,10 +263,11 @@ function addStars(n) {
   document.getElementById('star-display').textContent = s;
   sessionStars += n;
 }
-function recordMistake(char, meaning) {
+function recordMistake(char, meaning, question) {
   const all = JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
   const key = char;
-  if (!all[key]) all[key] = { word:char, meaning, wrongCount:0, practiceCount:0, lastWrong:'', mastered:false };
+  if (!all[key]) all[key] = { word:char, question:question||char, meaning, wrongCount:0, practiceCount:0, lastWrong:'', mastered:false };
+  if (question && !all[key].question) all[key].question = question;
   all[key].wrongCount++;
   all[key].lastWrong = new Date().toLocaleDateString('zh-TW');
   localStorage.setItem('xr_mistakes', JSON.stringify(all));
@@ -339,7 +340,7 @@ function onPick(btn, picked, item) {
     if (!mistakeThis) {
       mistakeThis = true;
       anyMistake = true;
-      recordMistake(item.char, item.meaning);
+      recordMistake(item.char, item.meaning, item.phrase);
     }
     setTimeout(() => {
       btn.classList.remove('wrong');
