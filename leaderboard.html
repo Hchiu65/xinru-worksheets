@@ -224,8 +224,8 @@ async function syncSelf() {
   const plays = getRecords().length;
   const data = { name, stars, badge, title, acc, plays, redeemed, updated: Date.now() };
   try {
-    await fetch(`${FB_URL}/players/${getUID()}.json`, {
-      method: 'PUT',
+    await fetch(`${FB_URL}/accounts/${encodeURIComponent(name)}.json`, {
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
@@ -262,7 +262,7 @@ async function loadLeaderboard() {
   await syncSelf();
 
   try {
-    const res = await fetch(`${FB_URL}/players.json`);
+    const res = await fetch(`${FB_URL}/accounts.json`);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const raw = await res.json();
 
@@ -273,8 +273,8 @@ async function loadLeaderboard() {
       return;
     }
 
-    const myUID = getUID();
-    const players = Object.entries(raw).map(([uid, d]) => ({ uid, ...d }));
+    const myName = getName();
+    const players = Object.entries(raw).map(([key, d]) => ({ key, ...d }));
     players.sort((a, b) => (b.stars||0) - (a.stars||0));
 
     statusEl.className = 'status-bar ok';
@@ -282,7 +282,7 @@ async function loadLeaderboard() {
     document.getElementById('updated-bar').textContent =
       '最後更新：' + new Date().toLocaleTimeString('zh-TW');
 
-    renderAll(players, myUID);
+    renderAll(players, myName);
 
   } catch(e) {
     statusEl.className = 'status-bar error';
@@ -293,7 +293,7 @@ async function loadLeaderboard() {
   isLoading = false;
 }
 
-function renderAll(players, myUID) {
+function renderAll(players, myName) {
   const realMedals = { 0:'🥇', 1:'🥈', 2:'🥉' };
   let html = '';
 
@@ -303,7 +303,7 @@ function renderAll(players, myUID) {
     const order = [top3[1], top3[0], top3[2]].filter(Boolean);
     const slots = order.map(p => {
       const rank = players.indexOf(p);
-      const isMe = p.uid === myUID;
+      const isMe = p.name === myName;
       const medal = realMedals[rank] || '';
       const redeemed = p.redeemed ? Object.entries(p.redeemed)
         .filter(([,v])=>v>0).map(([k,v])=>`${REWARD_LABELS[k]||k}×${v}`).join(' ') : '';
@@ -325,7 +325,7 @@ function renderAll(players, myUID) {
   // Full list
   html += '<div class="section-label">完整排名</div><div class="rank-list">';
   players.forEach((p, i) => {
-    const isMe = p.uid === myUID;
+    const isMe = p.name === myName;
     const medal = realMedals[i] || '';
     const redeemed = p.redeemed ? Object.entries(p.redeemed)
       .filter(([,v])=>v>0).map(([k,v])=>`${REWARD_LABELS[k]||k}×${v}`) : [];

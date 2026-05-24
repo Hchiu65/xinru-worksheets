@@ -309,6 +309,45 @@ header {
 </div>
 
 <script>
+// ── Cooldown / Cloud ──────────────────────────────────────────────────────────
+const GAME_ID = 'unit6m';
+const FB_URL  = 'https://xinru-class-default-rtdb.firebaseio.com';
+const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字'};
+function getCDs(){return JSON.parse(localStorage.getItem('xr_cooldowns')||'{}');}
+function saveCDs(cd){localStorage.setItem('xr_cooldowns',JSON.stringify(cd));}
+function isLocked(){const g=getCDs()[GAME_ID];return !!(g&&g.locked&&(g.unlockBy||[]).length<2);}
+function reportComplete(perfect){
+  const cds=getCDs();
+  if(!cds[GAME_ID])cds[GAME_ID]={streak:0,locked:false,unlockBy:[]};
+  const me=cds[GAME_ID];
+  if(!me.locked){me.streak=perfect?(me.streak||0)+1:0;if(me.streak>=2){me.locked=true;me.unlockBy=[];}}
+  Object.keys(cds).forEach(id=>{
+    if(id===GAME_ID||!cds[id].locked)return;
+    if(!(cds[id].unlockBy||[]).includes(GAME_ID)){
+      cds[id].unlockBy=[...(cds[id].unlockBy||[]),GAME_ID];
+      if(cds[id].unlockBy.length>=2){cds[id].locked=false;cds[id].streak=0;cds[id].unlockBy=[];}
+    }
+  });
+  saveCDs(cds);
+  pushToCloud();
+}
+async function pushToCloud(){
+  const name=localStorage.getItem('xr_name');
+  if(!name)return;
+  const d={stars:parseInt(localStorage.getItem('xr_stars')||'0'),
+    records:JSON.parse(localStorage.getItem('xr_records')||'[]'),
+    mistakes:JSON.parse(localStorage.getItem('xr_mistakes')||'{}'),
+    cooldowns:getCDs(),updated:Date.now()};
+  try{await fetch(`${FB_URL}/accounts/${encodeURIComponent(name)}.json`,
+    {method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});}catch(e){}
+}
+function showLockOverlay(){
+  const cds=getCDs(),me=cds[GAME_ID]||{},done=(me.unlockBy||[]).length;
+  document.getElementById('lock-remain').textContent=2-done;
+  document.getElementById('lock-others').textContent=Object.keys(GAME_LABELS).filter(k=>k!==GAME_ID).map(k=>GAME_LABELS[k]).join('、');
+  document.getElementById('lock-overlay').style.display='flex';
+}
+
 /* ── Data ── */
 const ROUNDS = [
   [
@@ -429,6 +468,7 @@ function saveName() {
 document.getElementById('name-input').addEventListener('keydown', e => { if(e.key==='Enter') saveName(); });
 
 function startGame() {
+  if (isLocked()) { showLockOverlay(); return; }
   buildTabs();
   buildRound(0);
 }
@@ -630,6 +670,7 @@ function showFinalScreen() {
   document.getElementById('final-stars').textContent='+'+sessionStars+' ⭐';
   document.getElementById('final-acc').textContent='累積 '+getStars()+' ⭐ 星星';
   saveRecord(acc);
+  reportComplete(roundPerfect.every(Boolean));
   launchConfetti();
   document.getElementById('final-screen').classList.add('show');
 }
@@ -745,5 +786,16 @@ function launchConfetti() {
 /* ── Boot ── */
 init();
 </script>
+
+<!-- Lock overlay -->
+<div id="lock-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:22px;padding:32px 24px 28px;width:88%;max-width:340px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <div style="font-size:56px;line-height:1">🔒</div>
+    <div style="font-size:22px;font-weight:bold;margin:12px 0 6px;color:#e67e22">關卡暫時鎖定</div>
+    <div style="font-size:15px;color:#555;line-height:1.9;margin-bottom:6px">連續兩次全對！<br>請再完成其他 <b id="lock-remain">2</b> 個關卡再回來。</div>
+    <div style="font-size:13px;color:#999;margin-bottom:20px">可去玩：<span id="lock-others"></span></div>
+    <a href="index.html" style="display:block;padding:13px;background:linear-gradient(135deg,#667eea,#9b59b6);color:#fff;border-radius:12px;font-size:17px;font-family:標楷體,DFKai-SB,serif;font-weight:bold;text-decoration:none">🏠 去選其他關卡</a>
+  </div>
+</div>
 </body>
 </html>

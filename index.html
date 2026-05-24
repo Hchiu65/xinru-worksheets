@@ -116,16 +116,21 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 .hist-item { background:#fff; border-radius:10px; padding:10px 12px; margin:0 12px 6px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 1px 4px rgba(0,0,0,.05); font-size:13px; }
 .hi-right { font-weight:bold; color:#f39c12; font-size:14px; }
 
-/* Modal */
-#name-modal { display:none; position:fixed; inset:0; background:rgba(50,30,80,.5); align-items:center; justify-content:center; z-index:900; }
-#name-modal.show { display:flex; }
-.modal-box { background:#fff; border-radius:22px; padding:28px 22px; width:280px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,.2); }
+/* Auth Modal */
+#auth-modal { display:none; position:fixed; inset:0; background:rgba(50,30,80,.55); align-items:center; justify-content:center; z-index:900; }
+#auth-modal.show { display:flex; }
+.modal-box { background:#fff; border-radius:22px; padding:28px 22px; width:290px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,.22); }
 .modal-emoji { font-size:40px; margin-bottom:8px; }
 .modal-box h3 { color:#667eea; font-size:19px; margin-bottom:4px; }
-.modal-box p  { font-size:13px; color:#bbb; margin-bottom:14px; }
-#modal-input { width:100%; padding:11px; font-size:19px; font-family:inherit; border:2px solid #e0e7ff; border-radius:11px; margin-bottom:12px; text-align:center; outline:none; }
-#modal-input:focus { border-color:#667eea; }
+.modal-box p  { font-size:13px; color:#bbb; margin-bottom:14px; line-height:1.5; }
+.modal-input { width:100%; padding:11px; font-size:18px; font-family:inherit; border:2px solid #e0e7ff; border-radius:11px; margin-bottom:10px; text-align:center; outline:none; }
+.modal-input:focus { border-color:#667eea; }
 .modal-btn { width:100%; padding:13px; background:linear-gradient(135deg,#667eea,#9b59b6); color:#fff; border:none; border-radius:11px; font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold; }
+.modal-btn-sub { width:100%;padding:8px;background:none;border:none;color:#aaa;font-size:13px;cursor:pointer;font-family:inherit;margin-top:4px; }
+.auth-err { color:#e74c3c;font-size:13px;margin:4px 0 8px;min-height:18px; }
+.auth-loading { text-align:center;padding:20px;font-size:15px;color:#888; }
+/* Lock chip on unit cards */
+.lock-chip { background:#fee2e2;color:#c0392b;font-size:11px;padding:2px 7px;border-radius:10px; }
 </style>
 </head>
 <body>
@@ -135,7 +140,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     <div class="avatar" id="avatar">😊</div>
     <div class="hero-info">
       <div class="hero-name" id="player-name">—</div>
-      <div class="hero-edit" onclick="openNameModal()">✏ 修改名字</div>
+      <div class="hero-edit" onclick="signOut()">🔄 切換帳號</div>
     </div>
     <div class="star-pill">⭐ <span id="star-count">0</span></div>
   </div>
@@ -179,7 +184,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 <!-- Units -->
 <div class="sec-head"><div class="sec-dot"></div>第六冊　練習題目</div>
 <div class="unit-list">
-  <a class="unit-card" href="unit7-ziyin.html">
+  <a class="unit-card" href="unit7-ziyin.html" data-gid="u7ziyin">
     <div class="unit-emoji ue-purple">🔊</div>
     <div class="unit-body">
       <div class="unit-title">第七單元　字音辨正</div>
@@ -191,7 +196,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     </div>
     <div class="unit-arr">›</div>
   </a>
-  <a class="unit-card" href="unit7-bianzi.html">
+  <a class="unit-card" href="unit7-bianzi.html" data-gid="u7bianzi">
     <div class="unit-emoji ue-red">🔍</div>
     <div class="unit-body">
       <div class="unit-title">第七單元　找錯別字</div>
@@ -204,7 +209,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     <div class="unit-arr">›</div>
   </a>
 
-  <a class="unit-card" href="unit6.html">
+  <a class="unit-card" href="unit6.html" data-gid="unit6">
     <div class="unit-emoji ue-blue">📝</div>
     <div class="unit-body">
       <div class="unit-title">第六單元　詞語填空</div>
@@ -216,7 +221,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     </div>
     <div class="unit-arr">›</div>
   </a>
-  <a class="unit-card" href="unit6-match.html">
+  <a class="unit-card" href="unit6-match.html" data-gid="unit6m">
     <div class="unit-emoji ue-teal">🎮</div>
     <div class="unit-body">
       <div class="unit-title">第六單元　成語連連看</div>
@@ -233,28 +238,40 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 <div class="hist-toggle" id="hist-toggle" onclick="toggleHistory()">▾ 查看遊玩紀錄</div>
 <div id="history-section" style="display:none;margin-top:6px"></div>
 
-<div id="name-modal">
+<div id="auth-modal">
   <div class="modal-box">
-    <div class="modal-emoji">👋</div>
-    <h3>你好！</h3>
-    <p>請輸入你的名字開始學習</p>
-    <input id="modal-input" type="text" maxlength="10" placeholder="我的名字">
-    <button class="modal-btn" onclick="saveName()">開始 ▶</button>
+    <!-- Step 1: username -->
+    <div id="auth-s1">
+      <div class="modal-emoji">👋</div>
+      <h3>歡迎！</h3>
+      <p>輸入你的帳號名稱</p>
+      <input id="auth-name" class="modal-input" type="text" maxlength="12" placeholder="帳號名稱">
+      <button class="modal-btn" onclick="authStep1()">下一步 →</button>
+    </div>
+    <!-- Step 2: birthday -->
+    <div id="auth-s2" style="display:none">
+      <div class="modal-emoji" id="auth-s2-icon">🔑</div>
+      <h3 id="auth-s2-title">生日密碼</h3>
+      <p id="auth-s2-desc">輸入你的生日（月月日日）</p>
+      <input id="auth-bday" class="modal-input" type="tel" maxlength="4" placeholder="如 0115 = 1月15日">
+      <div class="auth-err" id="auth-err"></div>
+      <button class="modal-btn" onclick="authStep2()">確認 ✔</button>
+      <button class="modal-btn-sub" onclick="backStep()">← 換帳號</button>
+    </div>
+    <!-- Loading -->
+    <div id="auth-loading" style="display:none">
+      <div class="auth-loading">⌛ 連線中…</div>
+    </div>
   </div>
 </div>
 
 <script>
-/* ── Firebase 設定（設定完成後取消註解並填入 URL） ──
-   1. 前往 https://console.firebase.google.com
-   2. 建立專案 → Realtime Database → 以測試模式啟動
-   3. 複製資料庫 URL（如 https://xinru-class-default-rtdb.asia-southeast1.firebasedatabase.app）
-   4. 貼到下方 FB_URL
-*/
 const FB_URL = "https://xinru-class-default-rtdb.firebaseio.com";
 
 const BADGES = {b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'};
 const TITLES  = {t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王'};
 const MEDALS  = ['🥇','🥈','🥉'];
+const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字'};
 
 function getStars()    { return parseInt(localStorage.getItem('xr_stars')||'0'); }
 function getName()     { return localStorage.getItem('xr_name')||''; }
@@ -262,52 +279,152 @@ function getOwned()    { return JSON.parse(localStorage.getItem('xr_owned')||'{}
 function getEquipped() { return JSON.parse(localStorage.getItem('xr_equipped')||'{}'); }
 function getRecords()  { return JSON.parse(localStorage.getItem('xr_records')||'[]'); }
 function getMistakes() { return JSON.parse(localStorage.getItem('xr_mistakes')||'{}'); }
-function getUID() {
-  let uid = localStorage.getItem('xr_uid');
-  if (!uid) { uid = 'u'+Math.random().toString(36).slice(2,10)+Date.now().toString(36); localStorage.setItem('xr_uid',uid); }
-  return uid;
+function getCDs()      { return JSON.parse(localStorage.getItem('xr_cooldowns')||'{}'); }
+
+/* ── Auth ── */
+let _authName = '', _authExists = false;
+
+function showAuthPanel(p) {
+  ['s1','s2','loading'].forEach(id => {
+    document.getElementById('auth-'+id).style.display = id===p ? '' : 'none';
+  });
+  document.getElementById('auth-modal').classList.add('show');
+  if (p==='s1') setTimeout(()=>document.getElementById('auth-name').focus(),120);
+  if (p==='s2') setTimeout(()=>document.getElementById('auth-bday').focus(),120);
 }
 
-/* ── Firebase sync ── */
-async function syncToFirebase() {
+async function authStep1() {
+  const name = document.getElementById('auth-name').value.trim();
+  if (!name) return;
+  _authName = name;
+  if (!FB_URL) {
+    localStorage.setItem('xr_name', name);
+    localStorage.setItem('xr_bday', '0000');
+    document.getElementById('auth-modal').classList.remove('show');
+    render(); return;
+  }
+  showAuthPanel('loading');
+  try {
+    const res  = await fetch(`${FB_URL}/accounts/${encodeURIComponent(name)}.json`);
+    const data = await res.json();
+    _authExists = !!data;
+    document.getElementById('auth-s2-icon').textContent  = _authExists ? '👋' : '🎉';
+    document.getElementById('auth-s2-title').textContent = _authExists ? '歡迎回來！' : '建立新帳號';
+    document.getElementById('auth-s2-desc').textContent  = _authExists
+      ? `帳號「${name}」已存在，請輸入生日密碼`
+      : `帳號「${name}」可以使用，請設定你的生日密碼`;
+    document.getElementById('auth-err').textContent = '';
+    document.getElementById('auth-bday').value = '';
+    showAuthPanel('s2');
+  } catch(e) {
+    localStorage.setItem('xr_name', name);
+    localStorage.setItem('xr_bday', '0000');
+    document.getElementById('auth-modal').classList.remove('show');
+    render();
+  }
+}
+
+async function authStep2() {
+  const bday = document.getElementById('auth-bday').value.trim();
+  if (!/^\d{4}$/.test(bday)) {
+    document.getElementById('auth-err').textContent = '請輸入4位數字（月月日日，如0115）'; return;
+  }
+  showAuthPanel('loading');
+  if (_authExists) {
+    try {
+      const res  = await fetch(`${FB_URL}/accounts/${encodeURIComponent(_authName)}.json`);
+      const data = await res.json();
+      if (data.bday && data.bday !== bday) {
+        document.getElementById('auth-err').textContent = '生日密碼錯誤，請再試一次';
+        showAuthPanel('s2'); return;
+      }
+      // If no bday set (old account), claim it
+      if (!data.bday) {
+        await fetch(`${FB_URL}/accounts/${encodeURIComponent(_authName)}/bday.json`,
+          {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(bday)});
+      }
+      applyData(data);
+    } catch(e) {
+      document.getElementById('auth-err').textContent = '連線失敗，請重試';
+      showAuthPanel('s2'); return;
+    }
+  } else {
+    try {
+      const newData = {bday,stars:0,owned:{},equipped:{},redeemed:[],records:[],mistakes:{},cooldowns:{},updated:Date.now()};
+      await fetch(`${FB_URL}/accounts/${encodeURIComponent(_authName)}.json`,
+        {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(newData)});
+    } catch(e) {
+      document.getElementById('auth-err').textContent = '建立帳號失敗，請重試';
+      showAuthPanel('s2'); return;
+    }
+  }
+  localStorage.setItem('xr_name', _authName);
+  localStorage.setItem('xr_bday', bday);
+  document.getElementById('auth-modal').classList.remove('show');
+  render();
+}
+
+function applyData(d) {
+  const map = {xr_stars:'stars',xr_owned:'owned',xr_equipped:'equipped',
+                xr_redeemed:'redeemed',xr_records:'records',xr_mistakes:'mistakes',xr_cooldowns:'cooldowns'};
+  Object.entries(map).forEach(([lsKey,dKey])=>{
+    if (d[dKey]!==undefined) localStorage.setItem(lsKey, typeof d[dKey]==='object'?JSON.stringify(d[dKey]):String(d[dKey]));
+  });
+}
+
+function backStep() {
+  document.getElementById('auth-err').textContent='';
+  document.getElementById('auth-bday').value='';
+  showAuthPanel('s1');
+}
+
+function signOut() {
+  if (!confirm('確定要切換帳號？\n目前資料已備份到雲端。')) return;
+  ['xr_name','xr_bday','xr_stars','xr_owned','xr_equipped','xr_redeemed',
+   'xr_records','xr_mistakes','xr_cooldowns'].forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+/* ── Cloud sync ── */
+async function syncToCloud() {
   if (!FB_URL || !getName()) return;
-  const eq = getOwned(), equipped = getEquipped(), records = getRecords();
-  const redeemed = JSON.parse(localStorage.getItem('xr_redeemed')||'[]');
-  const data = {
-    name: getName(),
+  const eq=getEquipped(), owned=getOwned(), records=getRecords();
+  const redeemed=JSON.parse(localStorage.getItem('xr_redeemed')||'[]');
+  const patch = {
     stars: getStars(),
-    badge: (equipped.badge && eq[equipped.badge]) ? BADGES[equipped.badge] : '',
-    title: (equipped.title && eq[equipped.title]) ? TITLES[equipped.title]  : '',
-    bestAcc: records.length ? Math.max(...records.map(r=>r.accuracy||0)) : 0,
-    plays: records.length,
-    redeemed: redeemed.map(r=>r.id),
-    updated: new Date().toISOString()
+    badge: (eq.badge&&owned[eq.badge])?BADGES[eq.badge]:'',
+    title: (eq.title&&owned[eq.title])?TITLES[eq.title]:'',
+    owned, equipped, redeemed, records,
+    mistakes: getMistakes(),
+    cooldowns: getCDs(),
+    updated: Date.now()
   };
   try {
-    await fetch(`${FB_URL}/players/${getUID()}.json`, {
-      method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
-    });
-  } catch(e) {}
+    await fetch(`${FB_URL}/accounts/${encodeURIComponent(getName())}.json`,
+      {method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(patch)});
+  } catch(e){}
 }
 
 async function loadMiniLeaderboard() {
   if (!FB_URL) return;
   const el = document.getElementById('mini-lb');
   try {
-    const res  = await fetch(`${FB_URL}/players.json`);
+    const res  = await fetch(`${FB_URL}/accounts.json`);
     const data = await res.json();
     if (!data) { el.innerHTML='<div class="lb-empty">還沒有人上榜</div>'; return; }
-    const myUID = getUID();
-    const players = Object.entries(data).map(([uid,p])=>({...p,uid}))
-      .sort((a,b)=>b.stars-a.stars).slice(0,5);
+    const me = getName();
+    const players = Object.entries(data)
+      .map(([uname,p])=>({...p, uname}))
+      .filter(p=>p.stars!=null)
+      .sort((a,b)=>(b.stars||0)-(a.stars||0)).slice(0,5);
     el.innerHTML = players.map((p,i)=>{
-      const isMe = p.uid===myUID;
+      const isMe = p.uname===me;
       const rank = i<3 ? MEDALS[i] : `#${i+1}`;
       return `<div class="lb-row${isMe?' me':''}">
         <div class="lb-rank">${rank}</div>
         <div class="lb-badge">${p.badge||'　'}</div>
-        <div class="lb-name">${p.name}${isMe?' 👈':''}</div>
-        <div class="lb-stars">⭐ ${p.stars.toLocaleString()}</div>
+        <div class="lb-name">${p.uname}${isMe?' 👈':''}</div>
+        <div class="lb-stars">⭐ ${(p.stars||0).toLocaleString()}</div>
       </div>`;
     }).join('');
   } catch(e) {
@@ -318,72 +435,66 @@ async function loadMiniLeaderboard() {
 /* ── Render ── */
 function render() {
   const name = getName();
-  if (!name) { openNameModal(); return; }
+  const bday = localStorage.getItem('xr_bday');
+  if (!name || !bday) { showAuthPanel('s1'); return; }
 
-  const eq = getEquipped(), owned = getOwned(), records = getRecords();
-  document.getElementById('avatar').textContent = (eq.badge&&owned[eq.badge]) ? BADGES[eq.badge] : '😊';
+  const eq=getEquipped(), owned=getOwned(), records=getRecords(), cds=getCDs();
+  document.getElementById('avatar').textContent = (eq.badge&&owned[eq.badge])?BADGES[eq.badge]:'😊';
   document.getElementById('player-name').textContent = name;
   document.getElementById('star-count').textContent  = getStars();
 
-  // Badges
-  let bHtml = '';
-  if (eq.badge&&owned[eq.badge]) bHtml += `<span class="badge-chip">${BADGES[eq.badge]}</span>`;
-  if (eq.title&&owned[eq.title]) bHtml += `<span class="title-chip">${TITLES[eq.title]}</span>`;
+  let bHtml='';
+  if (eq.badge&&owned[eq.badge]) bHtml+=`<span class="badge-chip">${BADGES[eq.badge]}</span>`;
+  if (eq.title&&owned[eq.title]) bHtml+=`<span class="title-chip">${TITLES[eq.title]}</span>`;
   Object.keys(owned).forEach(id=>{ if(BADGES[id]&&id!==eq.badge) bHtml+=`<span class="badge-chip" style="opacity:.35">${BADGES[id]}</span>`; });
-  document.getElementById('badge-row').innerHTML = bHtml || '<span class="no-badge">還沒有徽章，去商店換！</span>';
+  document.getElementById('badge-row').innerHTML = bHtml||'<span class="no-badge">還沒有徽章，去商店換！</span>';
 
-  // Error dot
-  const pending = Object.values(getMistakes()).filter(m=>!m.mastered).length;
-  const mc = document.getElementById('mistake-card');
+  const pending=Object.values(getMistakes()).filter(m=>!m.mastered).length;
+  const mc=document.getElementById('mistake-card');
   mc.querySelector('.err-dot')?.remove();
-  if (pending>0) { const d=document.createElement('div'); d.className='err-dot'; d.textContent=pending; mc.appendChild(d); }
+  if (pending>0){const d=document.createElement('div');d.className='err-dot';d.textContent=pending;mc.appendChild(d);}
 
-  // Stats
-  const bestAcc = records.length ? Math.max(...records.map(r=>r.accuracy||0)) : 0;
-  const totalEarned = records.reduce((s,r)=>s+(r.stars||0),0);
-  document.getElementById('stats-grid').innerHTML = `
+  const bestAcc=records.length?Math.max(...records.map(r=>r.accuracy||0)):0;
+  const totalEarned=records.reduce((s,r)=>s+(r.stars||0),0);
+  document.getElementById('stats-grid').innerHTML=`
     <div class="stat-box"><div class="stat-val v-purple">${records.length}</div><div class="stat-lbl">遊玩次數</div></div>
     <div class="stat-box"><div class="stat-val v-green">${bestAcc}%</div><div class="stat-lbl">最佳正確率</div></div>
     <div class="stat-box"><div class="stat-val v-gold">${getStars()}</div><div class="stat-lbl">目前星星</div></div>
-    <div class="stat-box"><div class="stat-val v-pink">${totalEarned}</div><div class="stat-lbl">累積獲得</div></div>
-  `;
+    <div class="stat-box"><div class="stat-val v-pink">${totalEarned}</div><div class="stat-lbl">累積獲得</div></div>`;
 
-  syncToFirebase();
+  // Lock indicators on unit cards
+  document.querySelectorAll('.unit-card[data-gid]').forEach(card => {
+    const gid = card.dataset.gid;
+    const g = cds[gid];
+    const locked = g&&g.locked&&(g.unlockBy||[]).length<2;
+    const old = card.querySelector('.lock-chip');
+    if (old) old.remove();
+    if (locked) {
+      const chip=document.createElement('span');
+      chip.className='tag lock-chip';chip.textContent='🔒 鎖定';
+      card.querySelector('.unit-tags')?.appendChild(chip);
+    }
+  });
+
+  syncToCloud();
   loadMiniLeaderboard();
 }
+
+document.getElementById('auth-name').addEventListener('keydown',e=>{ if(e.key==='Enter') authStep1(); });
+document.getElementById('auth-bday').addEventListener('keydown',e=>{ if(e.key==='Enter') authStep2(); });
 
 let histShown=false;
 function toggleHistory() {
   histShown=!histShown;
-  const sec=document.getElementById('history-section'), tog=document.getElementById('hist-toggle');
-  if (!histShown) { sec.style.display='none'; tog.textContent='▾ 查看遊玩紀錄'; return; }
+  const sec=document.getElementById('history-section'),tog=document.getElementById('hist-toggle');
+  if (!histShown){sec.style.display='none';tog.textContent='▾ 查看遊玩紀錄';return;}
   tog.textContent='▴ 收起紀錄';
-  const records=getRecords();
-  sec.innerHTML = records.length
-    ? records.slice(0,10).map(r=>`<div class="hist-item"><div>${r.date} ${r.unit==='unit6-match'?'🎮 連連看':'📝 填空'}</div><div class="hi-right">+${r.stars||0} ⭐</div></div>`).join('')
-    : '<p style="text-align:center;color:#bbb;padding:12px">還沒有紀錄！</p>';
+  const unit_lbl={unit6:'📝 填空',unit6m:'🎮 連連看','unit7-ziyin':'🔊 字音','unit7-bianzi':'🔍 找錯字'};
+  sec.innerHTML=getRecords().length
+    ?getRecords().slice(0,10).map(r=>`<div class="hist-item"><div>${r.date} ${unit_lbl[r.unit]||r.unit}</div><div class="hi-right">+${r.stars||0} ⭐</div></div>`).join('')
+    :'<p style="text-align:center;color:#bbb;padding:12px">還沒有紀錄！</p>';
   sec.style.display='block';
 }
-
-function resetData() {
-  if (!confirm('確定換人遊玩？\n（清除名字，星星與徽章保留）')) return;
-  localStorage.removeItem('xr_name');
-  location.reload();
-}
-
-function openNameModal() {
-  document.getElementById('modal-input').value=getName();
-  document.getElementById('name-modal').classList.add('show');
-  setTimeout(()=>document.getElementById('modal-input').focus(),100);
-}
-function saveName() {
-  const v=document.getElementById('modal-input').value.trim();
-  if(!v) return;
-  localStorage.setItem('xr_name',v);
-  document.getElementById('name-modal').classList.remove('show');
-  render();
-}
-document.getElementById('modal-input').addEventListener('keydown',e=>{ if(e.key==='Enter') saveName(); });
 
 render();
 </script>
