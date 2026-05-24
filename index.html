@@ -42,6 +42,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
   text-align:center; box-shadow:0 5px 18px rgba(102,126,234,.16);
   text-decoration:none; color:#333; cursor:pointer; position:relative;
   transition:transform .12s;
+  display:flex; flex-direction:column; align-items:center;
 }
 .act-card:active { transform:scale(.94); }
 .act-icon { width:40px; height:40px; border-radius:11px; margin:0 auto 7px; display:flex; align-items:center; justify-content:center; font-size:20px; }
@@ -49,7 +50,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 .i-mistake { background:linear-gradient(135deg,#fda085,#f6d365); }
 .i-lb      { background:linear-gradient(135deg,#43e97b,#38f9d7); }
 .i-switch  { background:linear-gradient(135deg,#a8edea,#66a6ff); }
-.act-label { font-size:13px; font-weight:bold; color:#666; }
+.act-label { font-size:13px; font-weight:bold; color:#666; margin-top:auto; }
 .err-dot {
   position:absolute; top:7px; right:7px; background:#e74c3c; color:#fff;
   border-radius:50%; width:18px; height:18px; font-size:10px; font-family:sans-serif;
@@ -62,7 +63,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 
 .stat-val { font-size:20px; font-weight:bold; }
 .stat-lbl { font-size:11px; color:#bbb; margin-top:1px; }
-.act-card .stat-val { height:40px; display:flex; align-items:center; justify-content:center; margin-bottom:7px; }
+.act-card .stat-val { height:40px; display:flex; align-items:center; justify-content:center; }
 .stat-sub { font-size:11px; margin-top:2px; }
 .v-purple{color:#667eea} .v-green{color:#2ecc71} .v-gold{color:#f39c12} .v-pink{color:#e84393}
 
