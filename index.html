@@ -208,6 +208,18 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     </div>
     <div class="unit-arr">›</div>
   </a>
+  <a class="unit-card" href="unit7-chengyu.html" data-gid="u7chengyu">
+    <div class="unit-emoji ue-green">📝</div>
+    <div class="unit-body">
+      <div class="unit-title">第七單元　成語填空</div>
+      <div class="unit-desc">27 題，點選成語填入空格</div>
+      <div class="unit-tags">
+        <span class="tag tg-green">填空</span>
+        <span class="tag tg-gold">⭐ 得星星</span>
+      </div>
+    </div>
+    <div class="unit-arr">›</div>
+  </a>
 
   <a class="unit-card" href="unit6.html" data-gid="unit6">
     <div class="unit-emoji ue-blue">📝</div>
@@ -311,7 +323,7 @@ const FB_URL = "https://xinru-class-default-rtdb.firebaseio.com";
 const BADGES = {b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'};
 const TITLES  = {t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王'};
 const MEDALS  = ['🥇','🥈','🥉'];
-const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)'};
+const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空'};
 
 function getStars()    { return parseInt(localStorage.getItem('xr_stars')||'0'); }
 function getName()     { return localStorage.getItem('xr_name')||''; }

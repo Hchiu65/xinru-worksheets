@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>第七單元 成語填空</title>
+<style>
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:"標楷體","DFKai-SB",serif; font-size:18px; line-height:1.9; background:#f4f6f9; margin:0; padding:0 0 100px; color:#222; }
+header { background:linear-gradient(135deg,#27ae60,#1a6b3c); color:#fff; padding:14px 16px 12px; font-size:22px; letter-spacing:3px; display:flex; align-items:flex-start; gap:12px; }
+header .hdr-body { flex:1; text-align:center; }
+header small { display:block; font-size:14px; opacity:.75; margin-top:4px; letter-spacing:1px; }
+.btn-home { background:rgba(255,255,255,.2); border:none; border-radius:8px; color:#fff; font-size:20px; padding:7px 9px; cursor:pointer; text-decoration:none; flex-shrink:0; line-height:1; margin-top:2px; }
+.star-badge { background:rgba(255,255,255,.2); border-radius:20px; padding:5px 12px; font-size:16px; font-weight:bold; margin-top:4px; white-space:nowrap; }
+
+.section { background:#fff; border-radius:12px; margin:14px 12px; padding:14px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+.section-title { font-size:16px; font-weight:bold; color:#27ae60; border-left:4px solid #27ae60; padding-left:10px; margin-bottom:12px; }
+.section-title.s2 { color:#e67e22; border-color:#e67e22; }
+
+.word-bank { display:flex; flex-wrap:wrap; gap:8px; background:#eef8f2; border-radius:8px; padding:10px 12px; margin-bottom:14px; }
+.word-bank.s2 { background:#fef5ec; }
+.chip { background:#fff; border:2px solid #27ae60; border-radius:20px; padding:6px 14px; font-size:16px; cursor:pointer; transition:background .15s,opacity .15s; user-select:none; -webkit-user-select:none; }
+.chip.s2 { border-color:#e67e22; }
+.chip.selected  { background:#27ae60; color:#fff; }
+.chip.s2.selected { background:#e67e22; }
+.chip.used { opacity:.35; cursor:default; }
+
+ol { padding-left:22px; margin:0; }
+ol li { margin-bottom:6px; }
+.blank { display:inline-block; min-width:96px; border-bottom:2px solid #27ae60; cursor:pointer; padding:1px 6px; border-radius:4px; transition:background .12s; text-align:center; font-size:17px; color:#27ae60; font-weight:bold; vertical-align:bottom; }
+.blank.s2 { border-color:#e67e22; color:#e67e22; }
+.blank.correct { background:#d5f5e3; border-color:#27ae60; color:#1a6b3c; }
+.blank.wrong   { background:#fdecea; border-color:#e74c3c; color:#e74c3c; animation:shake .35s; }
+.blank.highlight { background:#fffde7; border-color:#f39c12; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 60%{transform:translateX(5px)} }
+
+.toolbar { position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid #e0e0e0; padding:10px 14px; display:flex; align-items:center; gap:10px; box-shadow:0 -2px 8px rgba(0,0,0,.08); }
+.btn { border:none; border-radius:10px; padding:11px 18px; font-size:16px; font-family:inherit; cursor:pointer; font-weight:bold; }
+.btn-check { background:linear-gradient(135deg,#27ae60,#1a6b3c); color:#fff; flex:1; }
+.btn-reset { background:#f0f0f0; color:#666; }
+#score-display { font-size:15px; font-weight:bold; color:#27ae60; white-space:nowrap; }
+</style>
+</head>
+<body>
+<header>
+  <a class="btn-home" href="index.html">🏠</a>
+  <div class="hdr-body">
+    第七單元　成語填空
+    <small>詞語填空 1（11題）+ 詞語填空 2（16題）</small>
+  </div>
+  <div class="star-badge">⭐ <span id="star-display">0</span></div>
+</header>
+
+<!-- Section 1 -->
+<div class="section">
+  <div class="section-title">（一）詞語填空 1　請將下列答案填入正確空格</div>
+  <div class="word-bank" id="bank1">
+    <span class="chip" id="c1_0"  data-word="斷垣殘壁" onclick="selectChip(this,'s1')">斷垣殘壁</span>
+    <span class="chip" id="c1_1"  data-word="聰明睿智" onclick="selectChip(this,'s1')">聰明睿智</span>
+    <span class="chip" id="c1_2"  data-word="濫竽充數" onclick="selectChip(this,'s1')">濫竽充數</span>
+    <span class="chip" id="c1_3"  data-word="鞭辟入裡" onclick="selectChip(this,'s1')">鞭辟入裡</span>
+    <span class="chip" id="c1_4"  data-word="齜牙咧嘴" onclick="selectChip(this,'s1')">齜牙咧嘴</span>
+    <span class="chip" id="c1_5"  data-word="顛沛流離" onclick="selectChip(this,'s1')">顛沛流離</span>
+    <span class="chip" id="c1_6"  data-word="靜謐安詳" onclick="selectChip(this,'s1')">靜謐安詳</span>
+    <span class="chip" id="c1_7"  data-word="總統官邸" onclick="selectChip(this,'s1')">總統官邸</span>
+    <span class="chip" id="c1_8"  data-word="消耗殆盡" onclick="selectChip(this,'s1')">消耗殆盡</span>
+    <span class="chip" id="c1_9"  data-word="囂張跋扈" onclick="selectChip(this,'s1')">囂張跋扈</span>
+    <span class="chip" id="c1_10" data-word="纏綿悱惻" onclick="selectChip(this,'s1')">纏綿悱惻</span>
+  </div>
+  <ol>
+    <li>午後的公園讓人感到十分（<span class="blank" data-answer="靜謐安詳" onclick="tapBlank(this,'s1')"></span>）的氣氛。</li>
+    <li>地球上所有非再生資源都有固定儲藏量，若不珍惜資源，久而久之也將（<span class="blank" data-answer="消耗殆盡" onclick="tapBlank(this,'s1')"></span>）。</li>
+    <li>在促銷活動中，會有一些不肖商人用劣質商品（<span class="blank" data-answer="濫竽充數" onclick="tapBlank(this,'s1')"></span>），消費者購買時要特別小心。</li>
+    <li>中華民國（<span class="blank" data-answer="總統官邸" onclick="tapBlank(this,'s1')"></span>）是中華民國總統的正式居所。</li>
+    <li>以他的（<span class="blank" data-answer="聰明睿智" onclick="tapBlank(this,'s1')"></span>），將來必可在商場上占有一席之地。</li>
+    <li>這屋子已經有幾十年沒整修了，如今只剩（<span class="blank" data-answer="斷垣殘壁" onclick="tapBlank(this,'s1')"></span>）與叢生的野草。</li>
+    <li>正因為教授如此（<span class="blank" data-answer="鞭辟入裡" onclick="tapBlank(this,'s1')"></span>）的研究態度，才能把問題的細微處說得這麼清楚。</li>
+    <li>假如一個國家戰禍連年，必然造成人民（<span class="blank" data-answer="顛沛流離" onclick="tapBlank(this,'s1')"></span>）。</li>
+    <li>他為人（<span class="blank" data-answer="囂張跋扈" onclick="tapBlank(this,'s1')"></span>），處處得罪人。</li>
+    <li>（<span class="blank" data-answer="纏綿悱惻" onclick="tapBlank(this,'s1')"></span>）的愛情故事一直是小說中常見的題材。</li>
+    <li>看他（<span class="blank" data-answer="齜牙咧嘴" onclick="tapBlank(this,'s1')"></span>），瞠目一喝，把那娃兒嚇哭了。</li>
+  </ol>
+</div>
+
+<!-- Section 2 -->
+<div class="section">
+  <div class="section-title s2">（二）詞語填空 2　請將下列答案填入正確空格</div>
+  <div class="word-bank s2" id="bank2">
+    <span class="chip s2" id="c2_0"  data-word="催促上路" onclick="selectChip(this,'s2')">催促上路</span>
+    <span class="chip s2" id="c2_1"  data-word="爾虞我詐" onclick="selectChip(this,'s2')">爾虞我詐</span>
+    <span class="chip s2" id="c2_2"  data-word="水流湍急" onclick="selectChip(this,'s2')">水流湍急</span>
+    <span class="chip s2" id="c2_3"  data-word="晶瑩剔透" onclick="selectChip(this,'s2')">晶瑩剔透</span>
+    <span class="chip s2" id="c2_4"  data-word="實事求是" onclick="selectChip(this,'s2')">實事求是</span>
+    <span class="chip s2" id="c2_5"  data-word="胯下之辱" onclick="selectChip(this,'s2')">胯下之辱</span>
+    <span class="chip s2" id="c2_6"  data-word="滄海桑田" onclick="selectChip(this,'s2')">滄海桑田</span>
+    <span class="chip s2" id="c2_7"  data-word="態度輕蔑" onclick="selectChip(this,'s2')">態度輕蔑</span>
+    <span class="chip s2" id="c2_8"  data-word="舐犢情深" onclick="selectChip(this,'s2')">舐犢情深</span>
+    <span class="chip s2" id="c2_9"  data-word="滿腹牢騷" onclick="selectChip(this,'s2')">滿腹牢騷</span>
+    <span class="chip s2" id="c2_10" data-word="眺望遠方" onclick="selectChip(this,'s2')">眺望遠方</span>
+    <span class="chip s2" id="c2_11" data-word="滿目瘡痍" onclick="selectChip(this,'s2')">滿目瘡痍</span>
+    <span class="chip s2" id="c2_12" data-word="慕名而來" onclick="selectChip(this,'s2')">慕名而來</span>
+    <span class="chip s2" id="c2_13" data-word="鳩占鵲巢" onclick="selectChip(this,'s2')">鳩占鵲巢</span>
+    <span class="chip s2" id="c2_14" data-word="漫不經心" onclick="selectChip(this,'s2')">漫不經心</span>
+    <span class="chip s2" id="c2_15" data-word="對牛彈琴" onclick="selectChip(this,'s2')">對牛彈琴</span>
+  </div>
+  <ol>
+    <li>倘能將（<span class="blank s2" data-answer="胯下之辱" onclick="tapBlank(this,'s2')"></span>）轉為奮發向上的動力，則天下斷無不可成之事。</li>
+    <li>登上高峰，（<span class="blank s2" data-answer="眺望遠方" onclick="tapBlank(this,'s2')"></span>）的萬里雲山，心胸頓覺開闊。</li>
+    <li>他總是將部屬的業績據為己有，簡直是（<span class="blank s2" data-answer="鳩占鵲巢" onclick="tapBlank(this,'s2')"></span>）嘛！</li>
+    <li>你當初若能秉持（<span class="blank s2" data-answer="實事求是" onclick="tapBlank(this,'s2')"></span>）的原則寫新聞，怎會落得今日官司纏身的地步？</li>
+    <li>跟他講道理，簡直是（<span class="blank s2" data-answer="對牛彈琴" onclick="tapBlank(this,'s2')"></span>），還是別浪費口舌吧！</li>
+    <li>這間餐廳大部分的新顧客都是（<span class="blank s2" data-answer="慕名而來" onclick="tapBlank(this,'s2')"></span>）。</li>
+    <li>眾人對他的行為感到不齒，紛紛投以（<span class="blank s2" data-answer="態度輕蔑" onclick="tapBlank(this,'s2')"></span>）的眼神。</li>
+    <li>做事時要心神專一，若（<span class="blank s2" data-answer="漫不經心" onclick="tapBlank(this,'s2')"></span>），是很容易出錯的。</li>
+    <li>天色未明，母親即（<span class="blank s2" data-answer="催促上路" onclick="tapBlank(this,'s2')"></span>），以免搭不上校車。</li>
+    <li>戰亂之後，大街小巷（<span class="blank s2" data-answer="滿目瘡痍" onclick="tapBlank(this,'s2')"></span>），殘破不堪。</li>
+    <li>她對現在的工作（<span class="blank s2" data-answer="滿腹牢騷" onclick="tapBlank(this,'s2')"></span>），抱怨個不停。</li>
+    <li>我們應該公平競爭，不要（<span class="blank s2" data-answer="爾虞我詐" onclick="tapBlank(this,'s2')"></span>）地互相陷害！</li>
+    <li>颱風常常帶來豪雨，使得河水暴漲，（<span class="blank s2" data-answer="水流湍急" onclick="tapBlank(this,'s2')"></span>）。</li>
+    <li>荷葉上的露珠在朝陽的映照之下，顯得格外（<span class="blank s2" data-answer="晶瑩剔透" onclick="tapBlank(this,'s2')"></span>）。</li>
+    <li>林先生日夜不休地守在兒子的病榻前，（<span class="blank s2" data-answer="舐犢情深" onclick="tapBlank(this,'s2')"></span>）模樣，令人感動。</li>
+    <li>離開幾十年，今日重回故鄉，已是人事全非，頗有（<span class="blank s2" data-answer="滄海桑田" onclick="tapBlank(this,'s2')"></span>）之慨。</li>
+  </ol>
+</div>
+
+<div class="toolbar">
+  <button class="btn btn-check" onclick="checkAll()">✅ 對答案</button>
+  <div id="score-display"></div>
+  <button class="btn btn-reset" onclick="resetAll()">🔄 重設</button>
+</div>
+
+<!-- Lock overlay -->
+<div id="lock-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:22px;padding:32px 24px 28px;width:88%;max-width:340px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <div style="font-size:56px;line-height:1">🔒</div>
+    <div style="font-size:22px;font-weight:bold;margin:12px 0 6px;color:#e67e22">關卡暫時鎖定</div>
+    <div style="font-size:15px;color:#555;line-height:1.9;margin-bottom:6px">連續兩次全對！<br>請再完成其他 <b id="lock-remain">2</b> 個關卡再回來。</div>
+    <div style="font-size:13px;color:#999;margin-bottom:20px">可去玩：<span id="lock-others"></span></div>
+    <a href="index.html" style="display:block;padding:13px;background:linear-gradient(135deg,#667eea,#9b59b6);color:#fff;border-radius:12px;font-size:17px;font-family:標楷體,DFKai-SB,serif;font-weight:bold;text-decoration:none">🏠 去選其他關卡</a>
+  </div>
+</div>
+
+<script>
+const GAME_ID = 'u7chengyu';
+const FB_URL  = 'https://xinru-class-default-rtdb.firebaseio.com';
+const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空'};
+function getCDs(){return JSON.parse(localStorage.getItem('xr_cooldowns')||'{}');}
+function saveCDs(cd){localStorage.setItem('xr_cooldowns',JSON.stringify(cd));}
+function isLocked(){const g=getCDs()[GAME_ID];return !!(g&&g.locked&&(g.unlockBy||[]).length<2);}
+function reportComplete(perfect){
+  const cds=getCDs();
+  if(!cds[GAME_ID])cds[GAME_ID]={streak:0,locked:false,unlockBy:[]};
+  const me=cds[GAME_ID];
+  if(!me.locked){me.streak=perfect?(me.streak||0)+1:0;if(me.streak>=2){me.locked=true;me.unlockBy=[];}}
+  Object.keys(cds).forEach(id=>{
+    if(id===GAME_ID||!cds[id].locked)return;
+    if(!(cds[id].unlockBy||[]).includes(GAME_ID)){
+      cds[id].unlockBy=[...(cds[id].unlockBy||[]),GAME_ID];
+      if(cds[id].unlockBy.length>=2){cds[id].locked=false;cds[id].streak=0;cds[id].unlockBy=[];}
+    }
+  });
+  saveCDs(cds); pushToCloud();
+}
+async function pushToCloud(){
+  const name=localStorage.getItem('xr_name'); if(!name)return;
+  const d={stars:parseInt(localStorage.getItem('xr_stars')||'0'),records:JSON.parse(localStorage.getItem('xr_records')||'[]'),mistakes:JSON.parse(localStorage.getItem('xr_mistakes')||'{}'),cooldowns:getCDs(),updated:Date.now()};
+  try{await fetch(`${FB_URL}/accounts/${encodeURIComponent(name)}.json`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});}catch(e){}
+}
+function showLockOverlay(){
+  const cds=getCDs(),me=cds[GAME_ID]||{},done=(me.unlockBy||[]).length;
+  document.getElementById('lock-remain').textContent=2-done;
+  document.getElementById('lock-others').textContent=Object.keys(GAME_LABELS).filter(k=>k!==GAME_ID).map(k=>GAME_LABELS[k]).join('、');
+  document.getElementById('lock-overlay').style.display='flex';
+}
+document.addEventListener('DOMContentLoaded',()=>{ if(isLocked()) showLockOverlay(); });
+
+const MEANINGS = {
+  '斷垣殘壁':'形容建築物破損殘缺的樣子','聰明睿智':'形容人聰慧通達，有遠見',
+  '濫竽充數':'比喻沒有真才實學的人混在行家中充數','鞭辟入裡':'形容分析深刻透徹，直指核心',
+  '齜牙咧嘴':'形容張嘴露齒，因痛苦或憤怒的樣子','顛沛流離':'形容生活困苦，流落異鄉',
+  '靜謐安詳':'形容環境安靜，氣氛祥和','總統官邸':'總統的正式官方住所',
+  '消耗殆盡':'消耗到幾乎完全用完','囂張跋扈':'形容人驕橫傲慢，放肆無禮',
+  '纏綿悱惻':'形容感情真摯深厚，難以割捨','催促上路':'督促他人加快動作出發',
+  '爾虞我詐':'彼此相互欺騙，勾心鬥角','水流湍急':'河水急速流動',
+  '晶瑩剔透':'光亮透明，純潔無瑕','實事求是':'按照實際情況，切實辦事',
+  '胯下之辱':'忍受極大屈辱（出自韓信典故）','滄海桑田':'比喻世事多變，人生無常',
+  '態度輕蔑':'表現出看不起人的態度','舐犢情深':'形容父母對子女的深厚愛護',
+  '滿腹牢騷':'心情抑鬱，充滿怨言','眺望遠方':'向遠處眺望',
+  '滿目瘡痍':'所見到的都是殘破不堪的景象','慕名而來':'因仰慕名聲而前來',
+  '鳩占鵲巢':'比喻強占他人的地位或資源','漫不經心':'做事毫不留意，漫不在意',
+  '對牛彈琴':'比喻對不懂道理的人講道理，白費力氣'
+};
+
+function getStars(){return parseInt(localStorage.getItem('xr_stars')||'0');}
+function addStars(n){const s=getStars()+n;localStorage.setItem('xr_stars',s);document.getElementById('star-display').textContent=s;}
+function recordMistake(word){
+  const all=JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
+  if(!all[word])all[word]={word,meaning:MEANINGS[word]||'',wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
+  all[word].wrongCount++;all[word].lastWrong=new Date().toLocaleDateString('zh-TW');
+  if(MEANINGS[word])all[word].meaning=MEANINGS[word];
+  localStorage.setItem('xr_mistakes',JSON.stringify(all));
+}
+function speakWord(word){
+  if(!('speechSynthesis' in window))return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(word); u.lang='zh-TW'; u.rate=0.8;
+  const doSpeak=()=>{const voices=speechSynthesis.getVoices();const v=voices.find(v=>v.lang==='zh-TW')||voices.find(v=>v.lang.startsWith('zh'));if(v)u.voice=v;speechSynthesis.speak(u);};
+  speechSynthesis.getVoices().length?doSpeak():(speechSynthesis.onvoiceschanged=doSpeak);
+}
+
+let selected=null, selectedSection=null;
+let hadMistake=false;
+
+document.getElementById('star-display').textContent=getStars();
+
+function selectChip(el,sec){
+  if(el.classList.contains('used'))return;
+  speakWord(el.dataset.word);
+  if(selected===el){el.classList.remove('selected');selected=null;selectedSection=null;return;}
+  if(selected)selected.classList.remove('selected');
+  selected=el; selectedSection=sec; el.classList.add('selected');
+}
+
+function tapBlank(el,sec){
+  if(selected&&selectedSection===sec){
+    if(el.dataset.chipId)returnChip(el.dataset.chipId);
+    el.textContent=selected.dataset.word;
+    el.dataset.chipId=selected.id;
+    selected.classList.add('used'); selected.classList.remove('selected');
+    selected=null; selectedSection=null;
+    el.classList.remove('correct','wrong','highlight');
+  } else if(el.dataset.chipId){
+    returnChip(el.dataset.chipId);
+    el.textContent=''; delete el.dataset.chipId;
+    el.classList.remove('correct','wrong');
+  }
+}
+
+function returnChip(chipId){
+  const chip=document.getElementById(chipId);
+  if(chip){chip.classList.remove('used','selected');}
+}
+
+function checkAll(){
+  const blanks=document.querySelectorAll('.blank');
+  let correct=0;
+  blanks.forEach(b=>{
+    b.classList.remove('correct','wrong');
+    const filled=b.dataset.chipId?document.getElementById(b.dataset.chipId)?.dataset.word:'';
+    if(filled&&filled===b.dataset.answer){b.classList.add('correct');correct++;}
+    else{b.classList.add('wrong');hadMistake=true;recordMistake(b.dataset.answer);}
+  });
+  const total=blanks.length;
+  document.getElementById('score-display').textContent=`${correct} / ${total}`;
+  if(correct===total){
+    const stars=hadMistake?10:20; addStars(stars);
+    const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
+    recs.push({unit:'u7chengyu',acc:100,date:new Date().toLocaleDateString('zh-TW')});
+    if(recs.length>50)recs.splice(0,recs.length-50);
+    localStorage.setItem('xr_records',JSON.stringify(recs));
+    reportComplete(!hadMistake);
+    document.getElementById('score-display').textContent=`🎉 全對！+${stars}⭐`;
+  }
+}
+
+function resetAll(){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('used','selected'));
+  document.querySelectorAll('.blank').forEach(b=>{b.textContent='';delete b.dataset.chipId;b.classList.remove('correct','wrong','highlight');});
+  selected=null; selectedSection=null; hadMistake=false;
+  document.getElementById('score-display').textContent='';
+}
+</script>
+</body>
+</html>
