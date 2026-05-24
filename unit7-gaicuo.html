@@ -170,7 +170,7 @@ const GAICUO = [
   { wrong:'混身是勁', wrongChar:'混', correct:'渾', full:'渾身是勁', meaning:'形容精力充沛、幹勁十足', opts:['渾','溷','棍','湮'] },
 ];
 
-let order=[], idx=0, sessionStars=0, mistakeThis=false, totalCorrect=0, anyMistake=false;
+let order=[], idx=0, sessionStars=0, mistakeCount=0, totalCorrect=0, anyMistake=false;
 function getStars(){return parseInt(localStorage.getItem('xr_stars')||'0');}
 function addStars(n){const s=getStars()+n;localStorage.setItem('xr_stars',s);document.getElementById('star-display').textContent=s;sessionStars+=n;}
 function recordMistake(word,meaning,question){
@@ -194,7 +194,7 @@ function startGame(){
 }
 
 function showQ(){
-  const item=GAICUO[order[idx]]; mistakeThis=false;
+  const item=GAICUO[order[idx]]; mistakeCount=0;
   document.getElementById('prog-text').textContent=`${idx+1} / ${GAICUO.length}`;
   document.getElementById('q-num').textContent=`第 ${idx+1} 題 / 共 ${GAICUO.length} 題`;
   document.getElementById('prog-bar').style.width=`${(idx/GAICUO.length)*100}%`;
@@ -214,12 +214,16 @@ function onPick(btn,picked,item){
   const btns=document.querySelectorAll('.opt-btn'); btns.forEach(b=>b.disabled=true);
   if(picked===item.correct){
     btn.classList.add('correct');
-    const earned=mistakeThis?3:5; addStars(earned); totalCorrect++; showStarPop(`+${earned}⭐`);
+    const earned=mistakeCount===0?5:1;
+    if(mistakeCount===0)totalCorrect++;
+    addStars(earned); showStarPop(`+${earned}⭐`);
     const cr=document.getElementById('correct-reveal'); cr.textContent=`✅ 正確寫法：${item.full}`; cr.classList.add('show');
     speak(item.full); showFeedback(true,earned,item);
   } else {
     btn.classList.add('wrong');
-    if(!mistakeThis){mistakeThis=true;anyMistake=true;recordMistake(item.full,item.meaning,item.wrong);}
+    mistakeCount++;
+    if(mistakeCount===1){anyMistake=true;recordMistake(item.full,item.meaning,item.wrong);}
+    addStars(-mistakeCount); showStarPop(`-${mistakeCount}⭐`);
     setTimeout(()=>{btn.classList.remove('wrong');btn.disabled=false;btns.forEach(b=>{if(b!==btn)b.disabled=false;});},500);
   }
 }
@@ -240,7 +244,7 @@ function nextQ(){
 
 function showDone(){
   document.getElementById('prog-bar').style.width='100%';
-  document.getElementById('done-score').textContent=`答對 ${totalCorrect} / ${GAICUO.length} 題`;
+  document.getElementById('done-score').textContent=`首次答對 ${totalCorrect} / ${GAICUO.length} 題`;
   document.getElementById('done-stars').textContent=`本次獲得 ⭐ ${sessionStars}`;
   const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
   recs.push({unit:'u7gaicuo',acc:Math.round(totalCorrect/GAICUO.length*100),date:new Date().toLocaleDateString('zh-TW')});

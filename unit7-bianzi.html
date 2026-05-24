@@ -294,7 +294,7 @@ const BIANZI = [
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let order = [], idx = 0, sessionStars = 0;
-let mistakeThis = false, totalCorrect = 0, anyMistake = false;
+let mistakeCount = 0, totalCorrect = 0, anyMistake = false;
 
 function getStars()  { return parseInt(localStorage.getItem('xr_stars')||'0'); }
 function addStars(n) {
@@ -333,7 +333,7 @@ function startGame() {
 
 function showQ() {
   const item = BIANZI[order[idx]];
-  mistakeThis = false;
+  mistakeCount = 0;
 
   document.getElementById('prog-text').textContent = `${idx+1} / ${BIANZI.length}`;
   document.getElementById('q-num').textContent = `第 ${idx+1} 題 / 共 ${BIANZI.length} 題`;
@@ -369,9 +369,9 @@ function onPick(btn, picked, item) {
 
   if (picked === item.correct) {
     btn.classList.add('correct');
-    const earned = mistakeThis ? 3 : 5;
+    const earned = mistakeCount === 0 ? 5 : 1;
+    if (mistakeCount === 0) totalCorrect++;
     addStars(earned);
-    totalCorrect++;
     showStarPop(`+${earned}⭐`);
     // Show correct form
     const cr = document.getElementById('correct-reveal');
@@ -381,11 +381,10 @@ function onPick(btn, picked, item) {
     showFeedback(true, earned, item);
   } else {
     btn.classList.add('wrong');
-    if (!mistakeThis) {
-      mistakeThis = true;
-      anyMistake = true;
-      recordMistake(item.full, item.meaning, item.wrong);
-    }
+    mistakeCount++;
+    if (mistakeCount === 1) { anyMistake = true; recordMistake(item.full, item.meaning, item.wrong); }
+    addStars(-mistakeCount);
+    showStarPop(`-${mistakeCount}⭐`);
     setTimeout(() => {
       btn.classList.remove('wrong');
       btn.disabled = false;
@@ -416,7 +415,7 @@ function nextQ() {
 
 function showDone() {
   document.getElementById('prog-bar').style.width = '100%';
-  document.getElementById('done-score').textContent = `答對 ${totalCorrect} / ${BIANZI.length} 題`;
+  document.getElementById('done-score').textContent = `首次答對 ${totalCorrect} / ${BIANZI.length} 題`;
   document.getElementById('done-stars').textContent = `本次獲得 ⭐ ${sessionStars}`;
 
   const recs = JSON.parse(localStorage.getItem('xr_records')||'[]');
