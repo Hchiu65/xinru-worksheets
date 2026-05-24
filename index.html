@@ -36,9 +36,9 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 .no-badge   { font-size:12px; color:rgba(255,255,255,.45); margin-top:4px; }
 
 /* Action row */
-.actions { display:flex; gap:8px; padding:0 12px; margin-top:-22px; }
+.actions { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; padding:0 12px; margin-top:-22px; }
 .act-card {
-  flex:1; background:#fff; border-radius:16px; padding:11px 6px 10px;
+  background:#fff; border-radius:16px; padding:11px 6px 10px;
   text-align:center; box-shadow:0 5px 18px rgba(102,126,234,.16);
   text-decoration:none; color:#333; cursor:pointer; position:relative;
   transition:transform .12s;
@@ -60,10 +60,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 .sec-head { display:flex; align-items:center; gap:7px; padding:14px 14px 8px; font-size:15px; font-weight:bold; color:#555; }
 .sec-dot  { width:5px; height:5px; border-radius:50%; background:#667eea; flex-shrink:0; }
 
-/* Stats */
-.stats { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px; padding:0 12px; }
-.stat-box { background:#fff; border-radius:14px; padding:12px 10px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.06); }
-.stat-val { font-size:24px; font-weight:bold; }
+.stat-val { font-size:20px; font-weight:bold; }
 .stat-lbl { font-size:11px; color:#bbb; margin-top:1px; }
 .stat-sub { font-size:11px; margin-top:2px; }
 .v-purple{color:#667eea} .v-green{color:#2ecc71} .v-gold{color:#f39c12} .v-pink{color:#e84393}
@@ -147,7 +144,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
   <div class="badge-row" id="badge-row"></div>
 </div>
 
-<!-- Action buttons -->
+<!-- Hub row: shortcuts + stats -->
 <div class="actions">
   <a class="act-card" href="shop.html">
     <div class="act-icon i-shop">🏪</div>
@@ -161,15 +158,11 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     <div class="act-icon i-lb">🏆</div>
     <div class="act-label">排行榜</div>
   </a>
-  <div class="act-card" onclick="resetData()">
-    <div class="act-icon i-switch">🔄</div>
-    <div class="act-label">換人玩</div>
-  </div>
+  <div class="act-card" id="stat-plays"><div class="stat-val v-purple">—</div><div class="act-label">遊玩次數</div></div>
+  <div class="act-card" id="stat-acc"><div class="stat-val v-green">—</div><div class="act-label">最佳正確率</div></div>
+  <div class="act-card" id="stat-stars"><div class="stat-val v-gold">—</div><div class="act-label">目前星星</div></div>
+  <div class="act-card" id="stat-earned"><div class="stat-val v-pink">—</div><div class="act-label">累積獲得</div></div>
 </div>
-
-<!-- Stats -->
-<div class="sec-head"><div class="sec-dot"></div>學習統計</div>
-<div class="stats" id="stats-grid"></div>
 
 <!-- Mini leaderboard -->
 <div class="sec-head"><div class="sec-dot"></div>🏆 全班排行榜</div>
@@ -508,11 +501,10 @@ function render() {
 
   const bestAcc=records.length?Math.max(...records.map(r=>r.accuracy||0)):0;
   const totalEarned=records.reduce((s,r)=>s+(r.stars||0),0);
-  document.getElementById('stats-grid').innerHTML=`
-    <div class="stat-box"><div class="stat-val v-purple">${records.length}</div><div class="stat-lbl">遊玩次數</div></div>
-    <div class="stat-box"><div class="stat-val v-green">${bestAcc}%</div><div class="stat-lbl">最佳正確率</div></div>
-    <div class="stat-box"><div class="stat-val v-gold">${getStars()}</div><div class="stat-lbl">目前星星</div></div>
-    <div class="stat-box"><div class="stat-val v-pink">${totalEarned}</div><div class="stat-lbl">累積獲得</div></div>`;
+  document.getElementById('stat-plays').querySelector('.stat-val').textContent=records.length;
+  document.getElementById('stat-acc').querySelector('.stat-val').textContent=bestAcc+'%';
+  document.getElementById('stat-stars').querySelector('.stat-val').textContent=getStars();
+  document.getElementById('stat-earned').querySelector('.stat-val').textContent=totalEarned;
 
   // Lock indicators on unit cards
   document.querySelectorAll('.unit-card[data-gid]').forEach(card => {
