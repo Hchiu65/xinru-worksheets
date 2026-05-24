@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>找錯別字</title>
+<style>
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+body { font-family:"標楷體","DFKai-SB",serif; background:#fff8f0; min-height:100vh; color:#333; }
+
+header {
+  background:linear-gradient(135deg,#e67e22,#c0392b);
+  padding:14px 16px 12px;
+  display:flex; align-items:center; justify-content:space-between;
+  color:#fff;
+}
+.hdr-left { display:flex; align-items:center; gap:10px; }
+.btn-home { font-size:22px; text-decoration:none; }
+.hdr-title { font-size:18px; font-weight:bold; letter-spacing:2px; }
+.hdr-right { display:flex; align-items:center; gap:10px; }
+.star-pill {
+  background:rgba(255,255,255,.18); border-radius:20px;
+  padding:5px 12px; font-size:16px; font-weight:bold;
+}
+.progress-text { font-size:13px; opacity:.8; }
+
+.prog-bar-wrap { height:5px; background:rgba(255,255,255,.3); }
+.prog-bar { height:5px; background:#fff; transition:width .4s ease; }
+
+.main { padding:16px 14px 40px; max-width:480px; margin:0 auto; }
+
+/* Question card */
+.q-card {
+  background:#fff; border-radius:20px; padding:22px 18px 20px;
+  box-shadow:0 4px 20px rgba(230,126,34,.15); margin-bottom:18px;
+  text-align:center;
+}
+.q-num { font-size:13px; color:#aaa; margin-bottom:8px; }
+.q-label {
+  font-size:15px; color:#e67e22; font-weight:bold; margin-bottom:14px;
+  background:#fff3e0; border-radius:8px; padding:6px 12px; display:inline-block;
+}
+.q-idiom {
+  font-size:34px; font-weight:bold; letter-spacing:6px; margin-bottom:16px;
+  line-height:1.3;
+}
+.wrong-char {
+  display:inline-block; background:#c0392b; color:#fff;
+  border-radius:8px; padding:2px 4px; margin:0 1px;
+  animation:pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100%{ box-shadow:0 0 0 0 rgba(192,57,43,.5); }
+  50%{ box-shadow:0 0 0 8px rgba(192,57,43,0); }
+}
+.q-instruction { font-size:14px; color:#888; }
+
+.correct-reveal {
+  display:none; margin-top:14px;
+  background:#e8f5e9; border-radius:10px; padding:10px 14px;
+  font-size:16px; color:#2e7d32; font-weight:bold;
+}
+.correct-reveal.show { display:block; }
+
+/* Options */
+.opts-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  margin-bottom:18px;
+}
+.opt-btn {
+  background:#fff; border:2px solid #ffd7b0; border-radius:14px;
+  padding:20px 8px; font-size:32px; font-family:inherit;
+  cursor:pointer; color:#333; font-weight:bold;
+  transition:background .12s, border-color .12s, transform .1s;
+  text-align:center;
+}
+.opt-btn:active { transform:scale(.95); }
+.opt-btn.correct { background:#e8f5e9; border-color:#4caf50; }
+.opt-btn.wrong   { background:#fce4ec; border-color:#ef9a9a; animation:shake .35s; }
+.opt-btn:disabled { cursor:default; }
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  60%{transform:translateX(6px)}
+}
+
+/* Feedback overlay */
+#feedback {
+  display:none; position:fixed; inset:0;
+  align-items:center; justify-content:center;
+  background:rgba(0,0,0,.45); z-index:500; flex-direction:column;
+}
+#feedback.show { display:flex; }
+.fb-box {
+  background:#fff; border-radius:22px; padding:28px 24px 24px;
+  width:90%; max-width:350px; text-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,.25);
+}
+.fb-icon { font-size:52px; margin-bottom:8px; line-height:1; }
+.fb-title { font-size:21px; font-weight:bold; margin-bottom:6px; }
+.fb-stars { font-size:20px; color:#f5a623; margin-bottom:8px; }
+.fb-idiom {
+  font-size:24px; font-weight:bold; letter-spacing:4px;
+  color:#c0392b; margin-bottom:4px;
+}
+.fb-detail { font-size:14px; color:#555; margin-bottom:18px; line-height:1.7; }
+.fb-next {
+  width:100%; padding:13px; background:linear-gradient(135deg,#e67e22,#c0392b);
+  color:#fff; border:none; border-radius:12px;
+  font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold;
+}
+
+.star-pop {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:28px; font-weight:bold; color:#f5a623;
+  pointer-events:none; z-index:600;
+  animation:popUp .7s ease-out forwards;
+}
+@keyframes popUp {
+  0%{opacity:1;transform:translate(-50%,-50%) scale(.5)}
+  50%{opacity:1;transform:translate(-50%,-120%) scale(1.2)}
+  100%{opacity:0;transform:translate(-50%,-200%) scale(1)}
+}
+
+/* Done screen */
+#done-screen {
+  display:none; position:fixed; inset:0;
+  background:#fff8f0; align-items:center; justify-content:center;
+  z-index:800; flex-direction:column; padding:24px;
+}
+#done-screen.show { display:flex; }
+.done-box { text-align:center; max-width:340px; width:100%; }
+.done-icon { font-size:72px; margin-bottom:12px; }
+.done-title { font-size:26px; font-weight:bold; margin-bottom:8px; color:#e67e22; }
+.done-score { font-size:18px; color:#666; margin-bottom:8px; }
+.done-stars { font-size:32px; color:#f5a623; font-weight:bold; margin-bottom:24px; }
+.done-btn {
+  display:block; width:100%; padding:14px;
+  background:linear-gradient(135deg,#e67e22,#c0392b);
+  color:#fff; border:none; border-radius:14px;
+  font-size:18px; font-family:inherit; cursor:pointer; font-weight:bold;
+  margin-bottom:12px; text-decoration:none; text-align:center;
+}
+.done-btn.secondary { background:#fff3e0; color:#e67e22; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-left">
+    <a class="btn-home" href="index.html">🏠</a>
+    <div class="hdr-title">找錯別字</div>
+  </div>
+  <div class="hdr-right">
+    <div class="progress-text" id="prog-text">1 / 14</div>
+    <div class="star-pill">⭐ <span id="star-display">0</span></div>
+  </div>
+</header>
+<div class="prog-bar-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+
+<div class="main">
+  <div class="q-card">
+    <div class="q-num" id="q-num">第 1 題 / 共 14 題</div>
+    <div class="q-label">🔍 紅色的字寫錯了，選出正確的字！</div>
+    <div class="q-idiom" id="q-idiom"></div>
+    <div class="q-instruction">（點選下方正確的字來替換紅色的錯別字）</div>
+    <div class="correct-reveal" id="correct-reveal"></div>
+  </div>
+
+  <div class="opts-grid" id="opts-grid"></div>
+</div>
+
+<!-- Feedback -->
+<div id="feedback">
+  <div class="fb-box">
+    <div class="fb-icon" id="fb-icon"></div>
+    <div class="fb-title" id="fb-title"></div>
+    <div class="fb-stars" id="fb-stars"></div>
+    <div class="fb-idiom" id="fb-idiom"></div>
+    <div class="fb-detail" id="fb-detail"></div>
+    <button class="fb-next" onclick="nextQ()">繼續 →</button>
+  </div>
+</div>
+
+<!-- Done -->
+<div id="done-screen">
+  <div class="done-box">
+    <div class="done-icon">🏆</div>
+    <div class="done-title">找錯字完成！</div>
+    <div class="done-score" id="done-score"></div>
+    <div class="done-stars" id="done-stars"></div>
+    <button class="done-btn" onclick="replay()">🔁 再玩一次</button>
+    <a class="done-btn secondary" href="index.html">🏠 回主頁</a>
+  </div>
+</div>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────────
+const BIANZI = [
+  { wrong:'跨下之辱', wrongChar:'跨', correct:'胯', full:'胯下之辱',
+    meaning:'忍受極大屈辱（韓信曾從惡霸胯下爬過）',
+    opts:['胯','誇','垮','夸'] },
+  { wrong:'跳望遠方', wrongChar:'跳', correct:'眺', full:'眺望遠方',
+    meaning:'向遠處眺望',
+    opts:['眺','桃','挑','逃'] },
+  { wrong:'實事求事', wrongChar:'事', correct:'是', full:'實事求是',
+    meaning:'按實際情況，切實辦事',
+    opts:['是','氏','勢','侍'] },
+  { wrong:'對牛談琴', wrongChar:'談', correct:'彈', full:'對牛彈琴',
+    meaning:'比喻對不懂道理的人講道理，彼此無法溝通',
+    opts:['彈','談','探','貪'] },
+  { wrong:'屢行義務', wrongChar:'屢', correct:'履', full:'履行義務',
+    meaning:'執行、完成（義務或承諾）',
+    opts:['履','屢','慮','旅'] },
+  { wrong:'幕名而來', wrongChar:'幕', correct:'慕', full:'慕名而來',
+    meaning:'仰慕人家的好名聲而前來',
+    opts:['慕','暮','募','謀'] },
+  { wrong:'態度輕篾', wrongChar:'篾', correct:'蔑', full:'態度輕蔑',
+    meaning:'看不起別人、藐視',
+    opts:['蔑','滅','鐵','撇'] },
+  { wrong:'慢不經心', wrongChar:'慢', correct:'漫', full:'漫不經心',
+    meaning:'做事毫不留意、隨便',
+    opts:['漫','蔓','幔','鬘'] },
+  { wrong:'摧促上路', wrongChar:'摧', correct:'催', full:'催促上路',
+    meaning:'促使他人加快動作',
+    opts:['催','崔','堆','推'] },
+  { wrong:'滿目愴痍', wrongChar:'愴', correct:'瘡', full:'滿目瘡痍',
+    meaning:'所見到的都是殘破不堪的景象',
+    opts:['瘡','蒼','倉','槍'] },
+  { wrong:'滿腹勞騷', wrongChar:'勞', correct:'牢', full:'滿腹牢騷',
+    meaning:'心情抑鬱，一肚子怨言',
+    opts:['牢','撈','嘮','囉'] },
+  { wrong:'爾愚我詐', wrongChar:'愚', correct:'虞', full:'爾虞我詐',
+    meaning:'彼此鉤心鬥角，互相欺騙',
+    opts:['虞','娛','瑜','漁'] },
+  { wrong:'精瑩別透', wrongChar:'精', correct:'晶', full:'晶瑩剔透',
+    meaning:'光亮透明的樣子',
+    opts:['晶','睛','鯨','菁'] },
+  { wrong:'蒼海桑田', wrongChar:'蒼', correct:'滄', full:'滄海桑田',
+    meaning:'比喻世事多變，人生無常',
+    opts:['滄','艙','倉','傖'] },
+];
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let order = [], idx = 0, sessionStars = 0;
+let mistakeThis = false, totalCorrect = 0;
+
+function getStars()  { return parseInt(localStorage.getItem('xr_stars')||'0'); }
+function addStars(n) {
+  const s = getStars() + n;
+  localStorage.setItem('xr_stars', s);
+  document.getElementById('star-display').textContent = s;
+  sessionStars += n;
+}
+function recordMistake(word, meaning) {
+  const all = JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
+  if (!all[word]) all[word] = { word, meaning, wrongCount:0, practiceCount:0, lastWrong:'', mastered:false };
+  all[word].wrongCount++;
+  all[word].lastWrong = new Date().toLocaleDateString('zh-TW');
+  localStorage.setItem('xr_mistakes', JSON.stringify(all));
+}
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-TW'; u.rate = 0.8;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+function shuffle(arr) { return [...arr].sort(()=>Math.random()-.5); }
+
+function startGame() {
+  order = shuffle([...Array(BIANZI.length).keys()]);
+  idx = 0; sessionStars = 0; totalCorrect = 0;
+  document.getElementById('star-display').textContent = getStars();
+  document.getElementById('done-screen').classList.remove('show');
+  showQ();
+}
+
+function showQ() {
+  const item = BIANZI[order[idx]];
+  mistakeThis = false;
+
+  document.getElementById('prog-text').textContent = `${idx+1} / ${BIANZI.length}`;
+  document.getElementById('q-num').textContent = `第 ${idx+1} 題 / 共 ${BIANZI.length} 題`;
+  document.getElementById('prog-bar').style.width = `${(idx/BIANZI.length)*100}%`;
+  document.getElementById('correct-reveal').classList.remove('show');
+
+  // Build idiom HTML with wrong char highlighted
+  const idiomHtml = item.wrong.split('').map(ch =>
+    ch === item.wrongChar
+      ? `<span class="wrong-char">${ch}</span>`
+      : ch
+  ).join('');
+  document.getElementById('q-idiom').innerHTML = idiomHtml;
+
+  // Options
+  const shuffledOpts = shuffle(item.opts);
+  const grid = document.getElementById('opts-grid');
+  grid.innerHTML = '';
+  shuffledOpts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => onPick(btn, opt, item);
+    grid.appendChild(btn);
+  });
+
+  speak(item.wrong);
+}
+
+function onPick(btn, picked, item) {
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+
+  if (picked === item.correct) {
+    btn.classList.add('correct');
+    const earned = mistakeThis ? 3 : 5;
+    addStars(earned);
+    totalCorrect++;
+    showStarPop(`+${earned}⭐`);
+    // Show correct form
+    const cr = document.getElementById('correct-reveal');
+    cr.textContent = `✅ 正確寫法：${item.full}`;
+    cr.classList.add('show');
+    speak(item.full);
+    showFeedback(true, earned, item);
+  } else {
+    btn.classList.add('wrong');
+    if (!mistakeThis) {
+      mistakeThis = true;
+      recordMistake(item.full, item.meaning);
+    }
+    setTimeout(() => {
+      btn.classList.remove('wrong');
+      btn.disabled = false;
+      btns.forEach(b => { if (b !== btn) b.disabled = false; });
+    }, 500);
+  }
+}
+
+function showFeedback(correct, earned, item) {
+  document.getElementById('fb-icon').textContent = correct ? '🎯' : '💪';
+  document.getElementById('fb-title').textContent = correct ? '答對了！' : '繼續加油！';
+  document.getElementById('fb-stars').textContent = earned ? `+${earned} ⭐` : '';
+  document.getElementById('fb-idiom').textContent = item.full;
+  document.getElementById('fb-detail').innerHTML =
+    `<b>「${item.wrongChar}」</b> → <b>「${item.correct}」</b><br>${item.meaning}`;
+  document.getElementById('feedback').classList.add('show');
+}
+
+function nextQ() {
+  document.getElementById('feedback').classList.remove('show');
+  idx++;
+  if (idx >= BIANZI.length) {
+    showDone();
+  } else {
+    showQ();
+  }
+}
+
+function showDone() {
+  document.getElementById('prog-bar').style.width = '100%';
+  document.getElementById('done-score').textContent = `答對 ${totalCorrect} / ${BIANZI.length} 題`;
+  document.getElementById('done-stars').textContent = `本次獲得 ⭐ ${sessionStars}`;
+
+  const recs = JSON.parse(localStorage.getItem('xr_records')||'[]');
+  recs.push({ unit:'unit7-bianzi', acc:Math.round(totalCorrect/BIANZI.length*100), date:new Date().toLocaleDateString('zh-TW') });
+  if (recs.length > 50) recs.splice(0, recs.length - 50);
+  localStorage.setItem('xr_records', JSON.stringify(recs));
+
+  document.getElementById('done-screen').classList.add('show');
+}
+
+function showStarPop(text) {
+  const el = document.createElement('div');
+  el.className = 'star-pop';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 800);
+}
+
+function replay() { startGame(); }
+
+startGame();
+</script>
+</body>
+</html>

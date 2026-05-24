@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>字音辨正</title>
+<style>
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; min-height:100vh; color:#333; }
+
+header {
+  background:linear-gradient(135deg,#5b6de6,#9b59b6);
+  padding:14px 16px 12px;
+  display:flex; align-items:center; justify-content:space-between;
+  color:#fff;
+}
+.hdr-left { display:flex; align-items:center; gap:10px; }
+.btn-home { font-size:22px; text-decoration:none; }
+.hdr-title { font-size:18px; font-weight:bold; letter-spacing:2px; }
+.hdr-right { display:flex; align-items:center; gap:10px; }
+.star-pill {
+  background:rgba(255,255,255,.18); border-radius:20px;
+  padding:5px 12px; font-size:16px; font-weight:bold;
+}
+.progress-text { font-size:13px; opacity:.8; }
+
+/* Progress bar */
+.prog-bar-wrap { height:5px; background:rgba(255,255,255,.3); }
+.prog-bar { height:5px; background:#fff; transition:width .4s ease; }
+
+/* Main */
+.main { padding:16px 14px 40px; max-width:480px; margin:0 auto; }
+
+/* Question card */
+.q-card {
+  background:#fff; border-radius:20px; padding:22px 18px 20px;
+  box-shadow:0 4px 20px rgba(91,109,230,.15); margin-bottom:18px;
+  text-align:center;
+}
+.q-num { font-size:13px; color:#aaa; margin-bottom:6px; }
+.q-phrase {
+  font-size:30px; line-height:1.4; letter-spacing:3px; margin-bottom:14px;
+  word-break:break-all;
+}
+.focus-char {
+  display:inline-block; background:#f5a623; color:#fff;
+  border-radius:8px; padding:2px 8px;
+  font-size:34px; font-weight:bold; margin:0 2px;
+}
+.q-ask { font-size:16px; color:#666; margin-bottom:4px; }
+.q-ask span { color:#5b6de6; font-weight:bold; }
+.meaning-box {
+  display:none; margin-top:14px;
+  background:#f0fff4; border-radius:10px; padding:10px 14px;
+  font-size:15px; color:#2e7d32; border:1px solid #a5d6a7;
+}
+.meaning-box.show { display:block; }
+
+/* Options */
+.opts-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  margin-bottom:18px;
+}
+.opt-btn {
+  background:#fff; border:2px solid #dde3ff; border-radius:14px;
+  padding:18px 8px; font-size:22px; font-family:inherit;
+  cursor:pointer; color:#333; font-weight:bold; letter-spacing:1px;
+  transition:background .12s, border-color .12s, transform .1s;
+  text-align:center; line-height:1.3;
+}
+.opt-btn:active { transform:scale(.95); }
+.opt-btn.correct { background:#e8f5e9; border-color:#4caf50; color:#2e7d32; }
+.opt-btn.wrong   { background:#fce4ec; border-color:#ef9a9a; color:#c62828; animation:shake .35s; }
+.opt-btn:disabled { cursor:default; }
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  60%{transform:translateX(6px)}
+}
+
+/* Feedback overlay */
+#feedback {
+  display:none; position:fixed; inset:0;
+  align-items:center; justify-content:center;
+  background:rgba(0,0,0,.45); z-index:500; flex-direction:column;
+}
+#feedback.show { display:flex; }
+.fb-box {
+  background:#fff; border-radius:22px; padding:30px 28px 26px;
+  width:88%; max-width:340px; text-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,.25);
+}
+.fb-icon { font-size:56px; margin-bottom:8px; line-height:1; }
+.fb-title { font-size:22px; font-weight:bold; margin-bottom:6px; }
+.fb-stars { font-size:20px; color:#f5a623; margin-bottom:6px; }
+.fb-meaning { font-size:15px; color:#555; margin-bottom:18px; line-height:1.6; }
+.fb-next {
+  width:100%; padding:13px; background:linear-gradient(135deg,#5b6de6,#9b59b6);
+  color:#fff; border:none; border-radius:12px;
+  font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold;
+}
+
+/* Star pop */
+.star-pop {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:28px; font-weight:bold; color:#f5a623;
+  pointer-events:none; z-index:600;
+  animation:popUp .7s ease-out forwards;
+}
+@keyframes popUp {
+  0%{opacity:1;transform:translate(-50%,-50%) scale(.5)}
+  50%{opacity:1;transform:translate(-50%,-120%) scale(1.2)}
+  100%{opacity:0;transform:translate(-50%,-200%) scale(1)}
+}
+
+/* Done screen */
+#done-screen {
+  display:none; position:fixed; inset:0;
+  background:#f0f4ff; align-items:center; justify-content:center;
+  z-index:800; flex-direction:column; padding:24px;
+}
+#done-screen.show { display:flex; }
+.done-box { text-align:center; max-width:340px; width:100%; }
+.done-icon { font-size:72px; margin-bottom:12px; }
+.done-title { font-size:26px; font-weight:bold; margin-bottom:8px; color:#5b6de6; }
+.done-score { font-size:18px; color:#666; margin-bottom:20px; }
+.done-stars { font-size:32px; color:#f5a623; font-weight:bold; margin-bottom:24px; }
+.done-btn {
+  display:block; width:100%; padding:14px;
+  background:linear-gradient(135deg,#5b6de6,#9b59b6);
+  color:#fff; border:none; border-radius:14px;
+  font-size:18px; font-family:inherit; cursor:pointer; font-weight:bold;
+  margin-bottom:12px; text-decoration:none; text-align:center;
+}
+.done-btn.secondary { background:#e8eaff; color:#5b6de6; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-left">
+    <a class="btn-home" href="index.html">🏠</a>
+    <div class="hdr-title">字音辨正</div>
+  </div>
+  <div class="hdr-right">
+    <div class="progress-text" id="prog-text">1 / 15</div>
+    <div class="star-pill">⭐ <span id="star-display">0</span></div>
+  </div>
+</header>
+<div class="prog-bar-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+
+<div class="main">
+  <div class="q-card">
+    <div class="q-num" id="q-num">第 1 題 / 共 15 題</div>
+    <div class="q-phrase" id="q-phrase"></div>
+    <div class="q-ask">上面「　」內的字，注音是？</div>
+    <div class="meaning-box" id="meaning-box"></div>
+  </div>
+
+  <div class="opts-grid" id="opts-grid"></div>
+</div>
+
+<!-- Feedback -->
+<div id="feedback">
+  <div class="fb-box">
+    <div class="fb-icon" id="fb-icon"></div>
+    <div class="fb-title" id="fb-title"></div>
+    <div class="fb-stars" id="fb-stars"></div>
+    <div class="fb-meaning" id="fb-meaning"></div>
+    <button class="fb-next" onclick="nextQ()">繼續 →</button>
+  </div>
+</div>
+
+<!-- Done -->
+<div id="done-screen">
+  <div class="done-box">
+    <div class="done-icon">🎉</div>
+    <div class="done-title">字音辨正完成！</div>
+    <div class="done-score" id="done-score"></div>
+    <div class="done-stars" id="done-stars"></div>
+    <button class="done-btn" onclick="replay()">🔁 再玩一次</button>
+    <a class="done-btn secondary" href="index.html">🏠 回主頁</a>
+  </div>
+</div>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────────
+const ZIYIN = [
+  { phrase:'靜「悄悄」', char:'悄', correct:'ㄑ一ㄠˇ', opts:['ㄑ一ㄠˋ','ㄔㄠˇ','ㄑ一ㄠˊ'], meaning:'寂靜無聲' },
+  { phrase:'靜「謐」安詳', char:'謐', correct:'ㄇ一ˋ', opts:['ㄇ一ˊ','ㄇ一ˇ','ㄅ一ˋ'], meaning:'安靜、平和' },
+  { phrase:'消耗「殆」盡', char:'殆', correct:'ㄉㄞˋ', opts:['ㄉㄞˊ','ㄊㄞˋ','ㄉㄞˇ'], meaning:'幾乎、幾近全部' },
+  { phrase:'曖「昧」不明', char:'昧', correct:'ㄇㄟˋ', opts:['ㄇㄟˊ','ㄇㄟˇ','ㄇㄨˋ'], meaning:'含混不清、幽暗不明' },
+  { phrase:'濫「竽」充數', char:'竽', correct:'ㄩˊ', opts:['ㄩˇ','ㄩˋ','ㄩ'], meaning:'古代管樂器' },
+  { phrase:'獲得青「睞」', char:'睞', correct:'ㄌㄞˋ', opts:['ㄌㄞˊ','ㄌㄞˇ','ㄌㄢˋ'], meaning:'重視、另眼相待' },
+  { phrase:'總統官「邸」', char:'邸', correct:'ㄉ一ˇ', opts:['ㄉ一ˋ','ㄉ一ˊ','ㄌ一ˇ'], meaning:'官員住宅' },
+  { phrase:'聰明「睿」智', char:'睿', correct:'ㄖㄨㄟˋ', opts:['ㄖㄨㄟˊ','ㄖㄨㄟˇ','ㄖㄨˋ'], meaning:'深明通達的智慧' },
+  { phrase:'斷壁殘「垣」', char:'垣', correct:'ㄩㄢˊ', opts:['ㄩㄢˇ','ㄩㄢˋ','ㄩㄢ'], meaning:'矮牆' },
+  { phrase:'藏酒地「窖」', char:'窖', correct:'ㄐ一ㄠˋ', opts:['ㄐ一ㄠˇ','ㄐ一ㄠˊ','ㄐㄧㄠ'], meaning:'貯藏物品的地下室' },
+  { phrase:'鞭「辟」入裡', char:'辟', correct:'ㄅ一ˋ', opts:['ㄆ一ˋ','ㄅ一ˊ','ㄅ一ˇ'], meaning:'督策鼓勵' },
+  { phrase:'顛「沛」流離', char:'沛', correct:'ㄆㄟˋ', opts:['ㄆㄟˊ','ㄆㄟˇ','ㄅㄟˋ'], meaning:'生活困苦' },
+  { phrase:'囂張跋「扈」', char:'扈', correct:'ㄏㄨˋ', opts:['ㄏㄨˊ','ㄏㄨˇ','ㄏㄨ'], meaning:'驕橫無禮' },
+  { phrase:'繾綿「悱」惻', char:'悱', correct:'ㄈㄟˇ', opts:['ㄈㄟ','ㄈㄟˊ','ㄈㄟˋ'], meaning:'悲切、難以言說' },
+  { phrase:'齜牙「咧」嘴', char:'咧', correct:'ㄌ一ㄝˇ', opts:['ㄌ一ㄝˋ','ㄌㄧˇ','ㄌ一ㄝ'], meaning:'形容凶狠的樣子' },
+];
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let order = [], idx = 0, sessionStars = 0;
+let mistakeThis = false, totalCorrect = 0;
+
+function getStars()  { return parseInt(localStorage.getItem('xr_stars')||'0'); }
+function addStars(n) {
+  const s = getStars() + n; localStorage.setItem('xr_stars', s);
+  document.getElementById('star-display').textContent = s;
+  sessionStars += n;
+}
+function recordMistake(char, meaning) {
+  const all = JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
+  const key = char;
+  if (!all[key]) all[key] = { word:char, meaning, wrongCount:0, practiceCount:0, lastWrong:'', mastered:false };
+  all[key].wrongCount++;
+  all[key].lastWrong = new Date().toLocaleDateString('zh-TW');
+  localStorage.setItem('xr_mistakes', JSON.stringify(all));
+}
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-TW'; u.rate = 0.8;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────────
+function shuffle(arr) { return [...arr].sort(()=>Math.random()-.5); }
+
+function startGame() {
+  order = shuffle([...Array(ZIYIN.length).keys()]);
+  idx = 0; sessionStars = 0; totalCorrect = 0;
+  document.getElementById('star-display').textContent = getStars();
+  document.getElementById('done-screen').classList.remove('show');
+  showQ();
+}
+
+function showQ() {
+  const item = ZIYIN[order[idx]];
+  mistakeThis = false;
+
+  // Progress
+  document.getElementById('prog-text').textContent = `${idx+1} / ${ZIYIN.length}`;
+  document.getElementById('q-num').textContent = `第 ${idx+1} 題 / 共 ${ZIYIN.length} 題`;
+  document.getElementById('prog-bar').style.width = `${(idx/ZIYIN.length)*100}%`;
+
+  // Phrase: replace 「x」 with highlighted span
+  const html = item.phrase.replace(/「([^」]+)」/, '<span class="focus-char">$1</span>');
+  document.getElementById('q-phrase').innerHTML = html;
+  document.getElementById('meaning-box').classList.remove('show');
+
+  // Options: shuffle correct into wrong opts
+  const allOpts = shuffle([item.correct, ...item.opts]);
+  const grid = document.getElementById('opts-grid');
+  grid.innerHTML = '';
+  allOpts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => onPick(btn, opt, item);
+    grid.appendChild(btn);
+  });
+
+  speak(item.char);
+}
+
+function onPick(btn, picked, item) {
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+
+  if (picked === item.correct) {
+    btn.classList.add('correct');
+    const earned = mistakeThis ? 3 : 5;
+    addStars(earned);
+    totalCorrect++;
+    showStarPop(`+${earned}⭐`);
+    // Show meaning briefly
+    const mb = document.getElementById('meaning-box');
+    mb.textContent = `💡 ${item.char}：${item.meaning}`;
+    mb.classList.add('show');
+    speak(item.char);
+    showFeedback(true, earned, item);
+  } else {
+    btn.classList.add('wrong');
+    if (!mistakeThis) {
+      mistakeThis = true;
+      recordMistake(item.char, item.meaning);
+    }
+    setTimeout(() => {
+      btn.classList.remove('wrong');
+      btn.disabled = false;
+      btns.forEach(b => { if (b !== btn) b.disabled = false; });
+    }, 500);
+  }
+}
+
+function showFeedback(correct, earned, item) {
+  document.getElementById('fb-icon').textContent = correct ? '🎯' : '💪';
+  document.getElementById('fb-title').textContent = correct ? '答對了！' : '繼續加油！';
+  document.getElementById('fb-stars').textContent = earned ? `+${earned} ⭐` : '';
+  document.getElementById('fb-meaning').innerHTML =
+    `<b>「${item.char}」</b> ${item.correct}<br>意思：${item.meaning}`;
+  document.getElementById('feedback').classList.add('show');
+}
+
+function nextQ() {
+  document.getElementById('feedback').classList.remove('show');
+  idx++;
+  if (idx >= ZIYIN.length) {
+    showDone();
+  } else {
+    showQ();
+  }
+}
+
+function showDone() {
+  document.getElementById('prog-bar').style.width = '100%';
+  document.getElementById('done-score').textContent = `答對 ${totalCorrect} / ${ZIYIN.length} 題`;
+  document.getElementById('done-stars').textContent = `本次獲得 ⭐ ${sessionStars}`;
+
+  // Record
+  const recs = JSON.parse(localStorage.getItem('xr_records')||'[]');
+  recs.push({ unit:'unit7-ziyin', acc:Math.round(totalCorrect/ZIYIN.length*100), date:new Date().toLocaleDateString('zh-TW') });
+  if (recs.length > 50) recs.splice(0, recs.length - 50);
+  localStorage.setItem('xr_records', JSON.stringify(recs));
+
+  document.getElementById('done-screen').classList.add('show');
+}
+
+function showStarPop(text) {
+  const el = document.createElement('div');
+  el.className = 'star-pop';
+  el.textContent = text;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 800);
+}
+
+function replay() { startGame(); }
+
+// Init
+startGame();
+</script>
+</body>
+</html>
