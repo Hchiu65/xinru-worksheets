@@ -252,9 +252,12 @@ async function loadLeaderboard() {
   }
 
   setupEl.style.display = 'none';
-  contentEl.innerHTML = '<div class="spinner">⏳</div>';
+  const isFirstLoad = !contentEl.dataset.loaded;
+  if (isFirstLoad) {
+    contentEl.innerHTML = '<div class="spinner">⏳</div>';
+    statusEl.textContent = '載入中...';
+  }
   statusEl.className = 'status-bar';
-  statusEl.textContent = '載入中...';
 
   // Sync self first
   await syncSelf();
@@ -279,8 +282,8 @@ async function loadLeaderboard() {
     document.getElementById('updated-bar').textContent =
       '最後更新：' + new Date().toLocaleTimeString('zh-TW');
 
-    renderPodium(players, myUID);
-    renderList(players, myUID);
+    contentEl.dataset.loaded = '1';
+    renderAll(players, myUID);
 
   } catch(e) {
     statusEl.className = 'status-bar error';
@@ -293,57 +296,43 @@ async function loadLeaderboard() {
   autoRefreshTimer = setTimeout(loadLeaderboard, 30000);
 }
 
-function renderPodium(players, myUID) {
-  const top3 = players.slice(0, 3);
-  // reorder: 2nd, 1st, 3rd for visual podium
-  const order = [top3[1], top3[0], top3[2]].filter(Boolean);
-  const medals = top3[1] ? ['🥈','🥇','🥉'] : ['🥇','🥉']; // adjust if <3 players
+function renderAll(players, myUID) {
   const realMedals = { 0:'🥇', 1:'🥈', 2:'🥉' };
+  let html = '';
 
-  // Only render podium if ≥2 players
-  if (players.length < 2) return;
+  // Podium (≥2 players)
+  if (players.length >= 2) {
+    const top3 = players.slice(0, 3);
+    const order = [top3[1], top3[0], top3[2]].filter(Boolean);
+    const slots = order.map(p => {
+      const rank = players.indexOf(p);
+      const isMe = p.uid === myUID;
+      const medal = realMedals[rank] || '';
+      const redeemed = p.redeemed ? Object.entries(p.redeemed)
+        .filter(([,v])=>v>0).map(([k,v])=>`${REWARD_LABELS[k]||k}×${v}`).join(' ') : '';
+      return `
+      <div class="podium-slot rank${rank+1}${isMe?' me':''}">
+        ${isMe ? '<div class="you-tag">👈 你</div>' : ''}
+        <div class="medal">${medal}</div>
+        <div class="p-badge">${p.badge||'🐣'}</div>
+        <div class="p-name">${p.name||'?'}</div>
+        <div class="p-title">${p.title||''}</div>
+        <div class="p-stars">⭐ ${(p.stars||0).toLocaleString()}</div>
+        ${p.acc!=null ? `<div class="p-acc">最高正確率 ${p.acc}%</div>` : ''}
+        ${redeemed ? `<div style="font-size:11px;color:#c0392b;margin-top:4px">${redeemed}</div>` : ''}
+      </div>`;
+    });
+    html += `<div class="podium">${slots.join('')}</div>`;
+  }
 
-  const slots = order.map(p => {
-    const rank = players.indexOf(p); // 0-based
-    const isMe = p.uid === myUID;
-    const medal = realMedals[rank] || '';
-    const redeemed = p.redeemed ? Object.entries(p.redeemed)
-      .filter(([,v])=>v>0)
-      .map(([k,v])=>`${REWARD_LABELS[k]||k}×${v}`)
-      .join(' ') : '';
-    return `
-    <div class="podium-slot rank${rank+1}${isMe?' me':''}">
-      ${isMe ? '<div class="you-tag">👈 你</div>' : ''}
-      <div class="medal">${medal}</div>
-      <div class="p-badge">${p.badge||'🐣'}</div>
-      <div class="p-name">${p.name||'?'}</div>
-      <div class="p-title">${p.title||''}</div>
-      <div class="p-stars">⭐ ${(p.stars||0).toLocaleString()}</div>
-      ${p.acc!=null ? `<div class="p-acc">最高正確率 ${p.acc}%</div>` : ''}
-      ${redeemed ? `<div style="font-size:11px;color:#c0392b;margin-top:4px">${redeemed}</div>` : ''}
-    </div>`;
-  });
-
-  document.getElementById('lb-content').innerHTML =
-    `<div class="podium">${slots.join('')}</div>`;
-}
-
-function renderList(players, myUID) {
-  if (players.length === 0) return;
-
-  const startIdx = players.length >= 2 ? 3 : 0;
-  const rest = players.slice(startIdx);
-
-  // Always show full list below podium
-  let listHtml = '<div class="section-label">完整排名</div><div class="rank-list">';
-
+  // Full list
+  html += '<div class="section-label">完整排名</div><div class="rank-list">';
   players.forEach((p, i) => {
     const isMe = p.uid === myUID;
-    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    const medal = realMedals[i] || '';
     const redeemed = p.redeemed ? Object.entries(p.redeemed)
       .filter(([,v])=>v>0).map(([k,v])=>`${REWARD_LABELS[k]||k}×${v}`) : [];
-
-    listHtml += `
+    html += `
     <div class="rank-row${isMe?' me-row':''}">
       <div class="rank-num">${medal||('#'+(i+1))}</div>
       <div class="rank-badge-icon">${p.badge||'🐣'}</div>
@@ -358,11 +347,9 @@ function renderList(players, myUID) {
       </div>
     </div>`;
   });
+  html += '</div>';
 
-  listHtml += '</div>';
-
-  const content = document.getElementById('lb-content');
-  content.innerHTML = (content.innerHTML || '') + listHtml;
+  document.getElementById('lb-content').innerHTML = html;
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
