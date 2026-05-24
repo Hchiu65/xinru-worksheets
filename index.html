@@ -491,7 +491,6 @@ function render() {
   document.getElementById('star-count').textContent  = getStars();
 
   let bHtml='';
-  if (eq.badge&&owned[eq.badge]) bHtml+=`<span class="badge-chip">${BADGES[eq.badge]}</span>`;
   if (eq.title&&owned[eq.title]) bHtml+=`<span class="title-chip">${TITLES[eq.title]}</span>`;
   Object.keys(owned).forEach(id=>{ if(BADGES[id]&&id!==eq.badge) bHtml+=`<span class="badge-chip" style="opacity:.35">${BADGES[id]}</span>`; });
   document.getElementById('badge-row').innerHTML = bHtml||'<span class="no-badge">還沒有徽章，去商店換！</span>';
