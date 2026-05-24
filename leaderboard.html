@@ -169,7 +169,7 @@ header {
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const FB_URL = null; // Replace with your Firebase Realtime Database URL
+const FB_URL = "https://xinru-class-default-rtdb.firebaseio.com";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function getUID()  { let u=localStorage.getItem('xr_uid'); if(!u){u=crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2); localStorage.setItem('xr_uid',u);} return u; }
