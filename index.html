@@ -6,173 +6,127 @@
 <title>興儒六私國文班</title>
 <style>
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-body {
-  font-family: "標楷體","DFKai-SB",serif;
-  background: #f0f4ff;
-  color: #333;
-  padding-bottom: 36px;
-}
+body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333; padding-bottom:28px; }
 
-/* ── Hero ── */
+/* Hero */
 .hero {
-  background: linear-gradient(140deg, #667eea 0%, #9b59b6 100%);
-  padding: 22px 18px 48px;
-  position: relative; overflow: hidden;
+  background: linear-gradient(140deg,#667eea,#9b59b6);
+  padding: 18px 16px 38px; position: relative; overflow: hidden;
 }
-.hero::after {
-  content: '✦';
-  position: absolute; font-size: 120px; opacity: .06;
-  bottom: -20px; right: -10px; color: #fff; pointer-events: none;
-}
-.hero-row { display: flex; align-items: center; gap: 14px; }
+.hero::after { content:'✦'; position:absolute; font-size:100px; opacity:.06; bottom:-18px; right:-8px; color:#fff; pointer-events:none; }
+.hero-row { display:flex; align-items:center; gap:12px; }
 .avatar {
-  width: 54px; height: 54px; border-radius: 50%;
-  background: rgba(255,255,255,.25); border: 2px solid rgba(255,255,255,.45);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 24px; font-weight: bold; color: #fff; flex-shrink: 0;
+  width:48px; height:48px; border-radius:50%;
+  background:rgba(255,255,255,.25); border:2px solid rgba(255,255,255,.4);
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; flex-shrink:0;
 }
-.hero-info { flex: 1; min-width: 0; }
-.hero-name { font-size: 22px; color: #fff; font-weight: bold; letter-spacing: 1px; }
-.hero-edit  { font-size: 12px; color: rgba(255,255,255,.6); cursor: pointer; margin-top: 3px; text-decoration: underline; }
+.hero-info { flex:1; min-width:0; }
+.hero-name { font-size:20px; color:#fff; font-weight:bold; letter-spacing:1px; }
+.hero-edit  { font-size:12px; color:rgba(255,255,255,.6); cursor:pointer; text-decoration:underline; margin-top:2px; }
 .star-pill  {
-  background: rgba(255,255,255,.18); border: 1.5px solid rgba(255,255,255,.35);
-  border-radius: 22px; padding: 7px 14px;
-  display: flex; align-items: center; gap: 5px;
-  color: #fff; font-size: 20px; font-weight: bold; white-space: nowrap;
+  background:rgba(255,255,255,.18); border:1.5px solid rgba(255,255,255,.35);
+  border-radius:20px; padding:6px 12px;
+  display:flex; align-items:center; gap:4px;
+  color:#fff; font-size:18px; font-weight:bold; white-space:nowrap;
 }
-.badge-row  { display: flex; gap: 7px; margin-top: 13px; flex-wrap: wrap; align-items: center; }
-.badge-chip {
-  background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3);
-  border-radius: 20px; padding: 4px 10px; font-size: 18px; color: #fff;
-}
-.title-chip {
-  background: rgba(255,215,0,.22); border: 1px solid rgba(255,215,0,.45);
-  border-radius: 20px; padding: 4px 12px;
-  font-size: 13px; color: #ffd700; font-weight: bold;
-}
-.no-badge { font-size: 13px; color: rgba(255,255,255,.45); margin-top: 6px; }
+.badge-row  { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; align-items:center; }
+.badge-chip { background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.28); border-radius:20px; padding:3px 9px; font-size:16px; color:#fff; }
+.title-chip { background:rgba(255,215,0,.22); border:1px solid rgba(255,215,0,.4); border-radius:20px; padding:3px 10px; font-size:12px; color:#ffd700; font-weight:bold; }
+.no-badge   { font-size:12px; color:rgba(255,255,255,.45); margin-top:4px; }
 
-/* ── Action row (floating over hero) ── */
-.actions {
-  display: flex; gap: 10px;
-  padding: 0 14px;
-  margin-top: -28px;
-}
+/* Action row */
+.actions { display:flex; gap:8px; padding:0 12px; margin-top:-22px; }
 .act-card {
-  flex: 1; background: #fff; border-radius: 18px;
-  padding: 14px 8px 12px; text-align: center;
-  box-shadow: 0 6px 20px rgba(102,126,234,.18);
-  text-decoration: none; color: #333; cursor: pointer;
-  position: relative; transition: transform .12s;
+  flex:1; background:#fff; border-radius:16px; padding:11px 6px 10px;
+  text-align:center; box-shadow:0 5px 18px rgba(102,126,234,.16);
+  text-decoration:none; color:#333; cursor:pointer; position:relative;
+  transition:transform .12s;
 }
-.act-card:active { transform: scale(.94); }
-.act-icon {
-  width: 48px; height: 48px; border-radius: 13px; margin: 0 auto 8px;
-  display: flex; align-items: center; justify-content: center; font-size: 24px;
-}
-.i-shop    { background: linear-gradient(135deg,#f093fb,#f5576c); }
-.i-mistake { background: linear-gradient(135deg,#fda085,#f6d365); }
-.i-switch  { background: linear-gradient(135deg,#a8edea,#66a6ff); }
-.act-label { font-size: 14px; font-weight: bold; color: #666; }
+.act-card:active { transform:scale(.94); }
+.act-icon { width:40px; height:40px; border-radius:11px; margin:0 auto 7px; display:flex; align-items:center; justify-content:center; font-size:20px; }
+.i-shop    { background:linear-gradient(135deg,#f093fb,#f5576c); }
+.i-mistake { background:linear-gradient(135deg,#fda085,#f6d365); }
+.i-lb      { background:linear-gradient(135deg,#43e97b,#38f9d7); }
+.i-switch  { background:linear-gradient(135deg,#a8edea,#66a6ff); }
+.act-label { font-size:13px; font-weight:bold; color:#666; }
 .err-dot {
-  position: absolute; top: 9px; right: 9px;
-  background: #e74c3c; color: #fff; border-radius: 50%;
-  width: 20px; height: 20px; font-size: 11px; font-family: sans-serif;
-  display: flex; align-items: center; justify-content: center; font-weight: bold;
+  position:absolute; top:7px; right:7px; background:#e74c3c; color:#fff;
+  border-radius:50%; width:18px; height:18px; font-size:10px; font-family:sans-serif;
+  display:flex; align-items:center; justify-content:center; font-weight:bold;
 }
 
-/* ── Section heading ── */
-.sec-head {
-  display: flex; align-items: center; gap: 8px;
-  padding: 22px 16px 10px; font-size: 16px; font-weight: bold; color: #555;
-}
-.sec-dot { width: 6px; height: 6px; border-radius: 50%; background: #667eea; flex-shrink: 0; }
+/* Section heading */
+.sec-head { display:flex; align-items:center; gap:7px; padding:14px 14px 8px; font-size:15px; font-weight:bold; color:#555; }
+.sec-dot  { width:5px; height:5px; border-radius:50%; background:#667eea; flex-shrink:0; }
 
-/* ── Stats ── */
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 14px; }
-.stat-box {
-  background: #fff; border-radius: 16px; padding: 16px 12px;
-  text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,.06);
-}
-.stat-val { font-size: 28px; font-weight: bold; }
-.stat-lbl { font-size: 12px; color: #bbb; margin-top: 2px; }
-.stat-sub { font-size: 12px; margin-top: 3px; }
-.v-purple { color: #667eea; }
-.v-green  { color: #2ecc71; }
-.v-gold   { color: #f39c12; }
-.v-pink   { color: #e84393; }
+/* Stats */
+.stats { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:0 12px; }
+.stat-box { background:#fff; border-radius:14px; padding:12px 10px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+.stat-val { font-size:24px; font-weight:bold; }
+.stat-lbl { font-size:11px; color:#bbb; margin-top:1px; }
+.stat-sub { font-size:11px; margin-top:2px; }
+.v-purple{color:#667eea} .v-green{color:#2ecc71} .v-gold{color:#f39c12} .v-pink{color:#e84393}
 
-/* ── Unit cards ── */
-.unit-list { padding: 0 14px; display: flex; flex-direction: column; gap: 10px; }
+/* Mini leaderboard */
+.lb-card {
+  background:#fff; border-radius:16px; margin:0 12px; padding:14px;
+  box-shadow:0 2px 10px rgba(0,0,0,.07);
+}
+.lb-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.lb-title  { font-size:15px; font-weight:bold; color:#555; display:flex; align-items:center; gap:6px; }
+.lb-more   { font-size:13px; color:#667eea; cursor:pointer; text-decoration:none; }
+.lb-row {
+  display:flex; align-items:center; gap:10px; padding:7px 8px; border-radius:10px;
+  margin-bottom:4px; transition:background .1s;
+}
+.lb-row.me { background:#eef2ff; }
+.lb-rank   { font-size:18px; width:28px; text-align:center; flex-shrink:0; }
+.lb-name   { flex:1; font-size:16px; font-weight:bold; min-width:0; }
+.lb-badge  { font-size:16px; }
+.lb-stars  { font-size:14px; color:#f39c12; font-weight:bold; white-space:nowrap; }
+.lb-empty  { text-align:center; color:#bbb; font-size:14px; padding:10px 0; }
+.lb-offline{ text-align:center; color:#ddd; font-size:13px; padding:8px 0; }
+
+/* Unit cards */
+.unit-list { padding:0 12px; display:flex; flex-direction:column; gap:8px; }
 .unit-card {
-  background: #fff; border-radius: 18px; padding: 16px 14px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.07);
-  display: flex; align-items: center; gap: 13px;
-  text-decoration: none; color: #333; transition: transform .1s;
+  background:#fff; border-radius:16px; padding:13px 12px;
+  box-shadow:0 2px 10px rgba(0,0,0,.07);
+  display:flex; align-items:center; gap:12px;
+  text-decoration:none; color:#333; transition:transform .1s;
 }
-.unit-card:active { transform: scale(.97); }
-.unit-emoji {
-  width: 50px; height: 50px; border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 26px; flex-shrink: 0;
-}
-.ue-blue  { background: linear-gradient(135deg,#e0e7ff,#c7d2fe); }
-.ue-teal  { background: linear-gradient(135deg,#d1fae5,#a7f3d0); }
-.unit-body { flex: 1; min-width: 0; }
-.unit-title { font-size: 17px; font-weight: bold; }
-.unit-desc  { font-size: 13px; color: #aaa; margin-top: 2px; }
-.unit-tags  { display: flex; gap: 5px; margin-top: 7px; flex-wrap: wrap; }
-.tag { font-size: 11px; padding: 3px 9px; border-radius: 20px; }
-.tg-blue  { background: #eef2ff; color: #667eea; }
-.tg-green { background: #ecfdf5; color: #059669; }
-.tg-gold  { background: #fffbeb; color: #d97706; }
-.unit-arr { font-size: 22px; color: #d0d0d0; flex-shrink: 0; }
+.unit-card:active { transform:scale(.97); }
+.unit-emoji { width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.ue-blue { background:linear-gradient(135deg,#e0e7ff,#c7d2fe); }
+.ue-teal { background:linear-gradient(135deg,#d1fae5,#a7f3d0); }
+.unit-body  { flex:1; min-width:0; }
+.unit-title { font-size:16px; font-weight:bold; }
+.unit-desc  { font-size:12px; color:#aaa; margin-top:2px; }
+.unit-tags  { display:flex; gap:4px; margin-top:5px; flex-wrap:wrap; }
+.tag        { font-size:11px; padding:2px 8px; border-radius:20px; }
+.tg-blue{background:#eef2ff;color:#667eea} .tg-green{background:#ecfdf5;color:#059669} .tg-gold{background:#fffbeb;color:#d97706}
+.unit-arr   { font-size:20px; color:#d0d0d0; flex-shrink:0; }
 
-/* ── History ── */
-.hist-toggle {
-  display: block; text-align: center; margin: 12px 14px 0;
-  padding: 11px; background: #fff; border-radius: 12px; cursor: pointer;
-  font-size: 14px; color: #aaa; box-shadow: 0 1px 6px rgba(0,0,0,.06);
-}
-.hist-item {
-  background: #fff; border-radius: 12px; padding: 12px 14px;
-  margin: 0 14px 8px;
-  display: flex; justify-content: space-between; align-items: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,.05); font-size: 14px;
-}
-.hi-right { font-weight: bold; color: #f39c12; font-size: 15px; }
+/* History */
+.hist-toggle { display:block; text-align:center; margin:10px 12px 0; padding:9px; background:#fff; border-radius:10px; cursor:pointer; font-size:13px; color:#aaa; box-shadow:0 1px 5px rgba(0,0,0,.06); }
+.hist-item { background:#fff; border-radius:10px; padding:10px 12px; margin:0 12px 6px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 1px 4px rgba(0,0,0,.05); font-size:13px; }
+.hi-right { font-weight:bold; color:#f39c12; font-size:14px; }
 
-/* ── Name modal ── */
-#name-modal {
-  display: none; position: fixed; inset: 0;
-  background: rgba(50,30,80,.5);
-  align-items: center; justify-content: center; z-index: 900;
-}
-#name-modal.show { display: flex; }
-.modal-box {
-  background: #fff; border-radius: 22px; padding: 30px 24px;
-  width: 290px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,.2);
-}
-.modal-emoji { font-size: 42px; margin-bottom: 8px; }
-.modal-box h3 { color: #667eea; font-size: 20px; margin-bottom: 4px; }
-.modal-box p  { font-size: 14px; color: #bbb; margin-bottom: 16px; }
-#modal-input {
-  width: 100%; padding: 12px; font-size: 20px; font-family: inherit;
-  border: 2px solid #e0e7ff; border-radius: 12px; margin-bottom: 14px;
-  text-align: center; outline: none;
-}
-#modal-input:focus { border-color: #667eea; }
-.modal-btn {
-  width: 100%; padding: 14px;
-  background: linear-gradient(135deg,#667eea,#9b59b6);
-  color: #fff; border: none; border-radius: 12px;
-  font-size: 18px; font-family: inherit; cursor: pointer; font-weight: bold;
-}
+/* Modal */
+#name-modal { display:none; position:fixed; inset:0; background:rgba(50,30,80,.5); align-items:center; justify-content:center; z-index:900; }
+#name-modal.show { display:flex; }
+.modal-box { background:#fff; border-radius:22px; padding:28px 22px; width:280px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,.2); }
+.modal-emoji { font-size:40px; margin-bottom:8px; }
+.modal-box h3 { color:#667eea; font-size:19px; margin-bottom:4px; }
+.modal-box p  { font-size:13px; color:#bbb; margin-bottom:14px; }
+#modal-input { width:100%; padding:11px; font-size:19px; font-family:inherit; border:2px solid #e0e7ff; border-radius:11px; margin-bottom:12px; text-align:center; outline:none; }
+#modal-input:focus { border-color:#667eea; }
+.modal-btn { width:100%; padding:13px; background:linear-gradient(135deg,#667eea,#9b59b6); color:#fff; border:none; border-radius:11px; font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold; }
 </style>
 </head>
 <body>
 
-<!-- Hero section -->
 <div class="hero">
   <div class="hero-row">
     <div class="avatar" id="avatar">😊</div>
@@ -195,15 +149,29 @@ body {
     <div class="act-icon i-mistake">📝</div>
     <div class="act-label">錯題本</div>
   </a>
+  <a class="act-card" href="leaderboard.html">
+    <div class="act-icon i-lb">🏆</div>
+    <div class="act-label">排行榜</div>
+  </a>
   <div class="act-card" onclick="resetData()">
     <div class="act-icon i-switch">🔄</div>
-    <div class="act-label">換人遊玩</div>
+    <div class="act-label">換人玩</div>
   </div>
 </div>
 
 <!-- Stats -->
 <div class="sec-head"><div class="sec-dot"></div>學習統計</div>
 <div class="stats" id="stats-grid"></div>
+
+<!-- Mini leaderboard -->
+<div class="sec-head"><div class="sec-dot"></div>🏆 全班排行榜</div>
+<div class="lb-card">
+  <div class="lb-header">
+    <div class="lb-title">⭐ 星星排名</div>
+    <a class="lb-more" href="leaderboard.html">查看完整 →</a>
+  </div>
+  <div id="mini-lb"><div class="lb-offline">設定 Firebase 後即可看到全班排名</div></div>
+</div>
 
 <!-- Units -->
 <div class="sec-head"><div class="sec-dot"></div>第六冊　練習題目</div>
@@ -214,13 +182,12 @@ body {
       <div class="unit-title">第六單元　詞語填空</div>
       <div class="unit-desc">26 題，點選詞語填入空格</div>
       <div class="unit-tags">
-        <span class="tag tg-blue">填空練習</span>
-        <span class="tag tg-gold">⭐ 可得星星</span>
+        <span class="tag tg-blue">填空</span>
+        <span class="tag tg-gold">⭐ 得星星</span>
       </div>
     </div>
     <div class="unit-arr">›</div>
   </a>
-
   <a class="unit-card" href="unit6-match.html">
     <div class="unit-emoji ue-teal">🎮</div>
     <div class="unit-body">
@@ -228,18 +195,16 @@ body {
       <div class="unit-desc">兩輪 26 題配對＋終極挑戰</div>
       <div class="unit-tags">
         <span class="tag tg-green">遊戲</span>
-        <span class="tag tg-gold">⭐ 可得星星</span>
+        <span class="tag tg-gold">⭐ 得星星</span>
       </div>
     </div>
     <div class="unit-arr">›</div>
   </a>
 </div>
 
-<!-- History -->
 <div class="hist-toggle" id="hist-toggle" onclick="toggleHistory()">▾ 查看遊玩紀錄</div>
-<div id="history-section" style="display:none;margin-top:8px"></div>
+<div id="history-section" style="display:none;margin-top:6px"></div>
 
-<!-- Name modal -->
 <div id="name-modal">
   <div class="modal-box">
     <div class="modal-emoji">👋</div>
@@ -251,9 +216,17 @@ body {
 </div>
 
 <script>
-const BADGES = { b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄' };
-const TITLES = { t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王' };
-const AVATARS = ['😊','😄','🌟','🐼','🦊','🐯','🐉','🦄'];
+/* ── Firebase 設定（設定完成後取消註解並填入 URL） ──
+   1. 前往 https://console.firebase.google.com
+   2. 建立專案 → Realtime Database → 以測試模式啟動
+   3. 複製資料庫 URL（如 https://xinru-class-default-rtdb.asia-southeast1.firebasedatabase.app）
+   4. 貼到下方 FB_URL
+*/
+const FB_URL = null; // 例：'https://xinru-class-default-rtdb.asia-southeast1.firebasedatabase.app'
+
+const BADGES = {b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'};
+const TITLES  = {t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王'};
+const MEDALS  = ['🥇','🥈','🥉'];
 
 function getStars()    { return parseInt(localStorage.getItem('xr_stars')||'0'); }
 function getName()     { return localStorage.getItem('xr_name')||''; }
@@ -261,113 +234,128 @@ function getOwned()    { return JSON.parse(localStorage.getItem('xr_owned')||'{}
 function getEquipped() { return JSON.parse(localStorage.getItem('xr_equipped')||'{}'); }
 function getRecords()  { return JSON.parse(localStorage.getItem('xr_records')||'[]'); }
 function getMistakes() { return JSON.parse(localStorage.getItem('xr_mistakes')||'{}'); }
+function getUID() {
+  let uid = localStorage.getItem('xr_uid');
+  if (!uid) { uid = 'u'+Math.random().toString(36).slice(2,10)+Date.now().toString(36); localStorage.setItem('xr_uid',uid); }
+  return uid;
+}
 
+/* ── Firebase sync ── */
+async function syncToFirebase() {
+  if (!FB_URL || !getName()) return;
+  const eq = getOwned(), equipped = getEquipped(), records = getRecords();
+  const redeemed = JSON.parse(localStorage.getItem('xr_redeemed')||'[]');
+  const data = {
+    name: getName(),
+    stars: getStars(),
+    badge: (equipped.badge && eq[equipped.badge]) ? BADGES[equipped.badge] : '',
+    title: (equipped.title && eq[equipped.title]) ? TITLES[equipped.title]  : '',
+    bestAcc: records.length ? Math.max(...records.map(r=>r.accuracy||0)) : 0,
+    plays: records.length,
+    redeemed: redeemed.map(r=>r.id),
+    updated: new Date().toISOString()
+  };
+  try {
+    await fetch(`${FB_URL}/players/${getUID()}.json`, {
+      method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
+    });
+  } catch(e) {}
+}
+
+async function loadMiniLeaderboard() {
+  if (!FB_URL) return;
+  const el = document.getElementById('mini-lb');
+  try {
+    const res  = await fetch(`${FB_URL}/players.json`);
+    const data = await res.json();
+    if (!data) { el.innerHTML='<div class="lb-empty">還沒有人上榜</div>'; return; }
+    const myUID = getUID();
+    const players = Object.entries(data).map(([uid,p])=>({...p,uid}))
+      .sort((a,b)=>b.stars-a.stars).slice(0,5);
+    el.innerHTML = players.map((p,i)=>{
+      const isMe = p.uid===myUID;
+      const rank = i<3 ? MEDALS[i] : `#${i+1}`;
+      return `<div class="lb-row${isMe?' me':''}">
+        <div class="lb-rank">${rank}</div>
+        <div class="lb-badge">${p.badge||'　'}</div>
+        <div class="lb-name">${p.name}${isMe?' 👈':''}</div>
+        <div class="lb-stars">⭐ ${p.stars.toLocaleString()}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML='<div class="lb-offline">載入失敗，請稍後再試</div>';
+  }
+}
+
+/* ── Render ── */
 function render() {
   const name = getName();
   if (!name) { openNameModal(); return; }
 
-  // Avatar: pick based on equipped badge, else default
-  const eq = getEquipped();
-  const owned = getOwned();
-  const emojiList = Object.keys(BADGES);
-  const avatarEmoji = (eq.badge && owned[eq.badge]) ? BADGES[eq.badge] : '😊';
-  document.getElementById('avatar').textContent = avatarEmoji;
+  const eq = getEquipped(), owned = getOwned(), records = getRecords();
+  document.getElementById('avatar').textContent = (eq.badge&&owned[eq.badge]) ? BADGES[eq.badge] : '😊';
   document.getElementById('player-name').textContent = name;
   document.getElementById('star-count').textContent  = getStars();
 
-  // Badges + title
-  let badgeHtml = '';
-  if (eq.badge && owned[eq.badge]) badgeHtml += `<span class="badge-chip">${BADGES[eq.badge]}</span>`;
-  if (eq.title && owned[eq.title]) badgeHtml += `<span class="title-chip">${TITLES[eq.title]}</span>`;
-  // All other owned badges dim
-  Object.keys(owned).forEach(id => {
-    if (BADGES[id] && id !== eq.badge) badgeHtml += `<span class="badge-chip" style="opacity:.4">${BADGES[id]}</span>`;
-  });
-  document.getElementById('badge-row').innerHTML =
-    badgeHtml || '<span class="no-badge">還沒有徽章，去商店換！</span>';
+  // Badges
+  let bHtml = '';
+  if (eq.badge&&owned[eq.badge]) bHtml += `<span class="badge-chip">${BADGES[eq.badge]}</span>`;
+  if (eq.title&&owned[eq.title]) bHtml += `<span class="title-chip">${TITLES[eq.title]}</span>`;
+  Object.keys(owned).forEach(id=>{ if(BADGES[id]&&id!==eq.badge) bHtml+=`<span class="badge-chip" style="opacity:.35">${BADGES[id]}</span>`; });
+  document.getElementById('badge-row').innerHTML = bHtml || '<span class="no-badge">還沒有徽章，去商店換！</span>';
 
-  // Mistake badge
+  // Error dot
   const pending = Object.values(getMistakes()).filter(m=>!m.mastered).length;
   const mc = document.getElementById('mistake-card');
-  const existing = mc.querySelector('.err-dot');
-  if (existing) existing.remove();
-  if (pending > 0) {
-    const dot = document.createElement('div');
-    dot.className = 'err-dot';
-    dot.textContent = pending;
-    mc.appendChild(dot);
-  }
+  mc.querySelector('.err-dot')?.remove();
+  if (pending>0) { const d=document.createElement('div'); d.className='err-dot'; d.textContent=pending; mc.appendChild(d); }
 
   // Stats
-  const records = getRecords();
-  const plays = records.length;
-  const bestAcc = plays ? Math.max(...records.map(r=>r.accuracy||0)) : 0;
+  const bestAcc = records.length ? Math.max(...records.map(r=>r.accuracy||0)) : 0;
   const totalEarned = records.reduce((s,r)=>s+(r.stars||0),0);
   document.getElementById('stats-grid').innerHTML = `
-    <div class="stat-box">
-      <div class="stat-val v-purple">${plays}</div>
-      <div class="stat-lbl">遊玩次數</div>
-      <div class="stat-sub" style="color:#bbb">次</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-val v-green">${bestAcc}%</div>
-      <div class="stat-lbl">最佳正確率</div>
-      <div class="stat-sub" style="color:#bbb">歷史最高</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-val v-gold">${getStars()}</div>
-      <div class="stat-lbl">目前星星</div>
-      <div class="stat-sub" style="color:#f39c12">⭐ 可去商店花</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-val v-pink">${totalEarned}</div>
-      <div class="stat-lbl">累積獲得</div>
-      <div class="stat-sub" style="color:#bbb">⭐ 總計</div>
-    </div>
+    <div class="stat-box"><div class="stat-val v-purple">${records.length}</div><div class="stat-lbl">遊玩次數</div></div>
+    <div class="stat-box"><div class="stat-val v-green">${bestAcc}%</div><div class="stat-lbl">最佳正確率</div></div>
+    <div class="stat-box"><div class="stat-val v-gold">${getStars()}</div><div class="stat-lbl">目前星星</div></div>
+    <div class="stat-box"><div class="stat-val v-pink">${totalEarned}</div><div class="stat-lbl">累積獲得</div></div>
   `;
+
+  syncToFirebase();
+  loadMiniLeaderboard();
 }
 
-let histShown = false;
+let histShown=false;
 function toggleHistory() {
-  histShown = !histShown;
-  const sec = document.getElementById('history-section');
-  const toggle = document.getElementById('hist-toggle');
-  if (!histShown) { sec.style.display = 'none'; toggle.textContent = '▾ 查看遊玩紀錄'; return; }
-  toggle.textContent = '▴ 收起紀錄';
-  const records = getRecords();
-  if (!records.length) {
-    sec.innerHTML = '<p style="text-align:center;color:#bbb;padding:14px">還沒有紀錄，快去玩！🎮</p>';
-  } else {
-    sec.innerHTML = records.slice(0,10).map(r=>`
-      <div class="hist-item">
-        <div>${r.date} &nbsp; ${r.unit==='unit6-match'?'🎮 成語連連看':'📝 詞語填空'}</div>
-        <div class="hi-right">+${r.stars||0} ⭐</div>
-      </div>`).join('');
-  }
-  sec.style.display = 'block';
+  histShown=!histShown;
+  const sec=document.getElementById('history-section'), tog=document.getElementById('hist-toggle');
+  if (!histShown) { sec.style.display='none'; tog.textContent='▾ 查看遊玩紀錄'; return; }
+  tog.textContent='▴ 收起紀錄';
+  const records=getRecords();
+  sec.innerHTML = records.length
+    ? records.slice(0,10).map(r=>`<div class="hist-item"><div>${r.date} ${r.unit==='unit6-match'?'🎮 連連看':'📝 填空'}</div><div class="hi-right">+${r.stars||0} ⭐</div></div>`).join('')
+    : '<p style="text-align:center;color:#bbb;padding:12px">還沒有紀錄！</p>';
+  sec.style.display='block';
 }
 
 function resetData() {
-  if (!confirm('確定要換人遊玩嗎？\n（清除名字，星星和徽章保留）')) return;
+  if (!confirm('確定換人遊玩？\n（清除名字，星星與徽章保留）')) return;
   localStorage.removeItem('xr_name');
   location.reload();
 }
 
 function openNameModal() {
-  document.getElementById('modal-input').value = getName();
+  document.getElementById('modal-input').value=getName();
   document.getElementById('name-modal').classList.add('show');
-  setTimeout(() => document.getElementById('modal-input').focus(), 100);
+  setTimeout(()=>document.getElementById('modal-input').focus(),100);
 }
-
 function saveName() {
-  const v = document.getElementById('modal-input').value.trim();
-  if (!v) return;
-  localStorage.setItem('xr_name', v);
+  const v=document.getElementById('modal-input').value.trim();
+  if(!v) return;
+  localStorage.setItem('xr_name',v);
   document.getElementById('name-modal').classList.remove('show');
   render();
 }
-
-document.getElementById('modal-input').addEventListener('keydown', e => { if (e.key==='Enter') saveName(); });
+document.getElementById('modal-input').addEventListener('keydown',e=>{ if(e.key==='Enter') saveName(); });
 
 render();
 </script>

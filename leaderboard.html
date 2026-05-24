@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>班級排行榜</title>
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: "標楷體","DFKai-SB",serif;
+  background: #f0f4f8; margin: 0; padding: 0 0 40px; color: #222;
+  min-height: 100vh;
+}
+header {
+  background: linear-gradient(135deg, #2c5f8a 0%, #1a3a5c 100%);
+  color: #fff; padding: 16px 16px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hdr-left h1 { margin: 0; font-size: 22px; letter-spacing: 2px; }
+.hdr-left p  { margin: 3px 0 0; font-size: 13px; opacity: .75; }
+.hdr-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.star-badge {
+  background: rgba(255,255,255,.18); border-radius: 20px;
+  padding: 6px 14px; font-size: 20px; font-weight: bold;
+}
+.refresh-btn {
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.3);
+  color: #fff; border-radius: 12px; padding: 4px 12px;
+  font-size: 13px; font-family: inherit; cursor: pointer;
+}
+.refresh-btn:active { opacity: .7; }
+
+.back-btn {
+  display: inline-block; margin: 10px 14px 0;
+  color: #2c5f8a; font-size: 16px; cursor: pointer;
+  text-decoration: none; font-family: inherit;
+}
+
+/* Status bar */
+.status-bar {
+  text-align: center; font-size: 13px; color: #888;
+  padding: 6px 0 0;
+}
+.status-bar.error { color: #c0392b; }
+.status-bar.ok    { color: #27ae60; }
+
+/* Setup panel */
+#setup-panel {
+  margin: 14px 14px 0;
+  background: #fff8e1; border-radius: 14px;
+  padding: 16px; border-left: 4px solid #f5a623;
+  display: none;
+}
+#setup-panel h3 { margin: 0 0 10px; font-size: 17px; color: #c0392b; }
+#setup-panel ol { margin: 0; padding-left: 20px; font-size: 14px; line-height: 2; }
+#setup-panel code { background: #eee; border-radius: 4px; padding: 1px 5px; font-size: 13px; }
+
+/* Podium (top 3) */
+.podium {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 10px; padding: 20px 14px 10px;
+}
+.podium-slot {
+  flex: 1; max-width: 130px;
+  background: #fff; border-radius: 14px;
+  text-align: center; padding: 14px 8px 12px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.1);
+  position: relative; transition: transform .2s;
+}
+.podium-slot.rank1 { border: 2px solid #f5a623; transform: translateY(-12px); }
+.podium-slot.rank2 { border: 2px solid #b0bec5; }
+.podium-slot.rank3 { border: 2px solid #cd7f32; }
+.podium-slot.me    { box-shadow: 0 0 0 3px #9c27b0, 0 3px 16px rgba(156,39,176,.25); }
+.medal  { font-size: 30px; line-height: 1; margin-bottom: 4px; }
+.p-badge { font-size: 28px; margin-bottom: 2px; }
+.p-name  { font-size: 16px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.p-title { font-size: 12px; color: #9c27b0; margin: 2px 0; min-height: 18px; }
+.p-stars { font-size: 18px; color: #f5a623; font-weight: bold; margin-top: 4px; }
+.p-acc   { font-size: 12px; color: #888; margin-top: 2px; }
+.you-tag {
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  background: #9c27b0; color: #fff; border-radius: 8px;
+  font-size: 11px; padding: 2px 8px; white-space: nowrap;
+}
+
+/* List */
+.section-label {
+  font-size: 13px; color: #888; letter-spacing: 2px;
+  padding: 10px 14px 4px;
+}
+.rank-list { padding: 0 12px; display: flex; flex-direction: column; gap: 8px; }
+.rank-row {
+  background: #fff; border-radius: 12px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.07);
+}
+.rank-row.me-row { border: 2px solid #9c27b0; background: #fdf3ff; }
+.rank-num  { font-size: 18px; font-weight: bold; color: #999; min-width: 28px; text-align: center; }
+.rank-badge-icon { font-size: 26px; }
+.rank-info { flex: 1; }
+.rank-name  { font-size: 16px; font-weight: bold; }
+.rank-title { font-size: 12px; color: #9c27b0; min-height: 16px; }
+.rank-right { text-align: right; }
+.rank-stars { font-size: 17px; color: #f5a623; font-weight: bold; }
+.rank-acc   { font-size: 12px; color: #888; }
+
+/* Redeemed chips */
+.redeemed-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.chip {
+  background: #fff3e0; border-radius: 8px; font-size: 12px;
+  padding: 2px 7px; color: #c0392b;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center; padding: 40px 20px; color: #aaa;
+}
+.empty-state .big { font-size: 48px; margin-bottom: 10px; }
+.empty-state p { font-size: 16px; }
+
+/* Spinner */
+.spinner {
+  text-align: center; padding: 40px;
+  font-size: 28px; animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Last updated */
+.updated-bar {
+  text-align: center; font-size: 12px; color: #aaa;
+  padding: 10px 0 0;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-left">
+    <h1>🏆 班級排行榜</h1>
+    <p>看看你在班級中的排名！</p>
+  </div>
+  <div class="hdr-right">
+    <div class="star-badge">⭐ <span id="my-stars">0</span></div>
+    <button class="refresh-btn" onclick="loadLeaderboard()">🔄 重新整理</button>
+  </div>
+</header>
+
+<a class="back-btn" href="index.html">🏠 回主頁</a>
+
+<div id="status-bar" class="status-bar"></div>
+
+<div id="setup-panel">
+  <h3>🔧 排行榜尚未啟用</h3>
+  <p style="font-size:14px;margin:0 0 10px;color:#666;">老師請完成以下設定，讓全班可以互相比較排名：</p>
+  <ol>
+    <li>前往 <code>firebase.google.com</code>，用 Google 帳號登入</li>
+    <li>點「新增專案」→ 輸入名稱（如 xinru-class）→ 建立</li>
+    <li>左側選「建構」→「Realtime Database」→「建立資料庫」</li>
+    <li>選「以測試模式啟動」→ 完成</li>
+    <li>複製資料庫網址（格式：<code>https://xxxxx-default-rtdb.firebaseio.com</code>）</li>
+    <li>開啟 <code>index.html</code> 與 <code>leaderboard.html</code>，將 <code>FB_URL = null</code> 改為 <code>FB_URL = "你的網址"</code></li>
+    <li>重新 commit &amp; push 即可</li>
+  </ol>
+</div>
+
+<div id="lb-content"><div class="spinner">⏳</div></div>
+<div class="updated-bar" id="updated-bar"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const FB_URL = null; // Replace with your Firebase Realtime Database URL
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function getUID()  { let u=localStorage.getItem('xr_uid'); if(!u){u=crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2); localStorage.setItem('xr_uid',u);} return u; }
+function getName() { return localStorage.getItem('xr_name')||''; }
+function getStars(){ return parseInt(localStorage.getItem('xr_stars')||'0'); }
+function getOwned(){ return JSON.parse(localStorage.getItem('xr_owned')||'{}'); }
+function getEquipped(){ return JSON.parse(localStorage.getItem('xr_equipped')||'{}'); }
+function getRedeemed(){ return JSON.parse(localStorage.getItem('xr_redeemed')||'[]'); }
+function getRecords(){ return JSON.parse(localStorage.getItem('xr_records')||'[]'); }
+
+const BADGE_MAP = {
+  b_panda:'🐼', b_fox:'🦊', b_penguin:'🐧', b_butterfly:'🦋',
+  b_tiger:'🐯', b_lion:'🦁', b_dragon:'🐉', b_unicorn:'🦄'
+};
+const TITLE_MAP = {
+  t_expert:'成語小達人', t_master:'成語大師', t_king:'成語無敵王'
+};
+
+function getBadgeEmoji(equipped) {
+  return (equipped && equipped.badge && BADGE_MAP[equipped.badge]) || '🐣';
+}
+function getTitleText(equipped) {
+  return (equipped && equipped.title && TITLE_MAP[equipped.title]) || '';
+}
+
+function bestAccuracy() {
+  const recs = getRecords();
+  if (!recs.length) return null;
+  return Math.max(...recs.map(r => r.acc || 0));
+}
+
+function countRedeemed() {
+  const r = getRedeemed();
+  const counts = {};
+  r.forEach(i => { counts[i.id] = (counts[i.id]||0) + 1; });
+  return counts;
+}
+
+const REWARD_LABELS = {
+  r_sticker1:'貼紙', r_sticker3:'貼紙×3', r_score3:'加分+3', r_score5:'加分+5'
+};
+
+// ── Sync current player to Firebase ──────────────────────────────────────────
+async function syncSelf() {
+  if (!FB_URL || !getName()) return;
+  const name = getName();
+  const stars = getStars();
+  const equipped = getEquipped();
+  const badge = getBadgeEmoji(equipped);
+  const title = getTitleText(equipped);
+  const acc = bestAccuracy();
+  const redeemed = countRedeemed();
+  const plays = getRecords().length;
+  const data = { name, stars, badge, title, acc, plays, redeemed, updated: Date.now() };
+  try {
+    await fetch(`${FB_URL}/players/${getUID()}.json`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  } catch(e) { /* ignore */ }
+}
+
+// ── Load & render leaderboard ─────────────────────────────────────────────────
+let autoRefreshTimer = null;
+
+async function loadLeaderboard() {
+  const statusEl = document.getElementById('status-bar');
+  const contentEl = document.getElementById('lb-content');
+  const setupEl   = document.getElementById('setup-panel');
+
+  // No Firebase configured
+  if (!FB_URL) {
+    setupEl.style.display = 'block';
+    contentEl.innerHTML = '';
+    statusEl.className = 'status-bar error';
+    statusEl.textContent = '排行榜需要設定 Firebase 才能使用（見下方說明）';
+    document.getElementById('updated-bar').textContent = '';
+    return;
+  }
+
+  setupEl.style.display = 'none';
+  contentEl.innerHTML = '<div class="spinner">⏳</div>';
+  statusEl.className = 'status-bar';
+  statusEl.textContent = '載入中...';
+
+  // Sync self first
+  await syncSelf();
+
+  try {
+    const res = await fetch(`${FB_URL}/players.json`);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const raw = await res.json();
+
+    if (!raw) {
+      contentEl.innerHTML = `<div class="empty-state"><div class="big">🏜️</div><p>還沒有玩家資料<br>快去答題賺星星！</p></div>`;
+      statusEl.textContent = '';
+      return;
+    }
+
+    const myUID = getUID();
+    const players = Object.entries(raw).map(([uid, d]) => ({ uid, ...d }));
+    players.sort((a, b) => (b.stars||0) - (a.stars||0));
+
+    statusEl.className = 'status-bar ok';
+    statusEl.textContent = `共 ${players.length} 位同學`;
+    document.getElementById('updated-bar').textContent =
+      '最後更新：' + new Date().toLocaleTimeString('zh-TW');
+
+    renderPodium(players, myUID);
+    renderList(players, myUID);
+
+  } catch(e) {
+    statusEl.className = 'status-bar error';
+    statusEl.textContent = '讀取失敗，請檢查網路連線';
+    contentEl.innerHTML = `<div class="empty-state"><div class="big">📡</div><p>無法連線到伺服器<br>請稍後再試</p></div>`;
+  }
+
+  // Auto-refresh every 30s
+  clearTimeout(autoRefreshTimer);
+  autoRefreshTimer = setTimeout(loadLeaderboard, 30000);
+}
+
+function renderPodium(players, myUID) {
+  const top3 = players.slice(0, 3);
+  // reorder: 2nd, 1st, 3rd for visual podium
+  const order = [top3[1], top3[0], top3[2]].filter(Boolean);
+  const medals = top3[1] ? ['🥈','🥇','🥉'] : ['🥇','🥉']; // adjust if <3 players
+  const realMedals = { 0:'🥇', 1:'🥈', 2:'🥉' };
+
+  // Only render podium if ≥2 players
+  if (players.length < 2) return;
+
+  const slots = order.map(p => {
+    const rank = players.indexOf(p); // 0-based
+    const isMe = p.uid === myUID;
+    const medal = realMedals[rank] || '';
+    const redeemed = p.redeemed ? Object.entries(p.redeemed)
+      .filter(([,v])=>v>0)
+      .map(([k,v])=>`${REWARD_LABELS[k]||k}×${v}`)
+      .join(' ') : '';
+    return `
+    <div class="podium-slot rank${rank+1}${isMe?' me':''}">
+      ${isMe ? '<div class="you-tag">👈 你</div>' : ''}
+      <div class="medal">${medal}</div>
+      <div class="p-badge">${p.badge||'🐣'}</div>
+      <div class="p-name">${p.name||'?'}</div>
+      <div class="p-title">${p.title||''}</div>
+      <div class="p-stars">⭐ ${(p.stars||0).toLocaleString()}</div>
+      ${p.acc!=null ? `<div class="p-acc">最高正確率 ${p.acc}%</div>` : ''}
+      ${redeemed ? `<div style="font-size:11px;color:#c0392b;margin-top:4px">${redeemed}</div>` : ''}
+    </div>`;
+  });
+
+  document.getElementById('lb-content').innerHTML =
+    `<div class="podium">${slots.join('')}</div>`;
+}
+
+function renderList(players, myUID) {
+  if (players.length === 0) return;
+
+  const startIdx = players.length >= 2 ? 3 : 0;
+  const rest = players.slice(startIdx);
+
+  // Always show full list below podium
+  let listHtml = '<div class="section-label">完整排名</div><div class="rank-list">';
+
+  players.forEach((p, i) => {
+    const isMe = p.uid === myUID;
+    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    const redeemed = p.redeemed ? Object.entries(p.redeemed)
+      .filter(([,v])=>v>0).map(([k,v])=>`${REWARD_LABELS[k]||k}×${v}`) : [];
+
+    listHtml += `
+    <div class="rank-row${isMe?' me-row':''}">
+      <div class="rank-num">${medal||('#'+(i+1))}</div>
+      <div class="rank-badge-icon">${p.badge||'🐣'}</div>
+      <div class="rank-info">
+        <div class="rank-name">${p.name||'?'}${isMe?' 👈':''}</div>
+        <div class="rank-title">${p.title||''}</div>
+        ${redeemed.length ? `<div class="redeemed-chips">${redeemed.map(r=>`<span class="chip">${r}</span>`).join('')}</div>` : ''}
+      </div>
+      <div class="rank-right">
+        <div class="rank-stars">⭐ ${(p.stars||0).toLocaleString()}</div>
+        ${p.acc!=null ? `<div class="rank-acc">正確率 ${p.acc}%</div>` : ''}
+      </div>
+    </div>`;
+  });
+
+  listHtml += '</div>';
+
+  const content = document.getElementById('lb-content');
+  content.innerHTML = (content.innerHTML || '') + listHtml;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.getElementById('my-stars').textContent = getStars().toLocaleString();
+loadLeaderboard();
+</script>
+</body>
+</html>
