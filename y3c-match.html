@@ -316,6 +316,7 @@ const ROUNDS = [
     { word:'三令五申', meaning:'再三叮嚀告誡' },
     { word:'屏氣凝神', meaning:'屏住呼吸，集中精神，專心一意' },
     { word:'不可或缺', meaning:'必須，不能缺少' },
+    { word:'日積月累', meaning:'逐日逐月長時間不斷累積，比喻歷時久遠' },
   ],
   // 第2輪：第九課 三峽老街樂藍染
   [
@@ -324,6 +325,7 @@ const ROUNDS = [
     { word:'騎虎難下', meaning:'比喻事情迫於情勢，無法中止，只好繼續做下去' },
     { word:'不甘示弱', meaning:'不情願表現得比別人差' },
     { word:'東施效顰', meaning:'比喻盲目模仿他人，結果適得其反' },
+    { word:'古色古香', meaning:'形容年代久遠，具有古典色彩和情調的書畫、器物、建築、藝術品等' },
   ],
 ];
 const TOTAL_PAIRS = ROUNDS.reduce((s,r)=>s+r.length,0);
@@ -339,6 +341,7 @@ let sessionStars = 0;
 let roundStars = 0;
 let roundPerfect = [false, false];
 const roundMatched = [0, 0];
+
 
 // ── 錯題紀錄 ──
 function recordMistake(word, meaning) {
