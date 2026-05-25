@@ -24,6 +24,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 .hero-info { flex:1; min-width:0; }
 .hero-name { font-size:20px; color:#fff; font-weight:bold; letter-spacing:1px; }
 .hero-edit  { font-size:12px; color:rgba(255,255,255,.6); cursor:pointer; text-decoration:underline; margin-top:2px; }
+.admin-link { display:none; font-size:12px; color:#ffd580; text-decoration:none; margin-top:4px; }
 .star-pill  {
   background:rgba(255,255,255,.18); border:1.5px solid rgba(255,255,255,.35);
   border-radius:20px; padding:6px 12px;
@@ -235,6 +236,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     <div class="hero-info">
       <div class="hero-name" id="player-name">—</div>
       <div class="hero-edit" onclick="signOut()">🔄 切換帳號</div>
+      <a class="admin-link" id="admin-link" href="error-reports.html">⚠️ 錯誤回報管理</a>
     </div>
     <div class="star-pill">⭐ <span id="star-count">0</span></div>
   </div>
@@ -620,6 +622,7 @@ function render() {
   document.getElementById('avatar').textContent = (eq.badge&&owned[eq.badge])?BADGES[eq.badge]:'😊';
   document.getElementById('player-name').textContent = name;
   document.getElementById('star-count').textContent  = getStars();
+  document.getElementById('admin-link').style.display = ['查理布朗','艾美女'].includes(name) ? 'block' : 'none';
 
   let bHtml='';
   if (eq.title&&owned[eq.title]) bHtml+=`<span class="title-chip">${TITLES[eq.title]}</span>`;
