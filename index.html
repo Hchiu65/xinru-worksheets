@@ -24,7 +24,9 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 .hero-info { flex:1; min-width:0; }
 .hero-name { font-size:20px; color:#fff; font-weight:bold; letter-spacing:1px; }
 .hero-edit  { font-size:12px; color:rgba(255,255,255,.6); cursor:pointer; text-decoration:underline; margin-top:2px; }
-.admin-link { display:none; font-size:12px; color:#ffd580; text-decoration:none; margin-top:4px; }
+.admin-link { display:none; font-size:16px; color:#ffd580; text-decoration:none; margin-top:6px; font-weight:bold; letter-spacing:.5px; }
+.admin-badge { background:#e74c3c; color:#fff; border-radius:12px; padding:2px 8px; font-size:13px; margin-left:6px; display:none; animation:admin-pulse 1.2s ease-in-out infinite; }
+@keyframes admin-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.7;transform:scale(1.15)} }
 .star-pill  {
   background:rgba(255,255,255,.18); border:1.5px solid rgba(255,255,255,.35);
   border-radius:20px; padding:6px 12px;
@@ -236,7 +238,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     <div class="hero-info">
       <div class="hero-name" id="player-name">—</div>
       <div class="hero-edit" onclick="signOut()">🔄 切換帳號</div>
-      <a class="admin-link" id="admin-link" href="error-reports.html">⚠️ 錯誤回報管理</a>
+      <a class="admin-link" id="admin-link" href="error-reports.html">⚠️ 錯誤回報管理<span class="admin-badge" id="admin-badge"></span></a>
     </div>
     <div class="star-pill">⭐ <span id="star-count">0</span></div>
   </div>
@@ -563,6 +565,20 @@ function signOut() {
   location.reload();
 }
 
+/* ── Admin badge ── */
+async function loadAdminBadge() {
+  if (!FB_URL) return;
+  try {
+    const res = await fetch(`${FB_URL}/error_reports.json`);
+    const data = await res.json();
+    if (!data) return;
+    const n = Object.values(data).filter(r => !r.resolved).length;
+    const badge = document.getElementById('admin-badge');
+    if (n > 0) { badge.textContent = n; badge.style.display = 'inline-block'; }
+    else { badge.style.display = 'none'; }
+  } catch(e) {}
+}
+
 /* ── Cloud sync ── */
 async function syncToCloud() {
   if (!FB_URL || !getName()) return;
@@ -622,7 +638,9 @@ function render() {
   document.getElementById('avatar').textContent = (eq.badge&&owned[eq.badge])?BADGES[eq.badge]:'😊';
   document.getElementById('player-name').textContent = name;
   document.getElementById('star-count').textContent  = getStars();
-  document.getElementById('admin-link').style.display = ['查理布朗','艾美女'].includes(name) ? 'block' : 'none';
+  const isAdmin = ['查理布朗','艾美女'].includes(name);
+  document.getElementById('admin-link').style.display = isAdmin ? 'block' : 'none';
+  if (isAdmin) loadAdminBadge();
 
   let bHtml='';
   if (eq.title&&owned[eq.title]) bHtml+=`<span class="title-chip">${TITLES[eq.title]}</span>`;
