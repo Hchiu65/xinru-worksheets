@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -174,7 +174,7 @@ header {
   .done-score     { font-size:26px; }
   .done-stars     { font-size:48px; margin-bottom:32px; }
   .done-btn       { font-size:26px; padding:18px; border-radius:18px; }
-  .btn-report     { font-size:16px; padding:5px 14px; }
+  .btn-report     { font-size:20px; padding:9px 22px; }
   .report-box     { max-width:520px; }
   .report-title   { font-size:24px; }
   .report-sub     { font-size:17px; }
@@ -183,7 +183,7 @@ header {
   .report-btn-cancel,.report-btn-send { font-size:20px; padding:16px; }
 }
 /* ── Error report ── */
-.btn-report{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:16px;padding:3px 9px;font-size:12px;color:rgba(255,255,255,.8);cursor:pointer;font-family:inherit;flex-shrink:0;}
+.btn-report{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:16px;padding:6px 14px;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;font-family:inherit;flex-shrink:0;}
 .btn-report:active{background:rgba(255,255,255,.28);}
 #report-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:950;align-items:center;justify-content:center;}
 #report-overlay.show{display:flex;}
@@ -208,7 +208,7 @@ header {
   <div class="hdr-right">
     <div class="progress-text" id="prog-text">1 / 14</div>
     <div class="star-pill">⭐ <span id="star-display">0</span></div>
-    <button class="btn-report" onclick="showReport()">⚠️</button>
+    <button class="btn-report" onclick="showReport()">⚠️ 回報</button>
   </div>
 </header>
 <div class="prog-bar-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
