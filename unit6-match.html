@@ -213,9 +213,13 @@ header {
 .report-box{background:#fff;border-radius:22px;padding:28px 22px 22px;width:88%;max-width:380px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.25);}
 .report-title{font-size:18px;font-weight:bold;color:#e74c3c;margin-bottom:6px;}
 .report-sub{font-size:13px;color:#aaa;margin-bottom:12px;}
-.report-q{font-size:14px;color:#555;background:#f8f8f8;border-radius:10px;padding:10px 12px;margin-bottom:14px;line-height:1.7;text-align:left;word-break:break-all;}
 .report-note{width:100%;padding:10px;font-size:14px;font-family:inherit;border:1.5px solid #eee;border-radius:10px;margin-bottom:14px;resize:none;height:60px;outline:none;box-sizing:border-box;}
 .report-note:focus{border-color:#e74c3c;}
+.pair-picker{max-height:200px;overflow-y:auto;margin-bottom:12px;display:flex;flex-direction:column;gap:5px;text-align:left;}
+.pair-item{display:flex;align-items:baseline;gap:8px;padding:8px 10px;background:#f8f8f8;border-radius:8px;border:1.5px solid transparent;cursor:pointer;font-family:inherit;width:100%;text-align:left;}
+.pair-item:active,.pair-item.selected{background:#fff0f0;border-color:#e74c3c;}
+.pair-word{font-size:15px;font-weight:bold;color:#333;white-space:nowrap;flex-shrink:0;}
+.pair-meaning{font-size:12px;color:#888;}
 .report-btns{display:flex;gap:10px;}
 .report-btn-cancel{flex:1;padding:12px;background:#f2f2f2;border:none;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;color:#666;}
 .report-btn-send{flex:1;padding:12px;background:#e74c3c;color:#fff;border:none;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;font-weight:bold;}
@@ -803,16 +807,17 @@ function launchConfetti() {
 /* ── Boot ── */
 init();
 
-function getQText(){return GAME_SOURCE;}
-function showReport(){document.getElementById('report-q').textContent=getQText();document.getElementById('report-note').value='';document.getElementById('report-overlay').classList.add('show');}
+let reportSelectedPair=null;
+function showReport(){reportSelectedPair=null;const pk=document.getElementById('pair-picker');pk.innerHTML=pairs.map((p,i)=>`<button class="pair-item" onclick="selectPair(${i})" id="pi-${i}"><span class="pair-word">${p.word}</span><span class="pair-meaning">${p.meaning}</span></button>`).join('');document.getElementById('report-note').value='';document.getElementById('report-overlay').classList.add('show');}
+function selectPair(idx){reportSelectedPair=pairs[idx];document.querySelectorAll('.pair-item').forEach((el,i)=>el.classList.toggle('selected',i===idx));}
 function closeReport(){document.getElementById('report-overlay').classList.remove('show');}
-async function submitReport(){const data={game:GAME_ID,source:GAME_SOURCE,qText:document.getElementById('report-q').textContent,note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+async function submitReport(){const qt=reportSelectedPair?reportSelectedPair.word+' → '+reportSelectedPair.meaning:GAME_SOURCE;const data={game:GAME_ID,source:GAME_SOURCE,qText:qt,note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
 </script>
 <div id="report-overlay">
   <div class="report-box">
     <div class="report-title">⚠️ 回報題目錯誤</div>
-    <div class="report-sub">這題有問題嗎？說明後老師會來確認</div>
-    <div class="report-q" id="report-q"></div>
+    <div class="report-sub">點選哪個詞語有問題</div>
+    <div class="pair-picker" id="pair-picker"></div>
     <textarea class="report-note" id="report-note" placeholder="說明錯誤（可不填）"></textarea>
     <div class="report-btns">
       <button class="report-btn-cancel" onclick="closeReport()">取消</button>
