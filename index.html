@@ -256,7 +256,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     <div class="act-label">錯題本</div>
   </a>
   <div class="act-card" id="stat-plays"><div class="stat-val v-purple">—</div><div class="act-label">遊玩次數</div></div>
-  <div class="act-card" id="stat-acc"><div class="stat-val v-green">—</div><div class="act-label">最佳正確率</div></div>
+  <div class="act-card" id="stat-acc"><div class="stat-val v-green">—</div><div class="act-label">近20場正確率</div></div>
   <div class="act-card" id="stat-stars"><div class="stat-val v-gold">—</div><div class="act-label">目前星星</div></div>
   <div class="act-card" id="stat-earned"><div class="stat-val v-pink">—</div><div class="act-label">累積獲得</div></div>
 </div>
@@ -652,10 +652,11 @@ function render() {
   mc.querySelector('.err-dot')?.remove();
   if (pending>0){const d=document.createElement('div');d.className='err-dot';d.textContent=pending;mc.appendChild(d);}
 
-  const bestAcc=records.length?Math.max(...records.map(r=>r.accuracy||0)):0;
+  const last20=records.slice(-20);
+  const recentAcc=last20.length?Math.round(last20.reduce((s,r)=>s+(r.acc||r.accuracy||0),0)/last20.length):0;
   const totalEarned=records.reduce((s,r)=>s+(r.stars||0),0);
   document.getElementById('stat-plays').querySelector('.stat-val').textContent=records.length;
-  document.getElementById('stat-acc').querySelector('.stat-val').textContent=bestAcc+'%';
+  document.getElementById('stat-acc').querySelector('.stat-val').textContent=recentAcc+'%';
   document.getElementById('stat-stars').querySelector('.stat-val').textContent=getStars();
   document.getElementById('stat-earned').querySelector('.stat-val').textContent=totalEarned;
 
