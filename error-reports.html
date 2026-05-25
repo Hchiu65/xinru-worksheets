@@ -34,6 +34,11 @@ h1 { font-size:20px; flex:1; }
 /* Admin-only review section */
 .rc-review { margin-top:10px; padding:10px 12px; background:#fff8f0; border-radius:10px; border:1px solid #f0d9c0; display:none; }
 .rc-review.visible { display:block; }
+.verdict-label { font-size:12px; color:#a08060; margin-bottom:6px; }
+.verdict-row { display:flex; gap:8px; margin-bottom:10px; }
+.btn-verdict { flex:1; padding:9px 6px; border-radius:10px; border:1.5px solid #ddd; background:#f8f8f8; font-size:14px; font-family:inherit; cursor:pointer; color:#aaa; }
+.btn-verdict.v-wrong { border-color:#e74c3c; background:#fff0f0; color:#e74c3c; font-weight:bold; }
+.btn-verdict.v-correct { border-color:#27ae60; background:#f0fff4; color:#27ae60; font-weight:bold; }
 .review-check-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
 .review-check-row label { font-size:14px; color:#c0681a; cursor:pointer; display:flex; align-items:center; gap:6px; }
 .review-check-row input[type=checkbox] { width:18px; height:18px; cursor:pointer; accent-color:#e67e22; }
@@ -137,8 +142,15 @@ function render() {
       ? `<button class="btn-resolve" onclick="resolve('${r.key}')">✓ 已處理</button>`
       : '<span style="font-size:13px;color:#27ae60">✓ 已處理</span>';
 
+    const vw = r.adminVerdict === 'wrong'   ? ' v-wrong'   : '';
+    const vc = r.adminVerdict === 'correct' ? ' v-correct' : '';
     const reviewSection = isAdmin ? `
       <div class="rc-review visible">
+        <div class="verdict-label">管理員確認</div>
+        <div class="verdict-row">
+          <button class="btn-verdict${vw}" onclick="setVerdict('${r.key}','wrong')">✗ 題目有誤</button>
+          <button class="btn-verdict${vc}" onclick="setVerdict('${r.key}','correct')">✓ 題目正確</button>
+        </div>
         <div class="review-check-row">
           <label>
             <input type="checkbox" id="chk-${r.key}" ${r.needsReview ? 'checked' : ''} onchange="toggleReview('${r.key}', this.checked)">
@@ -146,7 +158,7 @@ function render() {
           </label>
         </div>
         <textarea class="review-note-input" id="note-${r.key}" placeholder="描述需要確認的內容…" onblur="saveReviewNote('${r.key}')">${escHtml(r.reviewNote||'')}</textarea>
-      </div>` : (r.needsReview ? `<div class="rc-review visible" style="font-size:13px;color:#c0681a;">🤖 待 Claude 確認${r.reviewNote ? '：' + escHtml(r.reviewNote) : ''}</div>` : '');
+      </div>` : (r.needsReview ? `<div class="rc-review visible" style="font-size:13px;color:#c0681a;">🤖 待 Claude 確認${r.reviewNote ? '：' + escHtml(r.reviewNote) : ''}</div>` : (r.adminVerdict === 'correct' ? `<div style="font-size:13px;color:#27ae60;margin-top:6px;">✓ 管理員確認題目正確</div>` : ''));
 
     return `
     <div class="${cardClass}" id="card-${r.key}">
@@ -223,6 +235,22 @@ async function saveReviewNote(key) {
     });
     const r = allReports.find(r => r.key === key);
     if (r) r.reviewNote = note;
+  } catch(e) {}
+}
+
+async function setVerdict(key, verdict) {
+  const patch = { adminVerdict: verdict };
+  if (verdict === 'wrong') patch.needsReview = true;
+  try {
+    await fetch(`${FB_URL}/error_reports/${key}.json`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch)
+    });
+    const r = allReports.find(r => r.key === key);
+    if (r) { r.adminVerdict = verdict; if (verdict === 'wrong') r.needsReview = true; }
+    updateCount();
+    render();
   } catch(e) {}
 }
 
