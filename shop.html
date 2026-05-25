@@ -131,6 +131,24 @@ header {
 </div>
 
 <script>
+const FB_URL = 'https://xinru-class-default-rtdb.firebaseio.com';
+const SHOP_BADGES = {b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'};
+
+async function syncShopToCloud() {
+  const name = getName();
+  if (!FB_URL || !name) return;
+  const eq = getEquipped(), owned = getOwned();
+  const patch = {
+    stars: getStars(),
+    badge: (eq.badge && owned[eq.badge]) ? (SHOP_BADGES[eq.badge]||'') : '',
+    owned, equipped: eq, updated: Date.now()
+  };
+  try {
+    await fetch(`${FB_URL}/accounts/${encodeURIComponent(name)}.json`,
+      {method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(patch)});
+  } catch(e) {}
+}
+
 const SHOP = {
   badges: [
     { id:'b_panda',    icon:'🐼', name:'小熊貓',   cost:300,   desc:'裝備後顯示在主頁' },
@@ -226,6 +244,7 @@ function buyItem(id) {
   localStorage.setItem('xr_owned', JSON.stringify(owned));
   renderTab(currentTab);
   document.getElementById('star-display').textContent = getStars();
+  syncShopToCloud();
 }
 
 function buyConsumable(id) {
@@ -238,6 +257,7 @@ function buyConsumable(id) {
   localStorage.setItem('xr_redeemed', JSON.stringify(redeemed));
   renderTab(currentTab);
   showVoucher(id);
+  syncShopToCloud();
 }
 
 function equip(type, id) {
@@ -245,6 +265,7 @@ function equip(type, id) {
   eq[type] = id;
   localStorage.setItem('xr_equipped', JSON.stringify(eq));
   renderTab(currentTab);
+  syncShopToCloud();
 }
 
 function unequip(type) {
@@ -252,6 +273,7 @@ function unequip(type) {
   delete eq[type];
   localStorage.setItem('xr_equipped', JSON.stringify(eq));
   renderTab(currentTab);
+  syncShopToCloud();
 }
 
 function showVoucher(id) {

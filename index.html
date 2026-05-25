@@ -510,10 +510,12 @@ async function syncToCloud() {
   if (!FB_URL || !getName()) return;
   const eq=getEquipped(), owned=getOwned(), records=getRecords();
   const redeemed=JSON.parse(localStorage.getItem('xr_redeemed')||'[]');
+  const totalEarned=records.reduce((s,r)=>s+(r.stars||0),0);
   const patch = {
     stars: getStars(),
     badge: (eq.badge&&owned[eq.badge])?BADGES[eq.badge]:'',
     title: (eq.title&&owned[eq.title])?TITLES[eq.title]:'',
+    totalEarned,
     owned, equipped, redeemed, records,
     mistakes: getMistakes(),
     cooldowns: getCDs(),
@@ -536,7 +538,7 @@ async function loadMiniLeaderboard() {
     const players = Object.entries(data)
       .map(([uname,p])=>({...p, uname}))
       .filter(p=>p.stars!=null)
-      .sort((a,b)=>(b.stars||0)-(a.stars||0)).slice(0,3);
+      .sort((a,b)=>(b.totalEarned||b.stars||0)-(a.totalEarned||a.stars||0)).slice(0,3);
     el.innerHTML = players.map((p,i)=>{
       const isMe = p.uname===me;
       const rank = i<3 ? MEDALS[i] : `#${i+1}`;
@@ -544,7 +546,7 @@ async function loadMiniLeaderboard() {
         <div class="lb-rank">${rank}</div>
         <div class="lb-badge">${p.badge||'　'}</div>
         <div class="lb-name">${p.uname}${isMe?' 👈':''}</div>
-        <div class="lb-stars">⭐ ${(p.stars||0).toLocaleString()}</div>
+        <div class="lb-stars">⭐ ${(p.totalEarned||p.stars||0).toLocaleString()}</div>
       </div>`;
     }).join('');
   } catch(e) {

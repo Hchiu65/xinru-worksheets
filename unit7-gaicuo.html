@@ -247,7 +247,7 @@ function showDone(){
   document.getElementById('done-score').textContent=`首次答對 ${totalCorrect} / ${GAICUO.length} 題`;
   document.getElementById('done-stars').textContent=`本次獲得 ⭐ ${sessionStars}`;
   const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
-  recs.push({unit:'u7gaicuo',acc:Math.round(totalCorrect/GAICUO.length*100),date:new Date().toLocaleDateString('zh-TW')});
+  recs.push({unit:'u7gaicuo',acc:Math.round(totalCorrect/GAICUO.length*100),stars:sessionStars,date:new Date().toLocaleDateString('zh-TW')});
   if(recs.length>50)recs.splice(0,recs.length-50);
   localStorage.setItem('xr_records',JSON.stringify(recs));
   reportComplete(totalCorrect===GAICUO.length&&!anyMistake);

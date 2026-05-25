@@ -275,7 +275,7 @@ async function loadLeaderboard() {
 
     const myName = getName();
     const players = Object.entries(raw).map(([key, d]) => ({ key, ...d }));
-    players.sort((a, b) => (b.stars||0) - (a.stars||0));
+    players.sort((a, b) => (b.totalEarned||b.stars||0) - (a.totalEarned||a.stars||0));
 
     statusEl.className = 'status-bar ok';
     statusEl.textContent = `共 ${players.length} 位同學`;
@@ -314,7 +314,7 @@ function renderAll(players, myName) {
         <div class="p-badge">${p.badge||'🐣'}</div>
         <div class="p-name">${p.name||p.key||'?'}</div>
         <div class="p-title">${p.title||''}</div>
-        <div class="p-stars">⭐ ${(p.stars||0).toLocaleString()}</div>
+        <div class="p-stars">⭐ ${(p.totalEarned||p.stars||0).toLocaleString()}</div>
         ${p.acc!=null ? `<div class="p-acc">最高正確率 ${p.acc}%</div>` : ''}
         ${redeemed ? `<div style="font-size:11px;color:#c0392b;margin-top:4px">${redeemed}</div>` : ''}
       </div>`;
@@ -339,7 +339,7 @@ function renderAll(players, myName) {
         ${redeemed.length ? `<div class="redeemed-chips">${redeemed.map(r=>`<span class="chip">${r}</span>`).join('')}</div>` : ''}
       </div>
       <div class="rank-right">
-        <div class="rank-stars">⭐ ${(p.stars||0).toLocaleString()}</div>
+        <div class="rank-stars">⭐ ${(p.totalEarned||p.stars||0).toLocaleString()}</div>
         ${p.acc!=null ? `<div class="rank-acc">正確率 ${p.acc}%</div>` : ''}
       </div>
     </div>`;

@@ -378,7 +378,7 @@ function showDone() {
 
   // Record
   const recs = JSON.parse(localStorage.getItem('xr_records')||'[]');
-  recs.push({ unit:'unit7-ziyin', acc:Math.round(totalCorrect/ZIYIN.length*100), date:new Date().toLocaleDateString('zh-TW') });
+  recs.push({ unit:'unit7-ziyin', acc:Math.round(totalCorrect/ZIYIN.length*100), stars:sessionStars, date:new Date().toLocaleDateString('zh-TW') });
   if (recs.length > 50) recs.splice(0, recs.length - 50);
   localStorage.setItem('xr_records', JSON.stringify(recs));
 

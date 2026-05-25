@@ -268,7 +268,7 @@ function checkAll(){
   if(correct===total){
     const stars=hadMistake?10:20; addStars(stars);
     const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
-    recs.push({unit:'u7chengyu',acc:100,date:new Date().toLocaleDateString('zh-TW')});
+    recs.push({unit:'u7chengyu',acc:100,stars:stars,date:new Date().toLocaleDateString('zh-TW')});
     if(recs.length>50)recs.splice(0,recs.length-50);
     localStorage.setItem('xr_records',JSON.stringify(recs));
     reportComplete(!hadMistake);

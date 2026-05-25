@@ -419,7 +419,7 @@ function showDone() {
   document.getElementById('done-stars').textContent = `本次獲得 ⭐ ${sessionStars}`;
 
   const recs = JSON.parse(localStorage.getItem('xr_records')||'[]');
-  recs.push({ unit:'unit7-bianzi', acc:Math.round(totalCorrect/BIANZI.length*100), date:new Date().toLocaleDateString('zh-TW') });
+  recs.push({ unit:'unit7-bianzi', acc:Math.round(totalCorrect/BIANZI.length*100), stars:sessionStars, date:new Date().toLocaleDateString('zh-TW') });
   if (recs.length > 50) recs.splice(0, recs.length - 50);
   localStorage.setItem('xr_records', JSON.stringify(recs));
 
