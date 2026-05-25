@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>錯誤回報管理</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:"標楷體","DFKai-SB",serif; background:#f5f0ee; color:#333; padding-bottom:40px; }
+header { background:linear-gradient(135deg,#7a6060,#6b5252); color:#fff; padding:16px 20px; display:flex; align-items:center; gap:14px; }
+.btn-home { font-size:22px; text-decoration:none; }
+h1 { font-size:20px; flex:1; }
+.badge-count { background:rgba(255,255,255,.2); border-radius:20px; padding:4px 14px; font-size:14px; }
+.filter-bar { display:flex; gap:8px; padding:12px 16px; background:#fff; border-bottom:1px solid #ede8e6; }
+.filter-btn { padding:6px 16px; border-radius:20px; border:1.5px solid #ccc; background:#fff; font-size:14px; font-family:inherit; cursor:pointer; color:#666; }
+.filter-btn.active { background:#7a6060; color:#fff; border-color:#7a6060; }
+.report-list { padding:12px 16px; display:flex; flex-direction:column; gap:10px; }
+.report-card { background:#fff; border-radius:14px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,.07); border-left:4px solid #e74c3c; }
+.report-card.resolved { border-left-color:#27ae60; opacity:.7; }
+.rc-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.rc-source { font-size:13px; color:#7a6060; font-weight:bold; }
+.rc-date { font-size:12px; color:#bbb; white-space:nowrap; }
+.rc-qtext { font-size:15px; color:#333; background:#f8f4f2; border-radius:8px; padding:8px 10px; margin-bottom:8px; line-height:1.7; }
+.rc-note { font-size:13px; color:#888; margin-bottom:10px; font-style:italic; }
+.rc-foot { display:flex; align-items:center; justify-content:space-between; }
+.rc-player { font-size:13px; color:#aaa; }
+.btn-resolve { padding:6px 16px; border-radius:20px; border:none; background:#27ae60; color:#fff; font-size:13px; font-family:inherit; cursor:pointer; font-weight:bold; }
+.btn-resolve:disabled { background:#ccc; cursor:default; }
+.btn-delete { padding:6px 12px; border-radius:20px; border:none; background:#fee2e2; color:#e74c3c; font-size:13px; font-family:inherit; cursor:pointer; margin-left:6px; }
+.empty { text-align:center; color:#bbb; padding:40px 20px; font-size:16px; }
+.loading { text-align:center; color:#aaa; padding:40px; font-size:15px; }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="btn-home" href="index.html">🏠</a>
+  <h1>⚠️ 錯誤回報管理</h1>
+  <div class="badge-count" id="unresolved-count">載入中…</div>
+</header>
+
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="setFilter('unresolved')" id="f-unresolved">待處理</button>
+  <button class="filter-btn" onclick="setFilter('all')" id="f-all">全部</button>
+  <button class="filter-btn" onclick="setFilter('resolved')" id="f-resolved">已處理</button>
+</div>
+
+<div class="report-list" id="report-list">
+  <div class="loading">載入中…</div>
+</div>
+
+<script>
+const FB_URL = 'https://xinru-class-default-rtdb.firebaseio.com';
+let allReports = [];
+let currentFilter = 'unresolved';
+
+async function load() {
+  try {
+    const res = await fetch(`${FB_URL}/error_reports.json`);
+    const data = await res.json();
+    if (!data) { allReports = []; }
+    else {
+      allReports = Object.entries(data).map(([key, v]) => ({ key, ...v }))
+        .sort((a, b) => (b.ts || 0) - (a.ts || 0));
+    }
+    updateCount();
+    render();
+  } catch(e) {
+    document.getElementById('report-list').innerHTML = '<div class="loading">載入失敗，請檢查網路</div>';
+  }
+}
+
+function updateCount() {
+  const n = allReports.filter(r => !r.resolved).length;
+  document.getElementById('unresolved-count').textContent = `待處理 ${n} 件`;
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  ['unresolved','all','resolved'].forEach(k => {
+    document.getElementById('f-'+k).className = 'filter-btn' + (k===f?' active':'');
+  });
+  render();
+}
+
+function render() {
+  const list = allReports.filter(r => {
+    if (currentFilter === 'unresolved') return !r.resolved;
+    if (currentFilter === 'resolved') return r.resolved;
+    return true;
+  });
+
+  if (!list.length) {
+    document.getElementById('report-list').innerHTML = '<div class="empty">沒有回報記錄</div>';
+    return;
+  }
+
+  document.getElementById('report-list').innerHTML = list.map(r => `
+    <div class="report-card${r.resolved?' resolved':''}" id="card-${r.key}">
+      <div class="rc-head">
+        <div class="rc-source">${r.source || r.game || '未知遊戲'}</div>
+        <div class="rc-date">${r.date || ''}</div>
+      </div>
+      <div class="rc-qtext">${r.qText || '（無題目內容）'}</div>
+      ${r.note ? `<div class="rc-note">💬 ${r.note}</div>` : ''}
+      <div class="rc-foot">
+        <div class="rc-player">回報者：${r.player || '匿名'}</div>
+        <div>
+          ${!r.resolved ? `<button class="btn-resolve" onclick="resolve('${r.key}')">✓ 已處理</button>` : '<span style="font-size:13px;color:#27ae60">✓ 已處理</span>'}
+          <button class="btn-delete" onclick="del('${r.key}')">🗑</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function resolve(key) {
+  try {
+    await fetch(`${FB_URL}/error_reports/${key}.json`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ resolved: true })
+    });
+    const r = allReports.find(r => r.key === key);
+    if (r) r.resolved = true;
+    updateCount();
+    render();
+  } catch(e) {}
+}
+
+async function del(key) {
+  if (!confirm('確定刪除這筆回報？')) return;
+  try {
+    await fetch(`${FB_URL}/error_reports/${key}.json`, { method: 'DELETE' });
+    allReports = allReports.filter(r => r.key !== key);
+    updateCount();
+    render();
+  } catch(e) {}
+}
+
+load();
+</script>
+</body>
+</html>

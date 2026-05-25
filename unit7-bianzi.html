@@ -174,7 +174,28 @@ header {
   .done-score     { font-size:26px; }
   .done-stars     { font-size:48px; margin-bottom:32px; }
   .done-btn       { font-size:26px; padding:18px; border-radius:18px; }
+  .btn-report     { font-size:16px; padding:5px 14px; }
+  .report-box     { max-width:520px; }
+  .report-title   { font-size:24px; }
+  .report-sub     { font-size:17px; }
+  .report-q       { font-size:20px; }
+  .report-note    { font-size:18px; }
+  .report-btn-cancel,.report-btn-send { font-size:20px; padding:16px; }
 }
+/* ── Error report ── */
+.btn-report{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:16px;padding:3px 9px;font-size:12px;color:rgba(255,255,255,.8);cursor:pointer;font-family:inherit;flex-shrink:0;}
+.btn-report:active{background:rgba(255,255,255,.28);}
+#report-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:950;align-items:center;justify-content:center;}
+#report-overlay.show{display:flex;}
+.report-box{background:#fff;border-radius:22px;padding:28px 22px 22px;width:88%;max-width:380px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.25);}
+.report-title{font-size:18px;font-weight:bold;color:#e74c3c;margin-bottom:6px;}
+.report-sub{font-size:13px;color:#aaa;margin-bottom:12px;}
+.report-q{font-size:14px;color:#555;background:#f8f8f8;border-radius:10px;padding:10px 12px;margin-bottom:14px;line-height:1.7;text-align:left;word-break:break-all;}
+.report-note{width:100%;padding:10px;font-size:14px;font-family:inherit;border:1.5px solid #eee;border-radius:10px;margin-bottom:14px;resize:none;height:60px;outline:none;box-sizing:border-box;}
+.report-note:focus{border-color:#e74c3c;}
+.report-btns{display:flex;gap:10px;}
+.report-btn-cancel{flex:1;padding:12px;background:#f2f2f2;border:none;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;color:#666;}
+.report-btn-send{flex:1;padding:12px;background:#e74c3c;color:#fff;border:none;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;font-weight:bold;}
 </style>
 </head>
 <body>
@@ -187,6 +208,7 @@ header {
   <div class="hdr-right">
     <div class="progress-text" id="prog-text">1 / 14</div>
     <div class="star-pill">⭐ <span id="star-display">0</span></div>
+    <button class="btn-report" onclick="showReport()">⚠️</button>
   </div>
 </header>
 <div class="prog-bar-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
@@ -473,6 +495,23 @@ function showStarPop(text) {
 function replay() { startGame(); }
 
 startGame();
+
+function getQText(){const el=document.getElementById('q-phrase')||document.getElementById('q-idiom')||document.querySelector('.q-card');return el?el.innerText.replace(/\s+/g,' ').trim().slice(0,120):'（無法取得題目）';}
+function showReport(){document.getElementById('report-q').textContent=getQText();document.getElementById('report-note').value='';document.getElementById('report-overlay').classList.add('show');}
+function closeReport(){document.getElementById('report-overlay').classList.remove('show');}
+async function submitReport(){const data={game:GAME_ID,source:GAME_SOURCE,qText:document.getElementById('report-q').textContent,note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
 </script>
+<div id="report-overlay">
+  <div class="report-box">
+    <div class="report-title">⚠️ 回報題目錯誤</div>
+    <div class="report-sub">這題有問題嗎？說明後老師會來確認</div>
+    <div class="report-q" id="report-q"></div>
+    <textarea class="report-note" id="report-note" placeholder="說明錯誤（可不填）"></textarea>
+    <div class="report-btns">
+      <button class="report-btn-cancel" onclick="closeReport()">取消</button>
+      <button class="report-btn-send" onclick="submitReport()">確認回報</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
