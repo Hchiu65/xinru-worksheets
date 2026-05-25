@@ -87,28 +87,46 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 .lb-empty  { text-align:center; color:#bbb; font-size:14px; padding:10px 0; }
 .lb-offline{ text-align:center; color:#ddd; font-size:13px; padding:8px 0; }
 
-/* Unit cards */
-.unit-list { padding:0 12px; display:flex; flex-direction:column; gap:8px; }
+/* Unit cards — 2-column grid */
+.unit-list { padding:0 12px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .unit-card {
-  background:#fff; border-radius:16px; padding:13px 12px;
+  background:#fff; border-radius:16px; padding:11px 10px;
   box-shadow:0 2px 10px rgba(0,0,0,.07);
-  display:flex; align-items:center; gap:12px;
+  display:flex; align-items:center; gap:8px;
   text-decoration:none; color:#333; transition:transform .1s;
 }
-.unit-card:active { transform:scale(.97); }
-.unit-emoji { width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.unit-card:active { transform:scale(.96); }
+
+/* 左側：圖示 + 名稱 */
+.card-left  { display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; width:58px; }
+.unit-emoji { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; }
 .ue-blue   { background:linear-gradient(135deg,#e0e7ff,#c7d2fe); }
 .ue-teal   { background:linear-gradient(135deg,#d1fae5,#a7f3d0); }
 .ue-purple { background:linear-gradient(135deg,#ede9fe,#c4b5fd); }
 .ue-red    { background:linear-gradient(135deg,#fee2e2,#fca5a5); }
-.unit-body  { flex:1; min-width:0; }
-.unit-title { font-size:16px; font-weight:bold; }
-.unit-desc  { font-size:12px; color:#aaa; margin-top:2px; }
-.unit-tags  { display:flex; gap:4px; margin-top:5px; flex-wrap:wrap; }
-.tag        { font-size:11px; padding:2px 8px; border-radius:20px; }
+.ue-green  { background:linear-gradient(135deg,#d1fae5,#a7f3d0); }
+.unit-title { font-size:11px; font-weight:bold; text-align:center; line-height:1.3; color:#333; }
+
+/* 中間：描述 + tag + 次數 */
+.card-right { flex:1; min-width:0; display:flex; align-items:center; gap:4px; }
+.card-info  { flex:1; min-width:0; }
+.unit-desc  { font-size:10px; color:#888; line-height:1.5; margin-bottom:4px; }
+.unit-tags  { display:flex; gap:3px; flex-wrap:wrap; }
+.tag        { font-size:10px; padding:2px 6px; border-radius:20px; }
 .tg-blue{background:#eef2ff;color:#667eea} .tg-green{background:#ecfdf5;color:#059669} .tg-gold{background:#fffbeb;color:#d97706}
 .tg-purple{background:#f5f3ff;color:#7c3aed} .tg-red{background:#fff1f2;color:#e11d48}
-.unit-arr   { font-size:20px; color:#d0d0d0; flex-shrink:0; }
+.stat-plays { font-size:10px; color:#667eea; font-weight:bold; margin-top:4px; min-height:14px; }
+
+/* 右側：臉 emoji + 分數 */
+.card-score { flex-shrink:0; width:50px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; }
+.face-emoji { font-size:30px; line-height:1; }
+.face-pct   { font-size:14px; font-weight:bold; line-height:1; }
+.f-green  { color:#27ae60; }
+.f-lgreen { color:#7bc67e; }
+.f-yellow { color:#f0b429; }
+.f-orange { color:#e67e22; }
+.f-red    { color:#e74c3c; }
+.score-none { opacity:.2; }
 
 /* History */
 .hist-toggle { display:block; text-align:center; margin:10px 12px 0; padding:9px; background:#fff; border-radius:10px; cursor:pointer; font-size:13px; color:#aaa; box-shadow:0 1px 5px rgba(0,0,0,.06); }
@@ -130,6 +148,27 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 .auth-loading { text-align:center;padding:20px;font-size:15px;color:#888; }
 /* Lock chip on unit cards */
 .lock-chip { background:#fee2e2;color:#c0392b;font-size:11px;padding:2px 7px;border-radius:10px; }
+
+/* Tab filter bar */
+.tab-bar-wrap {
+  position:sticky; top:0; z-index:50;
+  background:#f0f4ff; padding:8px 12px 6px;
+  overflow-x:auto; -webkit-overflow-scrolling:touch;
+}
+.tab-bar-wrap::-webkit-scrollbar { display:none; }
+.tab-bar { display:flex; gap:6px; width:max-content; }
+.tab-btn {
+  background:#fff; border-radius:20px; padding:7px 16px;
+  font-size:14px; color:#888; white-space:nowrap; cursor:pointer;
+  border:1.5px solid #e0e7ff; font-family:inherit;
+  transition:all .15s;
+}
+.tab-btn:active { transform:scale(.95); }
+.tab-btn.active {
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff; border-color:transparent; font-weight:bold;
+}
+.unit-sec-label { padding:8px 14px 6px; font-size:13px; color:#aaa; }
 </style>
 </head>
 <body>
@@ -172,122 +211,148 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
   <div id="mini-lb"><div class="lb-offline">設定 Firebase 後即可看到全班排名</div></div>
 </div>
 
-<!-- Units -->
-<div class="sec-head"><div class="sec-dot"></div>第六冊　練習題目</div>
-<div class="unit-list">
-  <a class="unit-card" href="u7match.html" data-gid="u7match">
-    <div class="unit-emoji ue-red">🔗</div>
-    <div class="unit-body">
-      <div class="unit-title">第七單元　成語連連看</div>
-      <div class="unit-desc">29 題（3輪），詞語配對語意</div>
-      <div class="unit-tags">
-        <span class="tag tg-red">連連看</span>
-        <span class="tag tg-gold">⭐ 得星星</span>
-      </div>
-    </div>
-    <div class="unit-arr">›</div>
-  </a>
-  <a class="unit-card" href="unit7-ziyin.html" data-gid="u7ziyin">
-    <div class="unit-emoji ue-purple">🔊</div>
-    <div class="unit-body">
-      <div class="unit-title">第七單元　字音辨正</div>
-      <div class="unit-desc">15 題，選出正確的注音符號</div>
-      <div class="unit-tags">
-        <span class="tag tg-purple">選擇題</span>
-        <span class="tag tg-gold">⭐ 得星星</span>
-      </div>
-    </div>
-    <div class="unit-arr">›</div>
-  </a>
-  <a class="unit-card" href="unit7-bianzi.html" data-gid="u7bianzi">
-    <div class="unit-emoji ue-red">🔍</div>
-    <div class="unit-body">
-      <div class="unit-title">第七單元　找錯別字</div>
-      <div class="unit-desc">14 題，找出成語中寫錯的字</div>
-      <div class="unit-tags">
-        <span class="tag tg-red">找錯字</span>
-        <span class="tag tg-gold">⭐ 得星星</span>
-      </div>
-    </div>
-    <div class="unit-arr">›</div>
-  </a>
-  <a class="unit-card" href="unit7-chengyu.html" data-gid="u7chengyu">
-    <div class="unit-emoji ue-green">📝</div>
-    <div class="unit-body">
-      <div class="unit-title">第七單元　成語填空</div>
-      <div class="unit-desc">27 題，點選成語填入空格</div>
-      <div class="unit-tags">
-        <span class="tag tg-green">填空</span>
-        <span class="tag tg-gold">⭐ 得星星</span>
-      </div>
-    </div>
-    <div class="unit-arr">›</div>
-  </a>
-
-  <a class="unit-card" href="unit6.html" data-gid="unit6">
-    <div class="unit-emoji ue-blue">📝</div>
-    <div class="unit-body">
-      <div class="unit-title">第六單元　詞語填空</div>
-      <div class="unit-desc">26 題，點選詞語填入空格</div>
-      <div class="unit-tags">
-        <span class="tag tg-blue">填空</span>
-        <span class="tag tg-gold">⭐ 得星星</span>
-      </div>
-    </div>
-    <div class="unit-arr">›</div>
-  </a>
-  <a class="unit-card" href="unit6-match.html" data-gid="unit6m">
-    <div class="unit-emoji ue-teal">🎮</div>
-    <div class="unit-body">
-      <div class="unit-title">第六單元　成語連連看</div>
-      <div class="unit-desc">兩輪 26 題配對＋終極挑戰</div>
-      <div class="unit-tags">
-        <span class="tag tg-green">遊戲</span>
-        <span class="tag tg-gold">⭐ 得星星</span>
-      </div>
-    </div>
-    <div class="unit-arr">›</div>
-  </a>
+<!-- Unit Tab Bar -->
+<div class="tab-bar-wrap">
+  <div class="tab-bar" id="unit-tabs">
+    <button class="tab-btn" data-u="6" onclick="switchUnit(6)">第六單元</button>
+    <button class="tab-btn" data-u="7" onclick="switchUnit(7)">第七單元</button>
+  </div>
 </div>
+<div class="unit-sec-label" id="unit-sec-label"></div>
 
-<div class="sec-head"><div class="sec-dot"></div>第七單元　作業練習</div>
-<div class="unit-list">
-  <a class="unit-card" href="unit7-gaicuo.html" data-gid="u7gaicuo">
-    <div class="unit-emoji ue-red">✏️</div>
-    <div class="unit-body">
-      <div class="unit-title">改錯字</div>
-      <div class="unit-desc">22 題，找出成語中的錯字並改正</div>
-      <div class="unit-tags">
-        <span class="tag tg-red">改錯字</span>
-        <span class="tag tg-gold">⭐ 得星星</span>
-      </div>
+<!-- All unit cards (filtered by tab) -->
+<div class="unit-list" id="unit-card-list">
+
+  <!-- 第六單元 -->
+  <a class="unit-card" href="unit6.html" data-gid="unit6" data-unit="6">
+    <div class="card-left">
+      <div class="unit-emoji ue-blue">📝</div>
+      <div class="unit-title">詞語填空</div>
     </div>
-    <div class="unit-arr">›</div>
-  </a>
-  <a class="unit-card" href="unit7-bopomo.html" data-gid="u7bopomo">
-    <div class="unit-emoji ue-blue">🔤</div>
-    <div class="unit-body">
-      <div class="unit-title">字音辨字</div>
-      <div class="unit-desc">39 題，根據注音選出正確的字</div>
-      <div class="unit-tags">
-        <span class="tag tg-blue">字音</span>
-        <span class="tag tg-gold">⭐ 得星星</span>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">26 題，點選詞語填入空格</div>
+        <div class="unit-tags"><span class="tag tg-blue">填空</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
       </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
     </div>
-    <div class="unit-arr">›</div>
   </a>
-  <a class="unit-card" href="unit7-vocab.html" data-gid="u7vocab">
-    <div class="unit-emoji ue-purple">📖</div>
-    <div class="unit-body">
-      <div class="unit-title">字彙練習</div>
-      <div class="unit-desc">41 題，看字義選出正確的字</div>
-      <div class="unit-tags">
-        <span class="tag tg-purple">字彙</span>
-        <span class="tag tg-gold">⭐ 得星星</span>
+  <a class="unit-card" href="unit6-match.html" data-gid="unit6m" data-unit="6">
+    <div class="card-left">
+      <div class="unit-emoji ue-teal">🎮</div>
+      <div class="unit-title">成語連連看</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">兩輪 26 題配對＋終極挑戰</div>
+        <div class="unit-tags"><span class="tag tg-green">遊戲</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
       </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
     </div>
-    <div class="unit-arr">›</div>
   </a>
+
+  <!-- 第七單元 -->
+  <a class="unit-card" href="u7match.html" data-gid="u7match" data-unit="7">
+    <div class="card-left">
+      <div class="unit-emoji ue-red">🔗</div>
+      <div class="unit-title">成語連連看</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">29 題（3輪），詞語配對語意</div>
+        <div class="unit-tags"><span class="tag tg-red">連連看</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
+  <a class="unit-card" href="unit7-ziyin.html" data-gid="u7ziyin" data-unit="7">
+    <div class="card-left">
+      <div class="unit-emoji ue-purple">🔊</div>
+      <div class="unit-title">字音辨正</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">15 題，選出正確的注音符號</div>
+        <div class="unit-tags"><span class="tag tg-purple">選擇題</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
+  <a class="unit-card" href="unit7-bianzi.html" data-gid="u7bianzi" data-unit="7">
+    <div class="card-left">
+      <div class="unit-emoji ue-red">🔍</div>
+      <div class="unit-title">找錯別字</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">14 題，找出成語中寫錯的字</div>
+        <div class="unit-tags"><span class="tag tg-red">找錯字</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
+  <a class="unit-card" href="unit7-chengyu.html" data-gid="u7chengyu" data-unit="7">
+    <div class="card-left">
+      <div class="unit-emoji ue-green">📝</div>
+      <div class="unit-title">成語填空</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">27 題，點選成語填入空格</div>
+        <div class="unit-tags"><span class="tag tg-green">填空</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
+  <a class="unit-card" href="unit7-gaicuo.html" data-gid="u7gaicuo" data-unit="7">
+    <div class="card-left">
+      <div class="unit-emoji ue-red">✏️</div>
+      <div class="unit-title">改錯字（作業）</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">22 題，找出成語中的錯字並改正</div>
+        <div class="unit-tags"><span class="tag tg-red">改錯字</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
+  <a class="unit-card" href="unit7-bopomo.html" data-gid="u7bopomo" data-unit="7">
+    <div class="card-left">
+      <div class="unit-emoji ue-blue">🔤</div>
+      <div class="unit-title">字音辨字（作業）</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">39 題，根據注音選出正確的字</div>
+        <div class="unit-tags"><span class="tag tg-blue">字音</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
+  <a class="unit-card" href="unit7-vocab.html" data-gid="u7vocab" data-unit="7">
+    <div class="card-left">
+      <div class="unit-emoji ue-purple">📖</div>
+      <div class="unit-title">字彙練習（作業）</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">41 題，看字義選出正確的字</div>
+        <div class="unit-tags"><span class="tag tg-purple">字彙</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
+
 </div>
 
 <div class="hist-toggle" id="hist-toggle" onclick="toggleHistory()">▾ 查看遊玩紀錄</div>
@@ -529,12 +594,69 @@ function render() {
     }
   });
 
+  updateCardStats();
   syncToCloud();
   loadMiniLeaderboard();
+  const lastUnit = parseInt(localStorage.getItem('xr_last_unit')) || 7;
+  switchUnit(lastUnit);
 }
 
 document.getElementById('auth-name').addEventListener('keydown',e=>{ if(e.key==='Enter') authStep1(); });
 document.getElementById('auth-bday').addEventListener('keydown',e=>{ if(e.key==='Enter') authStep2(); });
+
+/* ── Score emoji ── */
+const GID_TO_UNIT = {
+  unit6:'unit6', unit6m:'unit6-match',
+  u7match:'u7match', u7ziyin:'unit7-ziyin', u7bianzi:'unit7-bianzi',
+  u7chengyu:'u7chengyu', u7gaicuo:'u7gaicuo', u7bopomo:'u7bopomo', u7vocab:'u7vocab'
+};
+
+function scoreEmoji(pct) {
+  if (pct === 100) return {e:'😄', cls:'f-green'};
+  if (pct >= 80)   return {e:'🙂', cls:'f-lgreen'};
+  if (pct >= 60)   return {e:'😐', cls:'f-yellow'};
+  if (pct >= 40)   return {e:'😕', cls:'f-orange'};
+  return               {e:'😠', cls:'f-red'};
+}
+
+function updateCardStats() {
+  const records = getRecords();
+  document.querySelectorAll('#unit-card-list .unit-card[data-gid]').forEach(card => {
+    const unitKey = GID_TO_UNIT[card.dataset.gid] || card.dataset.gid;
+    const recs = records.filter(r => r.unit === unitKey);
+    const playsEl = card.querySelector('.stat-plays');
+    const scoreEl = card.querySelector('.card-score');
+    if (playsEl) playsEl.textContent = recs.length ? `▶ ${recs.length} 次` : '';
+    if (scoreEl) {
+      if (!recs.length) {
+        scoreEl.innerHTML = '<div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div>';
+      } else {
+        const best = Math.max(...recs.map(r => r.acc ?? r.accuracy ?? 0));
+        const {e, cls} = scoreEmoji(best);
+        scoreEl.innerHTML = `<div class="face-emoji">${e}</div><div class="face-pct ${cls}">${best}%</div>`;
+      }
+    }
+  });
+}
+
+/* ── Unit Tab Filter ── */
+const UNIT_NAMES = {6:'第六單元',7:'第七單元'};
+
+function switchUnit(n) {
+  const cards = document.querySelectorAll('#unit-card-list .unit-card[data-unit]');
+  let count = 0;
+  cards.forEach(c => {
+    const show = parseInt(c.dataset.unit) === n;
+    c.style.display = show ? 'flex' : 'none';
+    if (show) count++;
+  });
+  document.querySelectorAll('#unit-tabs .tab-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.u) === n);
+  });
+  const label = UNIT_NAMES[n] || `第 ${n} 單元`;
+  document.getElementById('unit-sec-label').textContent = `${label}　${count} 款遊戲`;
+  localStorage.setItem('xr_last_unit', n);
+}
 
 let histShown=false;
 function toggleHistory() {

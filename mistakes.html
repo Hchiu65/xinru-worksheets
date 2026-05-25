@@ -6,192 +6,165 @@
 <title>錯題本</title>
 <style>
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body {
-  font-family: "標楷體","DFKai-SB",serif;
-  background: #f0f4f8; margin: 0; padding: 0 0 40px; color: #222;
-}
+body { font-family:"標楷體","DFKai-SB",serif; background:#f5f2f0; margin:0; padding:0 0 40px; color:#333; }
+
 header {
-  background: #c0392b; color: #fff;
-  padding: 16px 16px 12px;
-  display: flex; align-items: center; justify-content: space-between;
+  background:#7a6060; color:#fff;
+  padding:16px 16px 12px;
+  display:flex; align-items:center; justify-content:space-between;
 }
-.hdr-left h1 { margin: 0; font-size: 22px; letter-spacing: 2px; }
-.hdr-left p  { margin: 3px 0 0; font-size: 13px; opacity: .8; }
-.hdr-badge {
-  background: rgba(255,255,255,.2); border-radius: 20px;
-  padding: 7px 16px; font-size: 22px; font-weight: bold; white-space: nowrap;
-}
-.btn-home-red {
-  background: rgba(255,255,255,.2); border: none; border-radius: 8px;
-  color: #fff; font-size: 20px; padding: 7px 9px; cursor: pointer;
-  text-decoration: none; flex-shrink: 0; line-height: 1;
-}
+.hdr-left h1 { margin:0; font-size:22px; letter-spacing:2px; }
+.hdr-left p  { margin:3px 0 0; font-size:13px; opacity:.75; }
+.hdr-badge { background:rgba(255,255,255,.18); border-radius:20px; padding:7px 16px; font-size:22px; font-weight:bold; white-space:nowrap; }
+.btn-home-red { background:rgba(255,255,255,.18); border:none; border-radius:8px; color:#fff; font-size:20px; padding:7px 9px; cursor:pointer; text-decoration:none; flex-shrink:0; line-height:1; }
 
 /* Tabs */
-.tabs { display: flex; background: #922b21; }
-.tab {
-  flex: 1; text-align: center; padding: 11px 0; font-size: 16px;
-  color: rgba(255,255,255,.5); cursor: pointer;
-  border-bottom: 3px solid transparent;
-  user-select: none; transition: color .15s;
-}
-.tab.active { color: #fff; border-bottom-color: #fff; font-weight: bold; }
+.tabs { display:flex; background:#6b5252; }
+.tab { flex:1; text-align:center; padding:11px 0; font-size:16px; color:rgba(255,255,255,.5); cursor:pointer; border-bottom:3px solid transparent; user-select:none; transition:color .15s; }
+.tab.active { color:#fff; border-bottom-color:#fff; font-weight:bold; }
 
-/* ── 錯題列表 ── */
-#list-view { padding: 12px; }
+/* ── List view ── */
+#list-view { padding:12px; }
+.empty-msg { text-align:center; padding:40px 20px; color:#aaa; font-size:18px; line-height:2; }
+.mistake-item { background:#fff; border-radius:10px; padding:9px 12px; margin-bottom:6px; box-shadow:0 1px 4px rgba(0,0,0,.07); display:flex; align-items:center; gap:10px; }
+.mi-count { flex-shrink:0; width:32px; height:32px; border-radius:50%; background:#e8d8d8; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:bold; color:#7a6060; }
+.mi-count.mastered { background:#d4edda; color:#28a745; }
+.mi-body { flex:1; min-width:0; }
+.mi-source  { font-size:11px; color:#9b7070; margin-bottom:1px; letter-spacing:.5px; }
+.mi-word    { font-size:17px; font-weight:bold; line-height:1.3; }
+.mi-meaning { font-size:13px; color:#666; margin-top:1px; line-height:1.35; }
+.mi-meta    { font-size:11px; color:#aaa; margin-top:2px; }
+.mi-actions { flex-shrink:0; display:flex; flex-direction:column; gap:5px; }
+.btn-speak  { padding:5px 10px; border:1.5px solid #2c5f8a; border-radius:7px; background:#fff; color:#2c5f8a; font-size:14px; cursor:pointer; font-family:inherit; }
+.btn-master { padding:5px 10px; border:none; border-radius:7px; background:#d4edda; color:#28a745; font-size:12px; cursor:pointer; font-family:inherit; font-weight:bold; }
+.btn-master.undo { background:#f8d7da; color:#c0392b; }
 
-.empty-msg {
-  text-align: center; padding: 40px 20px;
-  color: #aaa; font-size: 18px; line-height: 2;
-}
+/* 格式 B 正確答案欄 */
+.mi-answer-b { flex-shrink:0; background:linear-gradient(135deg,#f0fdf4,#dcfce7); border-radius:10px; padding:6px 10px; text-align:center; min-width:72px; max-width:90px; border:1px solid #bbf7d0; }
+.mi-answer-b .ans-lbl { font-size:10px; color:#15803d; margin-bottom:3px; }
+.mi-answer-b .ans-ctx { font-size:14px; color:#166534; white-space:nowrap; }
+.mi-answer-b .ans-ctx .hit { font-size:16px; color:#16a34a; }
+.unit-header { font-size:13px; font-weight:bold; color:#9b7070; padding:10px 4px 4px; letter-spacing:1px; border-bottom:1.5px solid #e8d4d4; margin-bottom:6px; margin-top:8px; }
+.unit-header:first-child { margin-top:0; }
+.action-bar { display:flex; gap:10px; margin-bottom:14px; }
+.btn-practice-all { flex:1; padding:14px; background:#7a6060; color:#fff; border:none; border-radius:10px; font-size:18px; font-family:inherit; cursor:pointer; font-weight:bold; letter-spacing:1px; }
+.btn-clear-mastered { flex:0 0 auto; padding:14px 16px; background:#eee; color:#888; border:none; border-radius:10px; font-size:15px; font-family:inherit; cursor:pointer; }
+.sort-bar { display:flex; gap:8px; margin-bottom:12px; align-items:center; font-size:14px; color:#888; }
+.sort-btn { padding:5px 12px; border:1.5px solid #ccc; border-radius:20px; background:#fff; font-size:13px; cursor:pointer; font-family:inherit; }
+.sort-btn.active { border-color:#7a6060; color:#7a6060; background:#f5f0f0; }
+.stats-bar { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px; }
+.stat-box { background:#fff; border-radius:10px; padding:12px 8px; text-align:center; box-shadow:0 1px 4px rgba(0,0,0,.06); }
+.stat-val   { font-size:24px; font-weight:bold; color:#7a6060; }
+.stat-val.green { color:#28a745; }
+.stat-label { font-size:12px; color:#888; margin-top:2px; }
 
-.mistake-item {
-  background: #fff; border-radius: 10px; padding: 9px 12px;
-  margin-bottom: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.07);
-  display: flex; align-items: center; gap: 10px;
-}
-.mi-count {
-  flex-shrink: 0; width: 32px; height: 32px;
-  border-radius: 50%; background: #f8d7da;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: bold; color: #c0392b;
-}
-.mi-count.mastered { background: #d4edda; color: #28a745; }
-.mi-body { flex: 1; min-width: 0; }
-.mi-source { font-size: 11px; color: #c0392b; margin-bottom: 1px; letter-spacing: .5px; }
-.mi-word    { font-size: 17px; font-weight: bold; line-height: 1.3; }
-.mi-meaning { font-size: 13px; color: #666; margin-top: 1px; line-height: 1.35; }
-.mi-meta    { font-size: 11px; color: #aaa; margin-top: 2px; }
-.mi-actions { flex-shrink: 0; display: flex; flex-direction: column; gap: 5px; }
-.btn-speak {
-  padding: 5px 10px; border: 1.5px solid #2c5f8a; border-radius: 7px;
-  background: #fff; color: #2c5f8a; font-size: 14px; cursor: pointer;
-  font-family: inherit;
-}
-.btn-master {
-  padding: 5px 10px; border: none; border-radius: 7px;
-  background: #d4edda; color: #28a745; font-size: 12px; cursor: pointer;
-  font-family: inherit; font-weight: bold;
-}
-.btn-master.undo { background: #f8d7da; color: #c0392b; }
-.unit-header {
-  font-size: 13px; font-weight: bold; color: #c0392b;
-  padding: 10px 4px 4px; letter-spacing: 1px; border-bottom: 1.5px solid #f5c6c6;
-  margin-bottom: 6px; margin-top: 8px;
-}
-.unit-header:first-child { margin-top: 0; }
+/* ── Mode select view ── */
+#mode-select-view { display:none; padding:14px; }
+.mode-count-banner { background:#fff; border-radius:12px; padding:14px; text-align:center; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+.mode-count-banner .big-num { font-size:36px; font-weight:bold; color:#7a6060; }
+.mode-count-banner .sub { font-size:13px; color:#888; margin-top:2px; }
+.mode-grid { display:flex; flex-direction:column; gap:10px; }
+.mode-btn { width:100%; padding:16px 18px; border:none; border-radius:14px; font-size:17px; font-family:inherit; font-weight:bold; cursor:pointer; text-align:left; display:flex; align-items:center; gap:12px; color:#fff; transition:transform .1s; }
+.mode-btn:active { transform:scale(.97); }
+.mode-btn .mode-icon { font-size:24px; flex-shrink:0; }
+.mode-btn .mode-info { flex:1; }
+.mode-btn .mode-name { font-size:16px; }
+.mode-btn .mode-desc { font-size:12px; opacity:.8; margin-top:2px; font-weight:normal; }
+.mb-A { background:linear-gradient(135deg,#667eea,#764ba2); }
+.mb-B { background:linear-gradient(135deg,#43e97b,#38f9d7); }
+.mb-C { background:linear-gradient(135deg,#f093fb,#f5576c); }
+.mb-D { background:linear-gradient(135deg,#f6d365,#fda085); }
+.mb-E { background:linear-gradient(135deg,#4facfe,#00f2fe); }
 
-.action-bar {
-  display: flex; gap: 10px; margin-bottom: 14px;
-}
-.btn-practice-all {
-  flex: 1; padding: 14px; background: #c0392b; color: #fff;
-  border: none; border-radius: 10px; font-size: 18px; font-family: inherit;
-  cursor: pointer; font-weight: bold; letter-spacing: 1px;
-}
-.btn-clear-mastered {
-  flex: 0 0 auto; padding: 14px 16px; background: #eee; color: #888;
-  border: none; border-radius: 10px; font-size: 15px; font-family: inherit;
-  cursor: pointer;
-}
+/* ── Practice view (container) ── */
+#practice-view { display:none; padding:10px; }
+.pv-back-btn { display:flex; align-items:center; gap:6px; padding:8px 12px; background:#fff; border:none; border-radius:10px; font-size:14px; color:#888; font-family:inherit; cursor:pointer; margin-bottom:10px; box-shadow:0 1px 4px rgba(0,0,0,.06); }
 
-/* Sort bar */
-.sort-bar {
-  display: flex; gap: 8px; margin-bottom: 12px; align-items: center;
-  font-size: 14px; color: #888;
-}
-.sort-btn {
-  padding: 5px 12px; border: 1.5px solid #ccc; border-radius: 20px;
-  background: #fff; font-size: 13px; cursor: pointer; font-family: inherit;
-}
-.sort-btn.active { border-color: #c0392b; color: #c0392b; background: #fef0ee; }
+/* ── Shared practice components ── */
+.pv-progress { margin-bottom:10px; }
+.pv-prog-bar { height:8px; background:#eee; border-radius:4px; overflow:hidden; }
+.pv-prog-fill { height:100%; border-radius:4px; transition:width .3s; }
+.pv-prog-label { font-size:12px; color:#aaa; margin-top:4px; text-align:center; }
 
-/* Stats bar */
-.stats-bar {
-  display: grid; grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px; margin-bottom: 14px;
-}
-.stat-box {
-  background: #fff; border-radius: 10px; padding: 12px 8px;
-  text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.06);
-}
-.stat-val   { font-size: 24px; font-weight: bold; color: #c0392b; }
-.stat-val.green { color: #28a745; }
-.stat-label { font-size: 12px; color: #888; margin-top: 2px; }
+.pv-dots { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:10px; }
+.pv-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.dot-done { background:#28a745; }
+.dot-now  { background:#c0392b; }
+.dot-todo { background:#e0e7ff; }
+.dot-fail { background:#e74c3c; }
 
-/* ── 練習模式 ── */
-#practice-view { display: none; padding: 10px; }
+/* MCQ (modes A, C, D) */
+.mcq-card { background:#fff; border-radius:14px; padding:16px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,.07); text-align:center; }
+.mcq-source { font-size:11px; color:#aaa; margin-bottom:6px; }
+.mcq-word   { font-size:28px; font-weight:bold; color:#333; margin-bottom:4px; }
+.mcq-prompt { font-size:13px; color:#888; }
+.mcq-opts   { display:flex; flex-direction:column; gap:8px; }
+.mcq-opt    { padding:13px 14px; border-radius:12px; border:1.5px solid #e0e7ff; background:#fff; font-size:14px; font-family:inherit; cursor:pointer; text-align:left; transition:background .1s,border-color .1s; line-height:1.4; }
+.mcq-opt:active { transform:scale(.98); }
+.mcq-opt.correct { background:#d4edda; border-color:#28a745; color:#155724; }
+.mcq-opt.wrong   { background:#fee; border-color:#e74c3c; color:#c0392b; }
+.mcq-feedback    { text-align:center; font-size:14px; font-weight:bold; min-height:20px; margin:6px 0; }
+.mcq-feedback.ok  { color:#28a745; }
+.mcq-feedback.err { color:#e74c3c; }
 
-.practice-header {
-  background: #fff; border-radius: 12px; padding: 14px;
-  margin-bottom: 10px; text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,.08);
-}
-.practice-header h3 { margin: 0 0 4px; color: #c0392b; font-size: 20px; }
-.practice-header p  { margin: 0; color: #666; font-size: 14px; }
-#practice-score-bar {
-  font-size: 18px; font-weight: bold; color: #c0392b;
-  text-align: center; margin: 8px 0 4px;
-}
+/* Stage chips (mode A) */
+.stage-chips { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+.s-chip { padding:5px 12px; border-radius:20px; font-size:13px; font-weight:bold; }
+.s-done { background:#d4edda; color:#28a745; }
+.s-now  { background:#c0392b; color:#fff; }
+.s-lock { background:#f0f0f0; color:#ccc; }
 
-.match-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 8px; margin-bottom: 10px;
-}
-.col-header {
-  text-align: center; font-size: 14px; color: #c0392b;
-  padding: 4px 0 8px; border-bottom: 2px solid #c0392b;
-  letter-spacing: 2px;
-}
-#p-left-col, #p-right-col { display: flex; flex-direction: column; gap: 8px; }
+/* Flashcard (mode B) */
+.flip-scene { perspective:900px; margin-bottom:12px; height:150px; }
+.flip-card  { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform .45s; cursor:pointer; }
+.flip-card.flipped { transform:rotateY(180deg); }
+.flip-face  { position:absolute; inset:0; border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; backface-visibility:hidden; gap:8px; padding:14px; }
+.flip-front { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; }
+.flip-back  { background:#fff; border:2px solid #667eea; transform:rotateY(180deg); }
+.flip-word  { font-size:30px; font-weight:bold; }
+.flip-hint  { font-size:13px; opacity:.7; }
+.flip-ans-word { font-size:22px; font-weight:bold; color:#333; }
+.flip-ans-mean { font-size:13px; color:#666; text-align:center; line-height:1.5; }
+.flip-counter  { text-align:center; font-size:13px; color:#aaa; margin-bottom:8px; }
+.self-btns  { display:flex; gap:10px; margin-bottom:8px; }
+.self-btn   { flex:1; padding:14px; border-radius:13px; font-size:16px; font-weight:bold; border:none; font-family:inherit; cursor:pointer; }
+.self-no    { background:#fff0f0; color:#e74c3c; }
+.self-yes   { background:#d4edda; color:#28a745; }
 
-.card {
-  background: #fff; border: 2.5px solid #d5b8b8; border-radius: 12px;
-  padding: 12px 8px; cursor: pointer; text-align: center;
-  display: flex; align-items: center; justify-content: center;
-  min-height: 58px; line-height: 1.4;
-  transition: background .15s, border-color .15s, transform .1s;
-  user-select: none; -webkit-user-select: none;
-}
-.word-card { font-size: 22px; font-weight: bold; }
-.mean-card { font-size: 16px; }
-.card:active:not(.matched):not(.disabled) { transform: scale(.96); }
-.card.selected { background: #fef0ee; border-color: #c0392b; box-shadow: 0 0 0 2.5px #c0392b; }
-.card.matched  { background: #d4edda; border-color: #28a745; color: #155724; cursor: default; }
-.card.wrong    { background: #f8d7da; border-color: #dc3545; animation: shake .35s ease; }
-@keyframes shake {
-  0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)}
-  40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
-}
+/* Timer (mode D) */
+.timer-wrap { background:linear-gradient(135deg,#f6d365,#fda085); border-radius:13px; padding:10px 16px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
+.timer-num  { font-size:28px; font-weight:bold; color:#fff; }
+.timer-lbl  { font-size:11px; color:rgba(255,255,255,.8); }
+.timer-warn { background:linear-gradient(135deg,#ff5f6d,#ffc371); }
 
-/* Practice complete overlay */
-.overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.55); align-items: center; justify-content: center;
-  z-index: 500;
-}
-.overlay.show { display: flex; }
-.result-box {
-  background: #fff; border-radius: 18px; padding: 28px 24px;
-  width: 88%; max-width: 340px; text-align: center;
-  box-shadow: 0 8px 24px rgba(0,0,0,.2);
-}
-.result-box h2  { margin: 0 0 8px; color: #c0392b; font-size: 22px; }
-.result-box .big{ font-size: 44px; font-weight: bold; color: #c0392b; margin: 8px 0; }
-.result-box .sub{ font-size: 15px; color: #888; margin-bottom: 18px; }
-.btn-row { display: flex; gap: 10px; }
-.btn-primary { flex:1; padding:13px; background:#c0392b; color:#fff; border:none; border-radius:10px; font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold; }
-.btn-secondary{ flex:1; padding:13px; background:#eee; color:#555; border:none; border-radius:10px; font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold; }
+/* Canvas / handwriting (mode E) */
+.write-ctx-box { background:#e0e7ff; border-radius:10px; padding:10px 14px; margin-bottom:10px; font-size:13px; color:#444; text-align:center; line-height:1.6; }
+.write-canvas-wrap { position:relative; margin-bottom:8px; }
+.write-canvas { width:100%; height:180px; border-radius:14px; border:2px dashed #c7d2fe; background:#fafbff; display:block; touch-action:none; cursor:crosshair; }
+.write-clear-btn { width:100%; padding:9px; background:#f5f5f5; border:none; border-radius:10px; font-size:13px; color:#888; font-family:inherit; cursor:pointer; margin-bottom:10px; }
+.reveal-row { display:flex; align-items:center; justify-content:center; gap:20px; background:#f8faff; border-radius:13px; padding:14px; margin-bottom:10px; }
+.reveal-col { text-align:center; }
+.reveal-lbl { font-size:11px; color:#aaa; margin-bottom:4px; }
+.reveal-char { font-size:52px; font-family:"標楷體","DFKai-SB",serif; line-height:1; }
+.reveal-divider { width:1px; height:70px; background:#e0e7ff; }
+.reveal-hidden { filter:blur(12px); transition:filter .3s; cursor:pointer; }
+
+/* Overlay */
+.overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); align-items:center; justify-content:center; z-index:500; }
+.overlay.show { display:flex; }
+.result-box { background:#fff; border-radius:18px; padding:28px 24px; width:88%; max-width:340px; text-align:center; box-shadow:0 8px 24px rgba(0,0,0,.2); }
+.result-box h2  { margin:0 0 8px; color:#7a6060; font-size:22px; }
+.result-box .big{ font-size:44px; font-weight:bold; color:#7a6060; margin:8px 0; }
+.result-box .sub{ font-size:15px; color:#888; margin-bottom:18px; }
+.btn-row { display:flex; gap:10px; }
+.btn-primary   { flex:1; padding:13px; background:#7a6060; color:#fff; border:none; border-radius:10px; font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold; }
+.btn-secondary { flex:1; padding:13px; background:#eee; color:#555; border:none; border-radius:10px; font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold; }
 
 /* Star pop */
-.star-pop {
-  position: fixed; font-size: 18px; font-weight: bold; color: #28a745;
-  pointer-events: none; z-index: 600;
-  animation: floatUp .8s ease forwards;
-}
-@keyframes floatUp {
-  from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-60px)}
-}
+.star-pop { position:fixed; font-size:18px; font-weight:bold; color:#28a745; pointer-events:none; z-index:600; animation:floatUp .8s ease forwards; }
+@keyframes floatUp { from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-60px)} }
+
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
 </style>
 </head>
 <body>
@@ -206,169 +179,243 @@ header {
 </header>
 
 <div class="tabs">
-  <div class="tab active" id="tab-list" onclick="showList()">全部錯題</div>
-  <div class="tab" id="tab-practice" onclick="showPractice()">練習模式</div>
+  <div class="tab active" id="tab-list"     onclick="showList()">全部錯題</div>
+  <div class="tab"        id="tab-practice" onclick="showModeSelect()">練習模式</div>
 </div>
 
 <!-- List view -->
 <div id="list-view">
   <div class="stats-bar" id="stats-bar"></div>
   <div class="action-bar">
-    <button class="btn-practice-all" onclick="showPractice()">▶ 開始練習錯題</button>
+    <button class="btn-practice-all" onclick="showModeSelect()">▶ 開始練習錯題</button>
     <button class="btn-clear-mastered" onclick="clearMastered()">清除已熟練</button>
   </div>
   <div class="sort-bar">
     排序：
-    <button class="sort-btn active" id="sort-unit" onclick="setSortMode('unit')">依單元</button>
-    <button class="sort-btn" id="sort-wrong" onclick="setSortMode('wrong')">錯誤次數↓</button>
-    <button class="sort-btn" id="sort-date" onclick="setSortMode('date')">最近錯誤</button>
+    <button class="sort-btn active" id="sort-unit"  onclick="setSortMode('unit')">依單元</button>
+    <button class="sort-btn"        id="sort-wrong" onclick="setSortMode('wrong')">錯誤次數↓</button>
+    <button class="sort-btn"        id="sort-date"  onclick="setSortMode('date')">最近錯誤</button>
   </div>
   <div id="mistake-list"></div>
 </div>
 
-<!-- Practice view -->
-<div id="practice-view">
-  <div class="practice-header">
-    <h3>🔄 錯題練習</h3>
-    <p id="practice-desc">從錯題中挑選題目，配對成語與語意</p>
+<!-- Mode select view -->
+<div id="mode-select-view">
+  <div class="mode-count-banner">
+    <div class="big-num" id="mode-pool-count">0</div>
+    <div class="sub">題待複習（未熟練錯題）</div>
   </div>
-  <div id="practice-score-bar"></div>
-  <div class="match-grid">
-    <div class="col-header">成　語 🔊</div>
-    <div class="col-header">語　意</div>
-    <div id="p-left-col"></div>
-    <div id="p-right-col"></div>
+  <div class="mode-grid">
+    <button class="mode-btn mb-A" onclick="startMode('A')">
+      <span class="mode-icon">🏯</span>
+      <span class="mode-info">
+        <div class="mode-name">闖關模式</div>
+        <div class="mode-desc">分關卡每關 6 題，全答對才過關</div>
+      </span>
+    </button>
+    <button class="mode-btn mb-B" onclick="startMode('B')">
+      <span class="mode-icon">🃏</span>
+      <span class="mode-info">
+        <div class="mode-name">翻翻看</div>
+        <div class="mode-desc">翻牌自評「記住了 ／ 還不會」</div>
+      </span>
+    </button>
+    <button class="mode-btn mb-C" onclick="startMode('C')">
+      <span class="mode-icon">🎯</span>
+      <span class="mode-info">
+        <div class="mode-name">四選一砲轟</div>
+        <div class="mode-desc">每題四選一，答錯立刻重考同題</div>
+      </span>
+    </button>
+    <button class="mode-btn mb-D" onclick="startMode('D')">
+      <span class="mode-icon">⏱</span>
+      <span class="mode-info">
+        <div class="mode-name">限時全掃</div>
+        <div class="mode-desc">計時內把所有錯題全答完</div>
+      </span>
+    </button>
+    <button class="mode-btn mb-E" onclick="startMode('E')">
+      <span class="mode-icon">✍️</span>
+      <span class="mode-info">
+        <div class="mode-name">看義默寫</div>
+        <div class="mode-desc">看語意用手指默寫出詞語，自評</div>
+      </span>
+    </button>
   </div>
 </div>
 
-<!-- Practice complete overlay -->
+<!-- Practice view -->
+<div id="practice-view">
+  <button class="pv-back-btn" onclick="showModeSelect()">‹ 返回選擇模式</button>
+  <div id="pv-content"></div>
+</div>
+
+<!-- Result overlay -->
 <div class="overlay" id="result-overlay">
   <div class="result-box">
-    <h2>✅ 練習完成！</h2>
+    <h2 id="result-title">✅ 練習完成！</h2>
     <div class="big" id="result-score"></div>
     <div class="sub" id="result-sub"></div>
     <div class="btn-row">
-      <button class="btn-secondary" onclick="closeResult(); showPractice()">再練一次</button>
-      <button class="btn-primary" onclick="closeResult(); showList()">返回列表</button>
+      <button class="btn-secondary" onclick="closeResult(); showModeSelect()">換模式</button>
+      <button class="btn-primary"   onclick="closeResult(); showList()">返回列表</button>
     </div>
   </div>
 </div>
 
 <script>
+/* ══════════════════════════════════════
+   SHARED UTILITIES
+══════════════════════════════════════ */
 let sortMode = 'unit';
 const UNIT_ORDER = [
   '第六單元　詞語填空','第六單元　成語連連看',
   '第七單元　字音辨正','第七單元　找錯別字','第七單元　成語填空',
   '第七單元　作業練習　改錯字','第七單元　作業練習　字音辨字','第七單元　作業練習　字彙練習'
 ];
-let practiceLeftSel = null;
-let practiceMatched = 0;
-let practiceWrong = 0;
-let practicePairs = [];
 
-/* ── Storage ── */
-function getMistakes() { return JSON.parse(localStorage.getItem('xr_mistakes') || '{}'); }
-function saveMistakes(obj) { localStorage.setItem('xr_mistakes', JSON.stringify(obj)); }
+function getMistakes() { return JSON.parse(localStorage.getItem('xr_mistakes')||'{}'); }
+function saveMistakes(o) { localStorage.setItem('xr_mistakes', JSON.stringify(o)); }
 
-/* ── TTS ── */
+function shuffle(a) {
+  const b=[...a];
+  for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}
+  return b;
+}
+
 function speakWord(word) {
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(word);
-  utter.lang = 'zh-TW'; utter.rate = 0.8; utter.pitch = 1.0;
-  const doSpeak = () => {
-    const voices = speechSynthesis.getVoices();
-    const v = voices.find(v=>v.lang==='zh-TW') || voices.find(v=>v.lang.startsWith('zh'));
-    if (v) utter.voice = v;
-    speechSynthesis.speak(utter);
-  };
-  speechSynthesis.getVoices().length ? doSpeak() : (speechSynthesis.onvoiceschanged = doSpeak);
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang='zh-TW'; u.rate=0.8;
+  const go=()=>{ const v=speechSynthesis.getVoices(); const vv=v.find(x=>x.lang==='zh-TW')||v.find(x=>x.lang.startsWith('zh')); if(vv) u.voice=vv; speechSynthesis.speak(u); };
+  speechSynthesis.getVoices().length ? go() : (speechSynthesis.onvoiceschanged=go);
 }
 
-/* ── Tabs ── */
+function getPendingPool() {
+  return Object.values(getMistakes()).filter(m=>!m.mastered && m.meaning);
+}
+
+function markSuccess(word) {
+  const all=getMistakes();
+  if (!all[word]) return;
+  all[word].practiceCount=(all[word].practiceCount||0)+1;
+  if (all[word].practiceCount>=3) all[word].mastered=true;
+  saveMistakes(all);
+}
+
+function markRetry(word) {
+  const all=getMistakes();
+  if (!all[word]) return;
+  all[word].wrongCount++;
+  all[word].lastWrong=new Date().toLocaleDateString('zh-TW');
+  saveMistakes(all);
+}
+
+function getDistractors(item, pool, count=3) {
+  return shuffle(pool.filter(p=>p.word!==item.word)).slice(0,count).map(p=>p.meaning);
+}
+
+function showStarPop(text) {
+  const pop=document.createElement('div');
+  pop.className='star-pop'; pop.textContent=text;
+  pop.style.left='50%'; pop.style.top='40%'; pop.style.transform='translateX(-50%)';
+  document.body.appendChild(pop);
+  setTimeout(()=>pop.remove(),900);
+}
+
+function makeDots(queue, total, doneSet) {
+  let h='';
+  for(let i=0;i<total;i++){
+    const cls = doneSet.has(i) ? 'dot-done' : (i===total-queue.length ? 'dot-now' : 'dot-todo');
+    h+=`<div class="pv-dot ${cls}"></div>`;
+  }
+  return h;
+}
+
+function closeResult() { document.getElementById('result-overlay').classList.remove('show'); }
+
+function showFinalResult(correct, total, extraMsg='') {
+  document.getElementById('result-title').textContent = correct===total ? '🎉 全部完成！' : '✅ 練習完成！';
+  document.getElementById('result-score').textContent = `${correct} / ${total} 答對`;
+  document.getElementById('result-sub').textContent = extraMsg || (correct===total ? '太棒了！所有錯題都複習過了 🏆' : `繼續加油！`);
+  document.getElementById('result-overlay').classList.add('show');
+  document.getElementById('total-wrong').textContent = getPendingPool().length;
+}
+
+function progressBar(done, total, color='#c0392b') {
+  const pct = total ? Math.round(done/total*100) : 0;
+  return `<div class="pv-progress">
+    <div class="pv-prog-bar"><div class="pv-prog-fill" style="width:${pct}%;background:${color}"></div></div>
+    <div class="pv-prog-label">${done} / ${total} 題完成</div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════
+   VIEW SWITCHING
+══════════════════════════════════════ */
 function showList() {
-  document.getElementById('list-view').style.display = 'block';
-  document.getElementById('practice-view').style.display = 'none';
-  document.getElementById('tab-list').className = 'tab active';
-  document.getElementById('tab-practice').className = 'tab';
+  document.getElementById('list-view').style.display='block';
+  document.getElementById('mode-select-view').style.display='none';
+  document.getElementById('practice-view').style.display='none';
+  document.getElementById('tab-list').className='tab active';
+  document.getElementById('tab-practice').className='tab';
   renderList();
 }
 
-function showPractice() {
-  const all = getMistakes();
-  const pool = Object.values(all).filter(m => !m.mastered && m.meaning);
-  if (!pool.length) {
-    alert('沒有待練習的錯題！全部已熟練 🎉');
-    return;
-  }
-  document.getElementById('list-view').style.display = 'none';
-  document.getElementById('practice-view').style.display = 'block';
-  document.getElementById('tab-list').className = 'tab';
-  document.getElementById('tab-practice').className = 'tab active';
-  buildPractice(pool);
+function showModeSelect() {
+  const pool=getPendingPool();
+  if (!pool.length) { alert('沒有待練習的錯題！全部已熟練 🎉'); return; }
+  document.getElementById('mode-pool-count').textContent=pool.length;
+  document.getElementById('list-view').style.display='none';
+  document.getElementById('mode-select-view').style.display='block';
+  document.getElementById('practice-view').style.display='none';
+  document.getElementById('tab-list').className='tab';
+  document.getElementById('tab-practice').className='tab active';
 }
 
-/* ── List view ── */
+function enterPracticeView(html) {
+  document.getElementById('mode-select-view').style.display='none';
+  document.getElementById('practice-view').style.display='block';
+  document.getElementById('pv-content').innerHTML=html;
+}
+
+/* ══════════════════════════════════════
+   LIST VIEW
+══════════════════════════════════════ */
 function setSortMode(mode) {
-  sortMode = mode;
-  ['unit','wrong','date'].forEach(m => {
-    document.getElementById('sort-'+m).className = 'sort-btn'+(m===mode?' active':'');
-  });
+  sortMode=mode;
+  ['unit','wrong','date'].forEach(m=>{ document.getElementById('sort-'+m).className='sort-btn'+(m===mode?' active':''); });
   renderList();
 }
 
 function renderList() {
-  const all = getMistakes();
-  const items = Object.values(all);
-  document.getElementById('total-wrong').textContent = items.filter(i=>!i.mastered).length;
-
-  // Stats
-  const totalItems = items.length;
-  const mastered = items.filter(i=>i.mastered).length;
-  const maxWrong = items.length ? Math.max(...items.map(i=>i.wrongCount)) : 0;
-  document.getElementById('stats-bar').innerHTML = `
-    <div class="stat-box"><div class="stat-val">${totalItems}</div><div class="stat-label">總錯題數</div></div>
+  const all=getMistakes();
+  const items=Object.values(all);
+  document.getElementById('total-wrong').textContent=items.filter(i=>!i.mastered).length;
+  const mastered=items.filter(i=>i.mastered).length;
+  const maxWrong=items.length ? Math.max(...items.map(i=>i.wrongCount)) : 0;
+  document.getElementById('stats-bar').innerHTML=`
+    <div class="stat-box"><div class="stat-val">${items.length}</div><div class="stat-label">總錯題數</div></div>
     <div class="stat-box"><div class="stat-val green">${mastered}</div><div class="stat-label">已熟練</div></div>
-    <div class="stat-box"><div class="stat-val">${maxWrong}</div><div class="stat-label">最高錯誤次</div></div>
-  `;
-
-  if (!items.length) {
-    document.getElementById('mistake-list').innerHTML =
-      '<div class="empty-msg">目前沒有錯題紀錄<br>去玩遊戲並答錯才會記錄在這裡 💪</div>';
-    return;
-  }
-
-  // Sort
-  if (sortMode === 'unit') {
-    items.sort((a,b) => {
-      const ai = UNIT_ORDER.indexOf(a.source||''); const bi2 = UNIT_ORDER.indexOf(b.source||'');
-      const ao = ai<0?999:ai, bo = bi2<0?999:bi2;
-      return ao !== bo ? ao - bo : b.wrongCount - a.wrongCount;
-    });
-  } else if (sortMode === 'wrong') {
-    items.sort((a,b) => b.wrongCount - a.wrongCount);
-  } else {
-    items.sort((a,b) => (b.lastWrong||'').localeCompare(a.lastWrong||''));
-  }
-
-  let html = '';
-  let lastSource = null;
-  items.forEach(m => {
-    const isMastered = !!m.mastered;
-    const src = m.source || '';
-    if (sortMode === 'unit' && src !== lastSource) {
-      html += `<div class="unit-header">📘 ${src||'其他'}</div>`;
-      lastSource = src;
-    }
-    const wkey = encodeURIComponent(m.word);
-    html += `<div class="mistake-item">
+    <div class="stat-box"><div class="stat-val">${maxWrong}</div><div class="stat-label">最高錯誤次</div></div>`;
+  if (!items.length) { document.getElementById('mistake-list').innerHTML='<div class="empty-msg">目前沒有錯題紀錄<br>去玩遊戲並答錯才會記錄在這裡 💪</div>'; return; }
+  if (sortMode==='unit') items.sort((a,b)=>{ const ai=UNIT_ORDER.indexOf(a.source||''),bi=UNIT_ORDER.indexOf(b.source||''); return (ai<0?999:ai)!==(bi<0?999:bi)?(ai<0?999:ai)-(bi<0?999:bi):b.wrongCount-a.wrongCount; });
+  else if (sortMode==='wrong') items.sort((a,b)=>b.wrongCount-a.wrongCount);
+  else items.sort((a,b)=>(b.lastWrong||'').localeCompare(a.lastWrong||''));
+  let html='', lastSrc=null;
+  items.forEach(m=>{
+    const isMastered=!!m.mastered, src=m.source||'', wkey=encodeURIComponent(m.word);
+    if (sortMode==='unit' && src!==lastSrc) { html+=`<div class="unit-header">📘 ${src||'其他'}</div>`; lastSrc=src; }
+    html+=`<div class="mistake-item">
       <div class="mi-count${isMastered?' mastered':''}">${isMastered?'✓':m.wrongCount}</div>
       <div class="mi-body">
-        ${src && sortMode!=='unit' ? `<div class="mi-source">${src}</div>` : ''}
-        <div class="mi-word">${m.question || m.word}</div>
+        ${src&&sortMode!=='unit'?`<div class="mi-source">${src}</div>`:''}
+        <div class="mi-word">${m.question||m.word}</div>
         <div class="mi-meaning">${m.meaning||'—'}</div>
         <div class="mi-meta">錯誤 ${m.wrongCount} 次　${m.lastWrong?'最近：'+m.lastWrong:''}</div>
       </div>
+      ${isMastered ? '' : formatAnswerB(m)}
       <div class="mi-actions">
         <button class="btn-speak" onclick="speakWord(decodeURIComponent('${wkey}'))">🔊</button>
         <button class="btn-master${isMastered?' undo':''}" onclick="toggleMaster(decodeURIComponent('${wkey}'))">
@@ -377,148 +424,396 @@ function renderList() {
       </div>
     </div>`;
   });
-  document.getElementById('mistake-list').innerHTML = html;
+  document.getElementById('mistake-list').innerHTML=html;
 }
 
+function formatAnswerB(m) {
+  const word = m.word || '';
+  const question = m.question || word;
+  let ctx = '';
+  if (word !== question && word.length === question.length) {
+    // bianzi / gaicuo: same length, find differing char and highlight it in word
+    ctx = [...word].map((c,i) => c !== question[i] ? `<span class="hit">${escH(c)}</span>` : escH(c)).join('');
+  } else {
+    // vocab / bopomo / others: word IS the answer, just highlight it directly
+    ctx = `<span class="hit">${escH(word)}</span>`;
+  }
+  return `<div class="mi-answer-b"><div class="ans-lbl">正確答案</div><div class="ans-ctx">${ctx}</div></div>`;
+}
+
+function escH(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
 function toggleMaster(word) {
-  const all = getMistakes();
-  if (all[word]) all[word].mastered = !all[word].mastered;
-  saveMistakes(all);
-  renderList();
+  const all=getMistakes();
+  if (all[word]) all[word].mastered=!all[word].mastered;
+  saveMistakes(all); renderList();
 }
 
 function clearMastered() {
   if (!confirm('確定要刪除所有「已熟練」的錯題嗎？')) return;
-  const all = getMistakes();
-  Object.keys(all).forEach(k => { if (all[k].mastered) delete all[k]; });
-  saveMistakes(all);
-  renderList();
+  const all=getMistakes();
+  Object.keys(all).forEach(k=>{ if(all[k].mastered) delete all[k]; });
+  saveMistakes(all); renderList();
 }
 
-/* ── Practice mode ── */
-function shuffle(a) {
-  const b=[...a];
-  for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}
-  return b;
+/* ══════════════════════════════════════
+   MODE DISPATCHER
+══════════════════════════════════════ */
+function startMode(mode) {
+  const pool=shuffle(getPendingPool());
+  if (!pool.length) { alert('沒有待練習的錯題！'); return; }
+  if (mode==='A') startModeA(pool);
+  else if (mode==='B') startModeB(pool);
+  else if (mode==='C') startModeC(pool);
+  else if (mode==='D') startModeD(pool);
+  else if (mode==='E') startModeE(pool);
 }
 
-function buildPractice(pool) {
-  // Pick up to 8, sorted by wrongCount desc
-  const sorted = [...pool].sort((a,b)=>b.wrongCount-a.wrongCount);
-  const batch = sorted.slice(0,8);
-  practicePairs = batch.map((m,i)=>({word:m.word, meaning:m.meaning, idx:i}));
-  practiceMatched = 0; practiceWrong = 0; practiceLeftSel = null;
-
-  document.getElementById('practice-desc').textContent =
-    `共 ${batch.length} 題（最多錯誤的題目優先）`;
-  document.getElementById('practice-score-bar').textContent = '';
-
-  const leftItems  = shuffle(practicePairs.map(p=>({...p})));
-  const rightItems = shuffle(practicePairs.map(p=>({...p})));
-
-  const lc = document.getElementById('p-left-col');
-  const rc = document.getElementById('p-right-col');
-  lc.innerHTML = ''; rc.innerHTML = '';
-
-  leftItems.forEach(p => {
-    const el = makeCard(p.word, 'word-card', p.idx);
-    el.onclick = () => onPracticeLeft(el);
-    lc.appendChild(el);
-  });
-  rightItems.forEach(p => {
-    const el = makeCard(p.meaning, 'mean-card', p.idx);
-    el.onclick = () => onPracticeRight(el);
-    rc.appendChild(el);
-  });
-
-  updatePracticeScore();
+/* ══════════════════════════════════════
+   MODE A — 闖關
+   pool → chunks of 6 → each chunk is a stage
+   within stage: MCQ queue, wrong → re-queued
+══════════════════════════════════════ */
+let mA = {};
+function startModeA(pool) {
+  const size=6;
+  mA = {
+    stages: [],
+    cur: 0,
+    total: pool.length,
+    correct: 0,
+    pool
+  };
+  for (let i=0;i<pool.length;i+=size) mA.stages.push(pool.slice(i,i+size));
+  enterModeAStage(0);
 }
 
-function makeCard(text, cls, idx) {
-  const el = document.createElement('div');
-  el.className = `card ${cls}`;
-  el.textContent = text;
-  el.dataset.idx = idx;
-  return el;
+function enterModeAStage(si) {
+  mA.cur=si;
+  mA.stageQueue=shuffle([...mA.stages[si]]);
+  mA.stageDone=new Set();
+  renderModeAQuestion();
 }
 
-function updatePracticeScore() {
-  document.getElementById('practice-score-bar').textContent =
-    practicePairs.length ? `${practiceMatched} / ${practicePairs.length}` : '';
-}
-
-function onPracticeLeft(el) {
-  if (el.classList.contains('matched')) return;
-  speakWord(el.textContent);
-  if (practiceLeftSel === el) { el.classList.remove('selected'); practiceLeftSel = null; return; }
-  if (practiceLeftSel) practiceLeftSel.classList.remove('selected');
-  practiceLeftSel = el;
-  el.classList.add('selected');
-}
-
-function onPracticeRight(el) {
-  if (el.classList.contains('matched')) return;
-  if (!practiceLeftSel) return;
-  const li = parseInt(practiceLeftSel.dataset.idx);
-  const ri = parseInt(el.dataset.idx);
-  if (li === ri) {
-    practiceLeftSel.classList.remove('selected');
-    practiceLeftSel.classList.add('matched');
-    el.classList.add('matched');
-    // Record practice success
-    const all = getMistakes();
-    const word = practicePairs[li].word;
-    if (all[word]) {
-      all[word].practiceCount = (all[word].practiceCount||0) + 1;
-      if (all[word].practiceCount >= 3) all[word].mastered = true;
-      saveMistakes(all);
+function renderModeAQuestion() {
+  const si=mA.cur, stages=mA.stages;
+  const chips=stages.map((s,i)=>`<span class="s-chip ${i<si?'s-done':i===si?'s-now':'s-lock'}">${i<si?'第'+(i+1)+'關 ✓':i===si?'第'+(i+1)+'關 進行中':'第'+(i+1)+'關 🔒'}</span>`).join('');
+  if (!mA.stageQueue.length) {
+    if (si+1 < stages.length) {
+      enterModeAStage(si+1);
+    } else {
+      showFinalResult(mA.correct, mA.total);
     }
-    showStarPop(el, '✓ 答對！');
-    practiceLeftSel = null;
-    practiceMatched++;
-    updatePracticeScore();
-    if (practiceMatched === practicePairs.length) setTimeout(showPracticeResult, 500);
+    return;
+  }
+  const item=mA.stageQueue[0];
+  const dists=getDistractors(item, mA.pool);
+  const opts=shuffle([item.meaning, ...dists]);
+  const optsHTML=opts.map((o,i)=>`<button class="mcq-opt" onclick="answerModeA(${i}, ${opts.indexOf(item.meaning)}, this)">${o}</button>`).join('');
+  const prog=progressBar(mA.correct, mA.total, '#764ba2');
+  enterPracticeView(`
+    ${prog}
+    <div class="stage-chips">${chips}</div>
+    <div class="mcq-card">
+      <div class="mcq-source">${item.source||''}</div>
+      <div class="mcq-word" onclick="speakWord('${item.word.replace(/'/g,"\\'")}'">${item.word} 🔊</div>
+      <div class="mcq-prompt">這個詞語的意思是？</div>
+    </div>
+    <div class="mcq-opts">${optsHTML}</div>
+    <div class="mcq-feedback" id="a-fb"></div>
+  `);
+}
+
+function answerModeA(chosen, correct, el) {
+  document.querySelectorAll('.mcq-opt').forEach(b=>b.disabled=true);
+  const item=mA.stageQueue[0];
+  if (chosen===correct) {
+    el.classList.add('correct');
+    document.getElementById('a-fb').className='mcq-feedback ok';
+    document.getElementById('a-fb').textContent='✓ 答對了！';
+    mA.stageQueue.shift();
+    if (!mA.stageDone.has(item.word)) { mA.stageDone.add(item.word); mA.correct++; markSuccess(item.word); }
+    showStarPop('✓ +1');
+    setTimeout(()=>renderModeAQuestion(), 700);
   } else {
-    practiceWrong++;
-    // Increment wrongCount again for practice mistakes
-    const all = getMistakes();
-    const word = practicePairs[li].word;
-    if (all[word]) { all[word].wrongCount++; all[word].lastWrong = new Date().toLocaleDateString('zh-TW'); saveMistakes(all); }
-    const wl = practiceLeftSel;
-    wl.classList.add('wrong'); el.classList.add('wrong');
-    practiceLeftSel.classList.remove('selected'); practiceLeftSel = null;
-    setTimeout(() => { wl.classList.remove('wrong'); el.classList.remove('wrong'); }, 500);
+    el.classList.add('wrong');
+    document.querySelectorAll('.mcq-opt')[correct].classList.add('correct');
+    document.getElementById('a-fb').className='mcq-feedback err';
+    document.getElementById('a-fb').textContent='✗ 答錯！排回隊尾再考一次';
+    markRetry(item.word);
+    mA.stageQueue.shift();
+    mA.stageQueue.push(item);
+    setTimeout(()=>renderModeAQuestion(), 1000);
   }
 }
 
-function showStarPop(el, text) {
-  const rect = el.getBoundingClientRect();
-  const pop = document.createElement('div');
-  pop.className = 'star-pop';
-  pop.textContent = text;
-  pop.style.left = (rect.left + rect.width/2 - 30) + 'px';
-  pop.style.top  = (rect.top - 10) + 'px';
-  document.body.appendChild(pop);
-  setTimeout(() => pop.remove(), 900);
+/* ══════════════════════════════════════
+   MODE B — 翻翻看
+   queue, self-assess, wrong → re-queue
+══════════════════════════════════════ */
+let mB = {};
+function startModeB(pool) {
+  mB = { queue: [...pool], total: pool.length, correct: 0, flipped: false };
+  renderModeB();
 }
 
-function showPracticeResult() {
-  const all = getMistakes();
-  const newMastered = Object.values(all).filter(m=>m.mastered).length;
-  document.getElementById('result-score').textContent = `${practiceMatched}/${practicePairs.length} 答對`;
-  document.getElementById('result-sub').textContent =
-    practiceWrong === 0 ? '零失誤！太厲害了 🏆' :
-    `失誤 ${practiceWrong} 次。累積3次練習成功可標記為熟練。`;
-  document.getElementById('result-overlay').classList.add('show');
-  document.getElementById('total-wrong').textContent =
-    Object.values(getMistakes()).filter(m=>!m.mastered).length;
+function renderModeB() {
+  if (!mB.queue.length) { showFinalResult(mB.correct, mB.total); return; }
+  const item=mB.queue[0];
+  mB.flipped=false;
+  const prog=progressBar(mB.correct, mB.total, '#38f9d7');
+  enterPracticeView(`
+    ${prog}
+    <div class="flip-counter">剩 ${mB.queue.length} 題待確認</div>
+    <div class="flip-scene" id="flip-scene" onclick="flipB()">
+      <div class="flip-card" id="flip-card">
+        <div class="flip-face flip-front">
+          <div class="flip-word">${item.word}</div>
+          <div class="flip-hint">點擊翻牌看答案 👆</div>
+        </div>
+        <div class="flip-face flip-back">
+          <div class="flip-ans-word">${item.word}</div>
+          <div class="flip-ans-mean">${item.meaning}</div>
+        </div>
+      </div>
+    </div>
+    <div class="self-btns" id="b-btns" style="opacity:.3;pointer-events:none">
+      <button class="self-btn self-no"  onclick="rateB(false)">😕 還不會，再考</button>
+      <button class="self-btn self-yes" onclick="rateB(true)">😄 記住了！</button>
+    </div>
+    <div style="font-size:12px;color:#aaa;text-align:center">翻牌後再選擇</div>
+  `);
 }
 
-function closeResult() {
-  document.getElementById('result-overlay').classList.remove('show');
+function flipB() {
+  const card=document.getElementById('flip-card');
+  if (!card) return;
+  card.classList.toggle('flipped');
+  mB.flipped=!mB.flipped;
+  const btns=document.getElementById('b-btns');
+  if (btns) { btns.style.opacity=mB.flipped?'1':'0.3'; btns.style.pointerEvents=mB.flipped?'auto':'none'; }
 }
 
-/* ── Init ── */
+function rateB(known) {
+  const item=mB.queue.shift();
+  if (known) {
+    mB.correct++; markSuccess(item.word); showStarPop('😄 +1');
+  } else {
+    markRetry(item.word); mB.queue.push(item);
+  }
+  setTimeout(()=>renderModeB(), 300);
+}
+
+/* ══════════════════════════════════════
+   MODE C — 四選一砲轟
+   queue, wrong → re-queued immediately
+══════════════════════════════════════ */
+let mC = {};
+function startModeC(pool) {
+  mC = { queue: [...pool], total: pool.length, correct: 0, pool };
+  renderModeC();
+}
+
+function renderModeC() {
+  if (!mC.queue.length) { showFinalResult(mC.correct, mC.total); return; }
+  const item=mC.queue[0];
+  const dists=getDistractors(item, mC.pool);
+  const opts=shuffle([item.meaning, ...dists]);
+  const ci=opts.indexOf(item.meaning);
+  const optsHTML=opts.map((o,i)=>`<button class="mcq-opt" onclick="answerModeC(${i},${ci},this)">${o}</button>`).join('');
+  const prog=progressBar(mC.correct, mC.total, '#f5576c');
+  enterPracticeView(`
+    ${prog}
+    <div class="mcq-card">
+      <div class="mcq-source">${item.source||''}</div>
+      <div class="mcq-word" onclick="speakWord('${item.word.replace(/'/g,"\\'")}'">${item.word} 🔊</div>
+      <div class="mcq-prompt">選出正確的語意：</div>
+    </div>
+    <div class="mcq-opts">${optsHTML}</div>
+    <div class="mcq-feedback" id="c-fb"></div>
+  `);
+}
+
+function answerModeC(chosen, correct, el) {
+  document.querySelectorAll('.mcq-opt').forEach(b=>b.disabled=true);
+  const item=mC.queue[0];
+  if (chosen===correct) {
+    el.classList.add('correct');
+    document.getElementById('c-fb').className='mcq-feedback ok';
+    document.getElementById('c-fb').textContent='✓ 正確！';
+    mC.queue.shift(); mC.correct++; markSuccess(item.word); showStarPop('🎯 +1');
+    setTimeout(()=>renderModeC(), 600);
+  } else {
+    el.classList.add('wrong');
+    document.querySelectorAll('.mcq-opt')[correct].classList.add('correct');
+    document.getElementById('c-fb').className='mcq-feedback err';
+    document.getElementById('c-fb').textContent='✗ 錯了！這題等一下再考一次';
+    markRetry(item.word);
+    mC.queue.shift(); mC.queue.push(item);
+    setTimeout(()=>renderModeC(), 1000);
+  }
+}
+
+/* ══════════════════════════════════════
+   MODE D — 限時全掃
+   timer, queue, wrong → re-queued
+══════════════════════════════════════ */
+let mD = {};
+function startModeD(pool) {
+  mD = { queue: [...pool], total: pool.length, correct: 0, pool, timer: null, timeLeft: Math.max(60, pool.length*6), done: new Set() };
+  renderModeD();
+  mD.timer = setInterval(()=>{
+    mD.timeLeft--;
+    const el=document.getElementById('d-time');
+    if (el) el.textContent=mD.timeLeft+'s';
+    const wrap=document.getElementById('d-timer-wrap');
+    if (wrap && mD.timeLeft<=15) wrap.classList.add('timer-warn');
+    if (mD.timeLeft<=0) { clearInterval(mD.timer); timesUpD(); }
+  }, 1000);
+}
+
+function renderModeD() {
+  if (!mD.queue.length) { clearInterval(mD.timer); showFinalResult(mD.correct, mD.total, `用時 ${Math.max(60, mD.total*6) - mD.timeLeft} 秒完成！`); return; }
+  const item=mD.queue[0];
+  const dists=getDistractors(item, mD.pool);
+  const opts=shuffle([item.meaning, ...dists]);
+  const ci=opts.indexOf(item.meaning);
+  const optsHTML=opts.map((o,i)=>`<button class="mcq-opt" onclick="answerModeD(${i},${ci},this)">${o}</button>`).join('');
+  const prog=progressBar(mD.correct, mD.total, '#fda085');
+  document.getElementById('pv-content').innerHTML=`
+    ${prog}
+    <div class="timer-wrap" id="d-timer-wrap">
+      <div><div class="timer-lbl">剩餘時間</div><div class="timer-num" id="d-time">${mD.timeLeft}s</div></div>
+      <div style="text-align:right"><div class="timer-lbl">剩餘題數</div><div style="font-size:20px;font-weight:bold;color:#fff">${mD.queue.length}</div></div>
+    </div>
+    <div class="mcq-card">
+      <div class="mcq-source">${item.source||''}</div>
+      <div class="mcq-word" onclick="speakWord('${item.word.replace(/'/g,"\\'")}'">${item.word} 🔊</div>
+      <div class="mcq-prompt">選出正確的語意：</div>
+    </div>
+    <div class="mcq-opts">${optsHTML}</div>
+    <div class="mcq-feedback" id="d-fb"></div>
+  `;
+  if (!document.getElementById('practice-view').style.display || document.getElementById('practice-view').style.display==='none') {
+    document.getElementById('mode-select-view').style.display='none';
+    document.getElementById('practice-view').style.display='block';
+  }
+}
+
+function answerModeD(chosen, correct, el) {
+  document.querySelectorAll('.mcq-opt').forEach(b=>b.disabled=true);
+  const item=mD.queue[0];
+  if (chosen===correct) {
+    el.classList.add('correct');
+    document.getElementById('d-fb').className='mcq-feedback ok';
+    document.getElementById('d-fb').textContent='✓ 正確！';
+    mD.queue.shift(); mD.correct++; markSuccess(item.word); showStarPop('⏱ +1');
+    setTimeout(()=>renderModeD(), 400);
+  } else {
+    el.classList.add('wrong');
+    document.querySelectorAll('.mcq-opt')[correct].classList.add('correct');
+    document.getElementById('d-fb').className='mcq-feedback err';
+    document.getElementById('d-fb').textContent='✗ 錯了，排回隊尾！';
+    markRetry(item.word);
+    mD.queue.shift(); mD.queue.push(item);
+    setTimeout(()=>renderModeD(), 800);
+  }
+}
+
+function timesUpD() {
+  const remaining=mD.queue.length;
+  showFinalResult(mD.correct, mD.total, `時間到！答對 ${mD.correct} 題，還有 ${remaining} 題未完成`);
+}
+
+/* ══════════════════════════════════════
+   MODE E — 看義默寫
+   show meaning → write on canvas → self-assess
+══════════════════════════════════════ */
+let mE = {}, eCtx = null;
+function startModeE(pool) {
+  mE = { queue: [...pool], total: pool.length, correct: 0, revealed: false };
+  renderModeE();
+}
+
+function renderModeE() {
+  if (!mE.queue.length) { showFinalResult(mE.correct, mE.total); return; }
+  const item=mE.queue[0];
+  mE.revealed=false;
+  const prog=progressBar(mE.correct, mE.total, '#4facfe');
+  enterPracticeView(`
+    ${prog}
+    <div style="font-size:12px;color:#aaa;text-align:center;margin-bottom:8px">第 ${mE.correct+1} / ${mE.total} 題</div>
+    <div class="write-ctx-box">
+      <div style="font-size:11px;color:#aaa;margin-bottom:4px">語意提示：</div>
+      <div>${item.meaning}</div>
+      ${item.source ? `<div style="font-size:11px;color:#aaa;margin-top:4px">來源：${item.source}</div>` : ''}
+    </div>
+    <div style="font-size:13px;color:#667eea;font-weight:bold;text-align:center;margin-bottom:6px">↓ 用手指默寫出這個詞語</div>
+    <div class="write-canvas-wrap">
+      <canvas class="write-canvas" id="e-canvas"></canvas>
+    </div>
+    <button class="write-clear-btn" onclick="clearCanvasE()">🗑 清除重寫</button>
+    <div style="font-size:12px;color:#aaa;text-align:center;margin-bottom:8px">寫好後點擊答案確認：</div>
+    <div class="reveal-row">
+      <div class="reveal-col">
+        <div class="reveal-lbl">你寫的（請對照）</div>
+        <div class="reveal-char" style="color:#333">✎</div>
+      </div>
+      <div class="reveal-divider"></div>
+      <div class="reveal-col" onclick="revealE(this)" style="cursor:pointer">
+        <div class="reveal-lbl">正確答案（點擊顯示）</div>
+        <div class="reveal-char reveal-hidden" id="e-ans">${item.word}</div>
+      </div>
+    </div>
+    <div class="self-btns" id="e-btns" style="opacity:.4;pointer-events:none">
+      <button class="self-btn self-no"  onclick="rateE(false)">✗ 寫錯了，再練</button>
+      <button class="self-btn self-yes" onclick="rateE(true)">✓ 寫對了！</button>
+    </div>
+  `);
+  initCanvasE();
+}
+
+function initCanvasE() {
+  const cv=document.getElementById('e-canvas');
+  if (!cv) return;
+  cv.width=cv.offsetWidth*devicePixelRatio;
+  cv.height=cv.offsetHeight*devicePixelRatio;
+  eCtx=cv.getContext('2d');
+  eCtx.scale(devicePixelRatio,devicePixelRatio);
+  eCtx.strokeStyle='#333'; eCtx.lineWidth=5; eCtx.lineCap='round'; eCtx.lineJoin='round';
+  let drawing=false;
+  function pos(e){ const r=cv.getBoundingClientRect(),t=e.touches?e.touches[0]:e; return[t.clientX-r.left,t.clientY-r.top]; }
+  cv.addEventListener('mousedown',e=>{drawing=true;eCtx.beginPath();const[x,y]=pos(e);eCtx.moveTo(x,y);});
+  cv.addEventListener('mousemove',e=>{if(!drawing)return;const[x,y]=pos(e);eCtx.lineTo(x,y);eCtx.stroke();});
+  cv.addEventListener('mouseup',()=>drawing=false);
+  cv.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;eCtx.beginPath();const[x,y]=pos(e);eCtx.moveTo(x,y);},{passive:false});
+  cv.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const[x,y]=pos(e);eCtx.lineTo(x,y);eCtx.stroke();},{passive:false});
+  cv.addEventListener('touchend',()=>drawing=false);
+}
+
+function clearCanvasE() {
+  const cv=document.getElementById('e-canvas');
+  if (cv && eCtx) eCtx.clearRect(0,0,cv.width,cv.height);
+}
+
+function revealE() {
+  const ans=document.getElementById('e-ans');
+  if (ans) ans.classList.remove('reveal-hidden');
+  const btns=document.getElementById('e-btns');
+  if (btns) { btns.style.opacity='1'; btns.style.pointerEvents='auto'; }
+  mE.revealed=true;
+}
+
+function rateE(correct) {
+  const item=mE.queue.shift();
+  if (correct) { mE.correct++; markSuccess(item.word); showStarPop('✍️ +1'); }
+  else { markRetry(item.word); mE.queue.push(item); }
+  setTimeout(()=>renderModeE(), 300);
+}
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
 showList();
 </script>
 </body>
