@@ -1,47 +1,25 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>第六單元 成語連連看</title>
+<title>有得3C 成語連連看</title>
 <style>
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body {
   font-family: "標楷體","DFKai-SB",serif;
-  background: #f0f4f8;
+  background: #fff9f0;
   margin: 0; padding: 0 0 86px;
   color: #222; font-size: 19px;
 }
 
-/* ── Name Modal ── */
-#name-modal {
-  position: fixed; inset: 0; background: rgba(0,0,0,.55);
-  display: flex; align-items: center; justify-content: center; z-index: 900;
-}
-.modal-box {
-  background: #fff; border-radius: 18px; padding: 32px 28px;
-  text-align: center; width: 300px; box-shadow: 0 8px 32px rgba(0,0,0,.2);
-}
-.modal-box h2 { margin: 0 0 6px; font-size: 22px; color: #2c5f8a; }
-.modal-box p { color: #666; font-size: 16px; margin: 0 0 18px; }
-#name-input {
-  width: 100%; padding: 12px 14px; font-size: 20px; font-family: inherit;
-  border: 2px solid #b0c8e0; border-radius: 10px; margin-bottom: 14px;
-  text-align: center;
-}
-.btn-start {
-  width: 100%; padding: 14px; background: #2c5f8a; color: #fff;
-  border: none; border-radius: 10px; font-size: 20px; font-family: inherit;
-  cursor: pointer; letter-spacing: 2px;
-}
-
 /* ── Header ── */
 header {
-  background: #2c5f8a; color: #fff;
+  background: linear-gradient(135deg,#f39c12,#e67e22); color: #fff;
   padding: 14px 16px 10px;
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
 }
-.hdr-title { font-size: 20px; letter-spacing: 3px; }
+.hdr-title { font-size: 20px; letter-spacing: 3px; flex: 1; }
 .hdr-title small { display: block; font-size: 12px; opacity: .7; letter-spacing: 1px; margin-top: 2px; }
 .hdr-stars {
   background: rgba(255,255,255,.18); border-radius: 20px;
@@ -56,7 +34,7 @@ header {
 }
 
 /* ── Tabs ── */
-.round-tabs { display: flex; background: #1e4a6e; padding: 0 10px; gap: 4px; }
+.round-tabs { display: flex; background: #e67e22; padding: 0 10px; gap: 4px; }
 .round-tab {
   flex: 1; text-align: center; padding: 10px 0; font-size: 16px;
   color: rgba(255,255,255,.5); cursor: pointer;
@@ -67,8 +45,8 @@ header {
 .round-tab.active { color: #fff; border-bottom-color: #fff; font-weight: bold; }
 
 /* ── Progress bar ── */
-.progress-bar { background: #cdd7e0; height: 7px; }
-.progress-fill { background: #4caf50; height: 7px; transition: width .4s ease; }
+.progress-bar { background: #fde8bb; height: 7px; }
+.progress-fill { background: #27ae60; height: 7px; transition: width .4s ease; }
 
 /* ── Match grid ── */
 .match-grid {
@@ -76,15 +54,15 @@ header {
   gap: 8px; padding: 10px 10px 0;
 }
 .col-header {
-  text-align: center; font-size: 14px; color: #2c5f8a;
+  text-align: center; font-size: 14px; color: #e67e22;
   padding: 4px 0 8px; letter-spacing: 2px;
-  border-bottom: 2px solid #2c5f8a;
+  border-bottom: 2px solid #f39c12;
 }
 #left-col, #right-col { display: flex; flex-direction: column; gap: 8px; }
 
 /* ── Cards ── */
 .card {
-  background: #fff; border: 2.5px solid #b0c8e0; border-radius: 12px;
+  background: #fff; border: 2.5px solid #fad589; border-radius: 12px;
   padding: 12px 8px; cursor: pointer; text-align: center;
   display: flex; align-items: center; justify-content: center;
   line-height: 1.4; transition: background .15s, border-color .15s, transform .1s;
@@ -93,7 +71,7 @@ header {
 .word-card  { font-size: 22px; font-weight: bold; }
 .mean-card  { font-size: 16px; }
 .card:active:not(.matched):not(.disabled) { transform: scale(.96); }
-.card.selected { background: #dceeff; border-color: #2c5f8a; box-shadow: 0 0 0 2.5px #2c5f8a; }
+.card.selected { background: #fff3e0; border-color: #f39c12; box-shadow: 0 0 0 2.5px #f39c12; }
 .card.matched  { background: #d4edda; border-color: #28a745; color: #155724; cursor: default; }
 .card.wrong    { background: #f8d7da; border-color: #dc3545; animation: shake .35s ease; }
 .card.disabled { opacity: .25; cursor: default; }
@@ -103,7 +81,7 @@ header {
   40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
 }
 
-/* ── Star pop animation ── */
+/* ── Star pop ── */
 .star-pop {
   position: fixed; font-size: 20px; font-weight: bold; color: #f5a623;
   pointer-events: none; z-index: 800;
@@ -122,21 +100,7 @@ header {
   letter-spacing: 2px;
 }
 
-/* ── Challenge mode ── */
-#challenge-area { display: none; padding: 12px 10px 0; }
-.challenge-header {
-  text-align: center; background: #fff; border-radius: 12px;
-  padding: 14px; margin-bottom: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.1);
-}
-.challenge-header h3 { margin: 0 0 4px; color: #c0392b; font-size: 20px; }
-.challenge-header p  { margin: 0; color: #555; font-size: 15px; }
-#challenge-timer {
-  font-size: 28px; font-weight: bold; color: #c0392b;
-  text-align: center; margin: 8px 0;
-}
-
-/* ── End / complete screens ── */
+/* ── Overlay screens ── */
 .overlay-screen {
   display: none; position: fixed; inset: 0;
   background: rgba(10,30,60,.6);
@@ -149,13 +113,13 @@ header {
   text-align: center; width: 88%; max-width: 360px;
   box-shadow: 0 8px 32px rgba(0,0,0,.25);
 }
-.result-box h2 { margin: 0 0 4px; font-size: 24px; color: #2c5f8a; }
+.result-box h2 { margin: 0 0 4px; font-size: 24px; color: #e67e22; }
 .result-box .big { font-size: 48px; font-weight: bold; color: #f5a623; line-height: 1.1; margin: 10px 0; }
 .result-box .sub { font-size: 15px; color: #888; margin-bottom: 18px; }
-.result-box .accuracy { font-size: 19px; color: #2c5f8a; margin-bottom: 6px; font-weight: bold; }
+.result-box .accuracy { font-size: 19px; color: #e67e22; margin-bottom: 6px; font-weight: bold; }
 .btn-row { display: flex; gap: 10px; margin-top: 6px; }
 .btn-primary {
-  flex: 1; padding: 14px; background: #2c5f8a; color: #fff;
+  flex: 1; padding: 14px; background: linear-gradient(135deg,#f39c12,#e67e22); color: #fff;
   border: none; border-radius: 10px; font-size: 17px; font-family: inherit;
   cursor: pointer; font-weight: bold; letter-spacing: 1px;
 }
@@ -165,7 +129,7 @@ header {
   cursor: pointer; font-weight: bold;
 }
 .btn-shop {
-  width: 100%; padding: 14px; background: #e67e22; color: #fff;
+  width: 100%; padding: 14px; background: linear-gradient(135deg,#f39c12,#e67e22); color: #fff;
   border: none; border-radius: 10px; font-size: 17px; font-family: inherit;
   cursor: pointer; font-weight: bold; margin-top: 8px; letter-spacing: 1px;
 }
@@ -181,17 +145,6 @@ header {
   to   { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-/* ── Challenge unlock button ── */
-#challenge-unlock {
-  display: none; margin: 16px 12px 0;
-  background: linear-gradient(135deg,#c0392b,#e74c3c);
-  color: #fff; border: none; border-radius: 12px;
-  width: calc(100% - 24px); padding: 16px;
-  font-size: 19px; font-family: inherit;
-  cursor: pointer; font-weight: bold; letter-spacing: 2px;
-  box-shadow: 0 4px 14px rgba(192,57,43,.4);
-}
-
 /* ── Toolbar ── */
 .toolbar {
   position: fixed; bottom: 0; left: 0; right: 0;
@@ -199,12 +152,13 @@ header {
   background: #fff; border-top: 1px solid #ddd;
   box-shadow: 0 -2px 8px rgba(0,0,0,.1); align-items: center;
 }
-.score-box { flex: 1; text-align: center; font-size: 20px; font-weight: bold; color: #2c5f8a; }
+.score-box { flex: 1; text-align: center; font-size: 20px; font-weight: bold; color: #e67e22; }
 .btn-reset {
   flex: 0 0 auto; padding: 12px 18px; border: none;
   border-radius: 10px; background: #eee; color: #555;
   font-size: 16px; font-family: inherit; cursor: pointer; font-weight: bold;
 }
+
 /* ── Error report ── */
 .btn-report{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:16px;padding:6px 14px;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;font-family:inherit;flex-shrink:0;}
 .btn-report:active{background:rgba(255,255,255,.28);}
@@ -223,26 +177,33 @@ header {
 .report-btns{display:flex;gap:10px;}
 .report-btn-cancel{flex:1;padding:12px;background:#f2f2f2;border:none;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;color:#666;}
 .report-btn-send{flex:1;padding:12px;background:#e74c3c;color:#fff;border:none;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;font-weight:bold;}
+
+/* ── 13吋 iPad（≥1000px） ── */
+@media (min-width: 1000px) {
+  .match-grid    { padding: 14px 14px 0; gap: 12px; }
+  .col-header    { font-size: 18px; }
+  .word-card     { font-size: 28px; }
+  .mean-card     { font-size: 20px; }
+  .card          { padding: 16px 12px; min-height: 72px; border-radius: 16px; }
+  .hdr-title     { font-size: 26px; letter-spacing: 4px; }
+  .hdr-stars     { font-size: 22px; padding: 8px 18px; }
+  .round-tab     { font-size: 20px; padding: 13px 0; }
+  .score-box     { font-size: 24px; }
+  .btn-reset     { font-size: 20px; padding: 14px 22px; }
+  .btn-report    { font-size: 20px; padding: 9px 22px; }
+  .report-box    { max-width: 520px; }
+  .report-title  { font-size: 24px; }
+}
 </style>
 </head>
 <body>
-
-<!-- Name Modal -->
-<div id="name-modal">
-  <div class="modal-box">
-    <h2>👋 歡迎！</h2>
-    <p>請輸入你的名字開始遊戲</p>
-    <input id="name-input" type="text" placeholder="我的名字" maxlength="10">
-    <button class="btn-start" onclick="saveName()">開始 ▶</button>
-  </div>
-</div>
 
 <!-- Header -->
 <header>
   <a href="index.html" class="btn-home" title="回主頁">🏠</a>
   <div class="hdr-title">
-    第六單元　成語連連看
-    <small>🔊 點成語聽讀音 → 再點右欄語意配對</small>
+    有得3C　成語連連看
+    <small>🔊 點詞語聽讀音 → 再點右欄語意配對</small>
   </div>
   <div class="hdr-stars">⭐ <span id="hdr-star-count">0</span></div>
   <button class="btn-report" onclick="showReport()">⚠️ 回報</button>
@@ -255,28 +216,10 @@ header {
 <!-- Game area -->
 <div id="game-area">
   <div class="match-grid">
-    <div class="col-header">成　語 🔊</div>
+    <div class="col-header">詞　語 🔊</div>
     <div class="col-header">語　意</div>
     <div id="left-col"></div>
     <div id="right-col"></div>
-  </div>
-</div>
-
-<!-- Challenge unlock button -->
-<button id="challenge-unlock" onclick="startChallenge()">⚡ 終極挑戰！8題混合闖關 → 得 +100 ⭐</button>
-
-<!-- Challenge area -->
-<div id="challenge-area">
-  <div class="challenge-header">
-    <h3>⚡ 終極挑戰</h3>
-    <p>8題混合配對，60秒內完成，全對得 +100 ⭐！</p>
-  </div>
-  <div id="challenge-timer">60</div>
-  <div class="match-grid">
-    <div class="col-header">成　語 🔊</div>
-    <div class="col-header">語　意</div>
-    <div id="c-left-col"></div>
-    <div id="c-right-col"></div>
   </div>
 </div>
 
@@ -309,30 +252,26 @@ header {
   </div>
 </div>
 
-<!-- Challenge complete overlay -->
-<div class="overlay-screen" id="challenge-screen">
-  <div class="result-box">
-    <h2 id="challenge-result-title"></h2>
-    <div class="big" id="challenge-result-stars"></div>
-    <div class="sub" id="challenge-result-sub"></div>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="closeChallengeResult()">再挑戰</button>
-      <button class="btn-primary" onclick="location.href='shop.html'">🏪 去商店</button>
-    </div>
-  </div>
-</div>
-
 <div class="toolbar">
   <div class="score-box" id="score-box">0 / 0</div>
   <button class="btn-reset" onclick="restartRound()">↺ 重設</button>
 </div>
 
 <script>
-// ── Cooldown / Cloud ──────────────────────────────────────────────────────────
-const GAME_ID = 'unit6m';
-const GAME_SOURCE = '第六單元　成語連連看';
-const FB_URL  = 'https://xinru-class-default-rtdb.firebaseio.com';
-const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)'};
+// ── 常數 ──────────────────────────────────────────────────────────────────────
+const GAME_ID     = 'y3c-match';
+const GAME_SOURCE = '有得3C　成語連連看';
+const FB_URL      = 'https://xinru-class-default-rtdb.firebaseio.com';
+const GAME_LABELS = {
+  unit6:'詞語填空', unit6m:'成語連連看',
+  u7ziyin:'字音辨正', u7bianzi:'找錯別字',
+  u7gaicuo:'改錯字(作業)', u7bopomo:'字音辨字(作業)',
+  u7vocab:'字彙練習(作業)', u7chengyu:'成語填空',
+  u7match:'連連看(七)',
+  'y3c-match':'連連看(3C)', 'y3c-chengyu':'填空(3C)'
+};
+
+// ── 冷卻系統 ──
 function getCDs(){return JSON.parse(localStorage.getItem('xr_cooldowns')||'{}');}
 function saveCDs(cd){localStorage.setItem('xr_cooldowns',JSON.stringify(cd));}
 function isLocked(){const g=getCDs()[GAME_ID];return !!(g&&g.locked&&(g.unlockBy||[]).length<2);}
@@ -368,42 +307,28 @@ function showLockOverlay(){
   document.getElementById('lock-overlay').style.display='flex';
 }
 
-/* ── Data ── */
+// ── 題目資料 ──
 const ROUNDS = [
+  // 第1輪：第十課 地球的眼淚
   [
-    { word:'獨樹一幟', meaning:'獨具特色，與眾不同' },
-    { word:'暴戾之氣', meaning:'兇猛殘暴的神情或氣息' },
-    { word:'雕欄玉砌', meaning:'建築雕飾精美華麗' },
-    { word:'敷衍了事', meaning:'隨便應付，態度不認真' },
-    { word:'選舉賄賂', meaning:'以財物換取選票的不法行為' },
-    { word:'遭逢厄運', meaning:'碰上不幸的命運，遇到災難' },
-    { word:'醍醐灌頂', meaning:'聽了高明的話，如獲啟示' },
-    { word:'暴殄天物', meaning:'任意糟蹋，浪費珍貴物品' },
-    { word:'慘遭蹂躪', meaning:'遭到強力踐踏、迫害' },
-    { word:'濃妝豔抹', meaning:'化妝濃重，打扮妖豔' },
+    { word:'甘之如飴', meaning:'比喻樂意承擔艱苦的事情，或處於困境卻能甘心忍受' },
+    { word:'蒸蒸日上', meaning:'形容事物不斷進步發展，蓬勃興盛' },
+    { word:'三令五申', meaning:'再三叮嚀告誡' },
+    { word:'屏氣凝神', meaning:'屏住呼吸，集中精神，專心一意' },
+    { word:'不可或缺', meaning:'必須，不能缺少' },
   ],
+  // 第2輪：第九課 三峽老街樂藍染
   [
-    { word:'感慨萬千', meaning:'心中感觸極多，百感交集' },
-    { word:'經濟蕭條', meaning:'經濟不景氣，百業衰退' },
-    { word:'惺惺相惜', meaning:'才能相當的人互相敬重愛護' },
-    { word:'絕不寬貸', meaning:'絕對不原諒，嚴厲處置' },
-    { word:'集思廣益', meaning:'集合眾人智慧，廣泛獲益' },
-    { word:'滄海一粟', meaning:'比喻極其微小，微不足道' },
-    { word:'辭不達意', meaning:'說的話未能清楚表達心意' },
-    { word:'暗箭難防', meaning:'暗中傷人的手段，難以防備' },
-    { word:'肆無忌憚', meaning:'毫無顧忌，放肆妄為' },
-    { word:'越俎代庖', meaning:'超越本分，代替別人做事' },
-    { word:'敬請笑納', meaning:'請對方接受贈品的客套語' },
-    { word:'脾氣暴躁', meaning:'性情急躁，容易動怒' },
-    { word:'噤若寒蟬', meaning:'不敢作聲，沉默無言' },
-    { word:'經驗老到', meaning:'經驗豐富，老練熟悉' },
-    { word:'虛無縹緲', meaning:'空虛不實，模糊難以辨識' },
-    { word:'騷擾鄰居', meaning:'打擾、侵擾鄰居的安寧' },
-  ]
+    { word:'古道熱腸', meaning:'形容待人仁愛寬厚、熱心' },
+    { word:'冤家路窄', meaning:'仇人或不願見到的人，偏偏越容易相遇，無法躲避' },
+    { word:'騎虎難下', meaning:'比喻事情迫於情勢，無法中止，只好繼續做下去' },
+    { word:'不甘示弱', meaning:'不情願表現得比別人差' },
+    { word:'東施效顰', meaning:'比喻盲目模仿他人，結果適得其反' },
+  ],
 ];
 const TOTAL_PAIRS = ROUNDS.reduce((s,r)=>s+r.length,0);
 
-/* ── State ── */
+// ── 狀態 ──
 let currentRound = 0;
 let pairs = [];
 let leftSelected = null;
@@ -414,15 +339,8 @@ let sessionStars = 0;
 let roundStars = 0;
 let roundPerfect = [false, false];
 const roundMatched = [0, 0];
-let challengeUnlocked = false;
-let challengeTimer = null;
-let challengeSecondsLeft = 60;
-let challengeLeftSelected = null;
-let challengeMatchedCount = 0;
-let challengeWrongCount = 0;
-let challengePool = [];
 
-/* ── 錯題紀錄 ── */
+// ── 錯題紀錄 ──
 function recordMistake(word, meaning) {
   const all = JSON.parse(localStorage.getItem('xr_mistakes') || '{}');
   if (!all[word]) all[word] = { word, meaning: meaning||'', source:GAME_SOURCE, wrongCount:0, practiceCount:0, lastWrong:'', mastered:false };
@@ -433,14 +351,12 @@ function recordMistake(word, meaning) {
   localStorage.setItem('xr_mistakes', JSON.stringify(all));
 }
 
-/* ── 朗讀成語（教育部注音標準，zh-TW，語速 0.8） ── */
+// ── TTS ──
 function speakWord(word) {
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(word);
-  utter.lang = 'zh-TW';
-  utter.rate = 0.8;
-  utter.pitch = 1.0;
+  utter.lang = 'zh-TW'; utter.rate = 0.8; utter.pitch = 1.0;
   const doSpeak = () => {
     const voices = speechSynthesis.getVoices();
     const v = voices.find(v => v.lang === 'zh-TW') || voices.find(v => v.lang.startsWith('zh'));
@@ -450,7 +366,7 @@ function speakWord(word) {
   speechSynthesis.getVoices().length ? doSpeak() : (speechSynthesis.onvoiceschanged = doSpeak);
 }
 
-/* ── Storage helpers ── */
+// ── 星星 ──
 function getStars() { return parseInt(localStorage.getItem('xr_stars') || '0'); }
 function addStars(n) {
   const total = getStars() + n;
@@ -459,42 +375,34 @@ function addStars(n) {
   sessionStars += n;
   roundStars += n;
 }
-function getPlayerName() { return localStorage.getItem('xr_name') || ''; }
 
 function saveRecord(accuracy) {
   const records = JSON.parse(localStorage.getItem('xr_records') || '[]');
-  records.unshift({ unit:'unit6-match', accuracy, stars: sessionStars, date: new Date().toLocaleDateString('zh-TW') });
-  localStorage.setItem('xr_records', JSON.stringify(records.slice(0,20)));
+  records.unshift({ unit:'y3c-match', accuracy, stars: sessionStars, date: new Date().toLocaleDateString('zh-TW') });
+  localStorage.setItem('xr_records', JSON.stringify(records.slice(0,200)));
 }
 
-/* ── Init ── */
+// ── 初始化 ──
 function init() {
-  const name = getPlayerName();
+  const name = localStorage.getItem('xr_name');
   if (!name) {
-    document.getElementById('name-modal').style.display = 'flex';
-  } else {
-    document.getElementById('name-modal').style.display = 'none';
-    startGame();
+    const n = prompt('請輸入你的名字開始遊戲');
+    if (n) localStorage.setItem('xr_name', n.trim());
   }
   document.getElementById('hdr-star-count').textContent = getStars();
-}
-
-function saveName() {
-  const val = document.getElementById('name-input').value.trim();
-  if (!val) return;
-  localStorage.setItem('xr_name', val);
-  document.getElementById('name-modal').style.display = 'none';
   startGame();
 }
-document.getElementById('name-input').addEventListener('keydown', e => { if(e.key==='Enter') saveName(); });
 
 function startGame() {
   if (isLocked()) { showLockOverlay(); return; }
+  currentRound = 0; sessionStars = 0;
+  roundPerfect[0] = false; roundPerfect[1] = false;
+  roundMatched[0] = 0; roundMatched[1] = 0;
   buildTabs();
   buildRound(0);
 }
 
-/* ── Tabs ── */
+// ── Tabs ──
 function buildTabs() {
   const c = document.getElementById('round-tabs');
   c.innerHTML = '';
@@ -515,7 +423,7 @@ function switchRound(idx) {
   buildRound(currentRound);
 }
 
-/* ── Build round ── */
+// ── 建立輪次 ──
 function shuffle(a) {
   const b=[...a];
   for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}
@@ -526,8 +434,6 @@ function buildRound(idx) {
   pairs = ROUNDS[idx];
   matchedCount = 0; wrongCount = 0; streak = 0; roundStars = 0;
   leftSelected = null;
-  document.getElementById('challenge-area').style.display='none';
-  document.getElementById('game-area').style.display='';
   buildTabs();
   updateScore();
   updateProgress();
@@ -559,7 +465,7 @@ function makeCard(text,cls,idx) {
   return el;
 }
 
-/* ── Match logic ── */
+// ── 配對邏輯 ──
 function onLeftClick(el) {
   if(el.classList.contains('matched')||el.classList.contains('disabled')) return;
   speakWord(el.textContent);
@@ -577,8 +483,7 @@ function onRightClick(el) {
   const ri=parseInt(el.dataset.idx);
 
   if(li===ri) {
-    // Correct
-    const firstTry=(wrongCount===0 || !leftSelected.dataset.hasMistake);
+    const firstTry=!leftSelected.dataset.hasMistake;
     leftSelected.classList.remove('selected');
     leftSelected.classList.add('matched');
     el.classList.add('matched');
@@ -598,7 +503,6 @@ function onRightClick(el) {
 
     if(matchedCount===pairs.length) setTimeout(()=>showRoundComplete(),500);
   } else {
-    // Wrong
     wrongCount++;
     leftSelected.dataset.hasMistake='1';
     streak=0;
@@ -615,10 +519,9 @@ function checkStreak(el) {
   const banner=document.getElementById('streak-banner');
   if(streak===3) { banner.textContent='🔥 連續3題！+10 ⭐'; banner.style.display=''; addStars(10); showStarPop(el,'+10 ⭐ 連擊！'); setTimeout(()=>banner.style.display='none',2000); }
   if(streak===5) { banner.textContent='🔥🔥 連續5題！+20 ⭐'; banner.style.display=''; addStars(20); showStarPop(el,'+20 ⭐ 超猛！'); setTimeout(()=>banner.style.display='none',2000); }
-  if(streak===10){ banner.textContent='⚡ 連續10題！+50 ⭐'; banner.style.display=''; addStars(50); showStarPop(el,'+50 ⭐ 無敵！'); setTimeout(()=>banner.style.display='none',2000); }
 }
 
-/* ── Star pop animation ── */
+// ── Star pop ──
 function showStarPop(el, text) {
   const rect=el.getBoundingClientRect();
   const pop=document.createElement('div');
@@ -630,7 +533,7 @@ function showStarPop(el, text) {
   setTimeout(()=>pop.remove(),1000);
 }
 
-/* ── Progress ── */
+// ── 進度 ──
 function updateScore() {
   document.getElementById('score-box').textContent=`${matchedCount} / ${pairs.length}`;
 }
@@ -640,29 +543,22 @@ function updateProgress() {
   document.getElementById('prog').style.width=pct+'%';
 }
 
-/* ── Round complete ── */
+// ── 輪次完成 ──
 function showRoundComplete() {
   const total=pairs.length;
-  const correct=matchedCount;
-  const acc=Math.round(correct/total*100);
   const isLast=(currentRound===ROUNDS.length-1);
 
   roundPerfect[currentRound]=(wrongCount===0);
   let bonus=0;
-  if(wrongCount===0){ bonus=50; addStars(50); }
-  else if(acc>=80)  { bonus=20; addStars(20); }
+  if(wrongCount===0){ bonus=30; addStars(30); }
+  else if(Math.round(matchedCount/total*100)>=80){ bonus=10; addStars(10); }
 
-  document.getElementById('round-title').textContent=isLast?'第二輪完成！':'第一輪完成！';
+  document.getElementById('round-title').textContent=`第 ${currentRound+1} 輪完成！`;
   document.getElementById('round-stars').textContent='+'+(roundStars)+' ⭐';
-  document.getElementById('round-acc').textContent='正確率 '+acc+'%'+(wrongCount===0?' 🏆 完美！':'');
+  document.getElementById('round-acc').textContent='正確率 '+Math.round(matchedCount/total*100)+'%'+(wrongCount===0?' 🏆 完美！':'');
   document.getElementById('round-sub').textContent=(bonus>0?'完美加碼 +'+bonus+' ⭐ 已計入':'');
-  document.getElementById('round-next-btn').textContent=isLast?'查看總結':'進入第二輪 →';
+  document.getElementById('round-next-btn').textContent=isLast?'查看總結':`進入第 ${currentRound+2} 輪 →`;
   document.getElementById('round-screen').classList.add('show');
-
-  if(isLast && roundPerfect[0] && roundPerfect[1]) {
-    document.getElementById('challenge-unlock').style.display='block';
-    challengeUnlocked=true;
-  }
 }
 
 function goNextRound() {
@@ -684,13 +580,11 @@ function restartRound() {
   buildRound(currentRound);
 }
 
-/* ── Final screen ── */
+// ── 結束畫面 ──
 function showFinalScreen() {
-  const totalCorrect=ROUNDS.reduce((s,r)=>s+r.length,0);
-  const acc=roundPerfect.every(Boolean)?100:Math.round((sessionStars-50*(roundPerfect.filter(Boolean).length))/15/totalCorrect*100);
   document.getElementById('final-stars').textContent='+'+sessionStars+' ⭐';
   document.getElementById('final-acc').textContent='累積 '+getStars()+' ⭐ 星星';
-  saveRecord(acc);
+  saveRecord(roundPerfect.every(Boolean)?100:80);
   reportComplete(roundPerfect.every(Boolean));
   launchConfetti();
   document.getElementById('final-screen').classList.add('show');
@@ -700,99 +594,7 @@ function closeFinal() {
   document.getElementById('final-screen').classList.remove('show');
 }
 
-/* ── Challenge mode ── */
-function startChallenge() {
-  document.getElementById('challenge-unlock').style.display='none';
-  document.getElementById('game-area').style.display='none';
-  document.getElementById('challenge-area').style.display='block';
-
-  // Pick 4 from each round randomly
-  challengePool=[...shuffle(ROUNDS[0]).slice(0,4), ...shuffle(ROUNDS[1]).slice(0,4)];
-  const pool=challengePool;
-  const leftCards=shuffle(pool.map((p,i)=>({...p,idx:i})));
-  const rightCards=shuffle(pool.map((p,i)=>({...p,idx:i})));
-
-  challengeMatchedCount=0; challengeWrongCount=0; challengeLeftSelected=null;
-
-  const cl=document.getElementById('c-left-col');
-  const cr=document.getElementById('c-right-col');
-  cl.innerHTML=''; cr.innerHTML='';
-
-  leftCards.forEach(p=>{
-    const el=makeCard(p.word,'word-card',p.idx);
-    el.onclick=()=>onChallengeLeft(el);
-    cl.appendChild(el);
-  });
-  rightCards.forEach(p=>{
-    const el=makeCard(p.meaning,'mean-card',p.idx);
-    el.onclick=()=>onChallengeRight(el);
-    cr.appendChild(el);
-  });
-
-  challengeSecondsLeft=60;
-  document.getElementById('challenge-timer').textContent='60';
-  if(challengeTimer) clearInterval(challengeTimer);
-  challengeTimer=setInterval(()=>{
-    challengeSecondsLeft--;
-    document.getElementById('challenge-timer').textContent=challengeSecondsLeft;
-    if(challengeSecondsLeft<=0){ clearInterval(challengeTimer); endChallenge(false); }
-  },1000);
-}
-
-function onChallengeLeft(el) {
-  if(el.classList.contains('matched')) return;
-  speakWord(el.textContent);
-  if(challengeLeftSelected===el){ el.classList.remove('selected'); challengeLeftSelected=null; return; }
-  if(challengeLeftSelected) challengeLeftSelected.classList.remove('selected');
-  challengeLeftSelected=el;
-  el.classList.add('selected');
-}
-
-function onChallengeRight(el) {
-  if(el.classList.contains('matched')) return;
-  if(!challengeLeftSelected) return;
-  const li=parseInt(challengeLeftSelected.dataset.idx);
-  const ri=parseInt(el.dataset.idx);
-  if(li===ri) {
-    challengeLeftSelected.classList.remove('selected');
-    challengeLeftSelected.classList.add('matched');
-    el.classList.add('matched');
-    challengeMatchedCount++;
-    challengeLeftSelected=null;
-    if(challengeMatchedCount===8) { clearInterval(challengeTimer); endChallenge(true); }
-  } else {
-    challengeWrongCount++;
-    recordMistake(challengePool[li].word, challengePool[li].meaning);
-    const wl=challengeLeftSelected;
-    wl.classList.add('wrong'); el.classList.add('wrong');
-    challengeLeftSelected.classList.remove('selected'); challengeLeftSelected=null;
-    setTimeout(()=>{ wl.classList.remove('wrong'); el.classList.remove('wrong'); },500);
-  }
-}
-
-function endChallenge(success) {
-  clearInterval(challengeTimer);
-  if(success) {
-    const bonus=challengeWrongCount===0?100:50;
-    addStars(bonus);
-    launchConfetti();
-    document.getElementById('challenge-result-title').textContent='⚡ 挑戰成功！';
-    document.getElementById('challenge-result-stars').textContent='+'+bonus+' ⭐';
-    document.getElementById('challenge-result-sub').textContent=challengeWrongCount===0?'零失誤完美通關！':'闖關成功';
-  } else {
-    document.getElementById('challenge-result-title').textContent='⏰ 時間到！';
-    document.getElementById('challenge-result-stars').textContent=challengeMatchedCount+'/8 題';
-    document.getElementById('challenge-result-sub').textContent='再試一次！';
-  }
-  document.getElementById('challenge-screen').classList.add('show');
-}
-
-function closeChallengeResult() {
-  document.getElementById('challenge-screen').classList.remove('show');
-  startChallenge();
-}
-
-/* ── Confetti ── */
+// ── Confetti ──
 function launchConfetti() {
   const colors=['#f5a623','#4caf50','#2196f3','#e91e63','#9c27b0'];
   for(let i=0;i<40;i++) {
@@ -804,15 +606,17 @@ function launchConfetti() {
   }
 }
 
-/* ── Boot ── */
-init();
-
+// ── 錯誤回報 ──
 let reportSelectedPair=null;
 function showReport(){reportSelectedPair=null;const pk=document.getElementById('pair-picker');pk.innerHTML=pairs.map((p,i)=>`<button class="pair-item" onclick="selectPair(${i})" id="pi-${i}"><span class="pair-word">${p.word}</span><span class="pair-meaning">${p.meaning}</span></button>`).join('');document.getElementById('report-note').value='';document.getElementById('report-overlay').classList.add('show');}
 function selectPair(idx){reportSelectedPair=pairs[idx];document.querySelectorAll('.pair-item').forEach((el,i)=>el.classList.toggle('selected',i===idx));}
 function closeReport(){document.getElementById('report-overlay').classList.remove('show');}
 async function submitReport(){const qt=reportSelectedPair?reportSelectedPair.word+' → '+reportSelectedPair.meaning:GAME_SOURCE;const data={game:GAME_ID,source:GAME_SOURCE,qText:qt,note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+
+init();
 </script>
+
+<!-- 錯誤回報 overlay -->
 <div id="report-overlay">
   <div class="report-box">
     <div class="report-title">⚠️ 回報題目錯誤</div>
@@ -833,7 +637,7 @@ async function submitReport(){const qt=reportSelectedPair?reportSelectedPair.wor
     <div style="font-size:22px;font-weight:bold;margin:12px 0 6px;color:#e67e22">關卡暫時鎖定</div>
     <div style="font-size:15px;color:#555;line-height:1.9;margin-bottom:6px">連續兩次全對！<br>請再完成其他 <b id="lock-remain">2</b> 個關卡再回來。</div>
     <div style="font-size:13px;color:#999;margin-bottom:20px">可去玩：<span id="lock-others"></span></div>
-    <a href="index.html" style="display:block;padding:13px;background:linear-gradient(135deg,#667eea,#9b59b6);color:#fff;border-radius:12px;font-size:17px;font-family:標楷體,DFKai-SB,serif;font-weight:bold;text-decoration:none">🏠 去選其他關卡</a>
+    <a href="index.html" style="display:block;padding:13px;background:linear-gradient(135deg,#f39c12,#e67e22);color:#fff;border-radius:12px;font-size:17px;font-family:標楷體,DFKai-SB,serif;font-weight:bold;text-decoration:none">🏠 去選其他關卡</a>
   </div>
 </div>
 </body>

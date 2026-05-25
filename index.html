@@ -276,6 +276,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
   <div class="tab-bar" id="unit-tabs">
     <button class="tab-btn" data-u="6" onclick="switchUnit(6)">第六單元</button>
     <button class="tab-btn" data-u="7" onclick="switchUnit(7)">第七單元</button>
+    <button class="tab-btn" data-u="0" onclick="switchUnit(0)">有得3C</button>
   </div>
 </div>
 <div class="unit-sec-label" id="unit-sec-label"></div>
@@ -413,6 +414,37 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     </div>
   </a>
 
+
+  <!-- 有得3C -->
+  <a class="unit-card" href="y3c-match.html" data-gid="y3c-match" data-unit="0">
+    <div class="card-left">
+      <div class="unit-emoji ue-teal">🔗</div>
+      <div class="unit-title">成語連連看</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">2輪 10題，詞語配對語意</div>
+        <div class="unit-tags"><span class="tag tg-gold">連連看</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
+  <a class="unit-card" href="y3c-chengyu.html" data-gid="y3c-chengyu" data-unit="0">
+    <div class="card-left">
+      <div class="unit-emoji ue-red">📝</div>
+      <div class="unit-title">成語填空</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">10題，點選成語填入空格</div>
+        <div class="unit-tags"><span class="tag tg-gold">填空</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
+
 </div>
 
 <div class="hist-toggle" id="hist-toggle" onclick="toggleHistory()">▾ 查看遊玩紀錄</div>
@@ -451,7 +483,7 @@ const FB_URL = "https://xinru-class-default-rtdb.firebaseio.com";
 const BADGES = {b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'};
 const TITLES  = {t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王'};
 const MEDALS  = ['🥇','🥈','🥉'];
-const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)'};
+const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)'};
 
 function getStars()    { return parseInt(localStorage.getItem('xr_stars')||'0'); }
 function getName()     { return localStorage.getItem('xr_name')||''; }
@@ -688,7 +720,8 @@ document.getElementById('auth-bday').addEventListener('keydown',e=>{ if(e.key===
 const GID_TO_UNIT = {
   unit6:'unit6', unit6m:'unit6-match',
   u7match:'u7match', u7ziyin:'unit7-ziyin', u7bianzi:'unit7-bianzi',
-  u7chengyu:'u7chengyu', u7gaicuo:'u7gaicuo', u7bopomo:'u7bopomo', u7vocab:'u7vocab'
+  u7chengyu:'u7chengyu', u7gaicuo:'u7gaicuo', u7bopomo:'u7bopomo', u7vocab:'u7vocab',
+  'y3c-match':'y3c-match', 'y3c-chengyu':'y3c-chengyu'
 };
 
 function scoreEmoji(pct) {
@@ -720,7 +753,7 @@ function updateCardStats() {
 }
 
 /* ── Unit Tab Filter ── */
-const UNIT_NAMES = {6:'第六單元',7:'第七單元'};
+const UNIT_NAMES = {6:'第六單元',7:'第七單元',0:'有得3C'};
 
 function switchUnit(n) {
   const cards = document.querySelectorAll('#unit-card-list .unit-card[data-unit]');
