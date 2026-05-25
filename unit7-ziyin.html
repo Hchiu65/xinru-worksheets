@@ -264,11 +264,12 @@ function addStars(n) {
   document.getElementById('star-display').textContent = s;
   sessionStars += n;
 }
-function recordMistake(char, meaning, question) {
+function recordMistake(char, meaning, question, correct) {
   const all = JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
   const key = char;
-  if (!all[key]) all[key] = { word:char, question:question||char, meaning, source:GAME_SOURCE, wrongCount:0, practiceCount:0, lastWrong:'', mastered:false };
+  if (!all[key]) all[key] = { word:char, question:question||char, meaning, correct:correct||'', source:GAME_SOURCE, wrongCount:0, practiceCount:0, lastWrong:'', mastered:false };
   if (question && !all[key].question) all[key].question = question;
+  if (correct) all[key].correct = correct;
   if (!all[key].source) all[key].source = GAME_SOURCE;
   all[key].wrongCount++;
   all[key].lastWrong = new Date().toLocaleDateString('zh-TW');
@@ -340,7 +341,7 @@ function onPick(btn, picked, item) {
   } else {
     btn.classList.add('wrong');
     mistakeCount++;
-    if (mistakeCount === 1) { anyMistake = true; recordMistake(item.char, item.meaning, item.phrase); }
+    if (mistakeCount === 1) { anyMistake = true; recordMistake(item.char, item.meaning, item.phrase, item.correct); }
     addStars(-mistakeCount);
     showStarPop(`-${mistakeCount}⭐`);
     setTimeout(() => {

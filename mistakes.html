@@ -431,7 +431,10 @@ function formatAnswerB(m) {
   const word = m.word || '';
   const question = m.question || word;
   let ctx = '';
-  if (word !== question && word.length === question.length) {
+  if (m.correct) {
+    // ziyin type: m.correct holds the correct pronunciation
+    ctx = `<span class="hit">${escH(m.correct)}</span>`;
+  } else if (word !== question && word.length === question.length) {
     // bianzi / gaicuo: same length, find differing char and highlight it in word
     ctx = [...word].map((c,i) => c !== question[i] ? `<span class="hit">${escH(c)}</span>` : escH(c)).join('');
   } else {
