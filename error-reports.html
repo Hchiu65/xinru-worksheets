@@ -284,7 +284,7 @@ function switchMainTab(tab) {
   if (tab === 'admin') {
     if (sessionStorage.getItem('xr_admin_unlocked')) {
       document.getElementById('admin-gate').style.display = 'none';
-      document.getElementById('admin-app').style.display  = '';
+      document.getElementById('admin-app').style.display  = 'block';
       loadAll();
     } else {
       document.getElementById('admin-gate').style.display = 'flex';
@@ -310,7 +310,7 @@ async function tryAdminLogin() {
     }
     sessionStorage.setItem('xr_admin_unlocked', '1');
     document.getElementById('admin-gate').style.display = 'none';
-    document.getElementById('admin-app').style.display  = '';
+    document.getElementById('admin-app').style.display  = 'block';
     loadAll();
   } catch(e) {
     document.getElementById('gate-err').textContent = '連線失敗，請重試';
