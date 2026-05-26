@@ -245,7 +245,10 @@ function showLockOverlay(){
   document.getElementById('lock-others').textContent=Object.keys(GAME_LABELS).filter(k=>k!==GAME_ID).map(k=>GAME_LABELS[k]).join('、');
   document.getElementById('lock-overlay').style.display='flex';
 }
-document.addEventListener('DOMContentLoaded',()=>{ if(isLocked()) showLockOverlay(); });
+document.addEventListener('DOMContentLoaded',()=>{
+  if(isLocked()) showLockOverlay();
+  ['bank-1','bank-2'].forEach(id=>{const b=document.getElementById(id);if(!b)return;const c=[...b.children];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));b.appendChild(c[j]);c.splice(j,1);}});
+});
 
 let selected = null;
 let hadMistake = false;

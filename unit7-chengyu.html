@@ -188,7 +188,10 @@ function showLockOverlay(){
   document.getElementById('lock-others').textContent=Object.keys(GAME_LABELS).filter(k=>k!==GAME_ID).map(k=>GAME_LABELS[k]).join('、');
   document.getElementById('lock-overlay').style.display='flex';
 }
-document.addEventListener('DOMContentLoaded',()=>{ if(isLocked()) showLockOverlay(); });
+document.addEventListener('DOMContentLoaded',()=>{
+  if(isLocked()) showLockOverlay();
+  ['bank1','bank2'].forEach(id=>{const b=document.getElementById(id);if(!b)return;const c=[...b.children];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));b.appendChild(c[j]);c.splice(j,1);}});
+});
 
 const MEANINGS = {
   '斷垣殘壁':'形容建築物破損殘缺的樣子','聰明睿智':'形容人聰慧通達，有遠見',
