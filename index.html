@@ -152,6 +152,41 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 /* Lock chip on unit cards */
 .lock-chip { background:#fee2e2;color:#c0392b;font-size:11px;padding:2px 7px;border-radius:10px; }
 
+/* ── Switch Modal ── */
+#switch-modal { display:none; position:fixed; inset:0; background:rgba(50,30,80,.55); align-items:center; justify-content:center; z-index:900; }
+#switch-modal.show { display:flex; }
+.sw-box { background:#fff; border-radius:22px; padding:22px 18px 20px; width:290px; box-shadow:0 10px 40px rgba(0,0,0,.22); }
+.sw-title { font-size:17px; font-weight:bold; color:#333; margin-bottom:2px; }
+.sw-sub { font-size:11px; color:#bbb; margin-bottom:14px; }
+.sw-field-label { font-size:12px; color:#888; margin-bottom:5px; }
+.sw-sel-header { display:flex; align-items:center; gap:8px; border:2px solid #667eea; border-radius:13px; padding:10px 12px; background:#fafcff; cursor:pointer; font-size:14px; color:#333; font-weight:bold; }
+.sw-sel-header .sw-arr { margin-left:auto; color:#667eea; font-size:12px; transition:transform .15s; }
+.sw-sel-header.open .sw-arr { transform:rotate(180deg); }
+.sw-dd { border:1.5px solid #e8e8f0; border-top:none; border-radius:0 0 13px 13px; max-height:210px; overflow-y:auto; margin-bottom:14px; box-shadow:0 6px 18px rgba(0,0,0,.08); }
+.sw-dd-row { display:flex; align-items:center; gap:8px; padding:9px 12px; border-bottom:1px solid #f5f5f5; cursor:pointer; font-size:13px; }
+.sw-dd-row:last-child { border-bottom:none; }
+.sw-dd-row:active { background:#f0f2ff; }
+.sw-dd-row.is-me { background:#f8f8ff; }
+.sw-rank { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold; flex-shrink:0; color:#fff; }
+.sw-r1 { background:linear-gradient(135deg,#f7971e,#ffd200); color:#7a5000; }
+.sw-r2 { background:linear-gradient(135deg,#b0bec5,#90a4ae); }
+.sw-r3 { background:linear-gradient(135deg,#a0522d,#cd853f); }
+.sw-rn { background:#ececec; color:#999; }
+.sw-dd-emoji { font-size:19px; }
+.sw-dd-name { flex:1; color:#333; }
+.sw-dd-name.me { color:#667eea; font-weight:bold; }
+.sw-dd-stars { font-size:11px; color:#f39c12; white-space:nowrap; }
+.sw-new-row { display:flex; align-items:center; gap:8px; padding:9px 12px; cursor:pointer; font-size:13px; color:#aaa; font-style:italic; border-top:1px solid #f0f0f0; }
+.sw-new-row:active { background:#f9f9f9; }
+.sw-acc-card { display:flex; align-items:center; gap:10px; background:linear-gradient(135deg,#f0f2ff,#f5f0ff); border:2px solid #667eea; border-radius:13px; padding:10px 12px; margin-bottom:12px; }
+.sw-acc-card.err { border-color:#e74c3c; background:linear-gradient(135deg,#fff5f5,#fff0f0); }
+.sw-acc-emoji { font-size:26px; }
+.sw-acc-info { flex:1; }
+.sw-acc-name { font-size:15px; font-weight:bold; color:#333; }
+.sw-acc-rank { font-size:11px; color:#667eea; }
+.sw-acc-rank.err { color:#e74c3c; }
+.sw-change { font-size:11px; color:#aaa; cursor:pointer; text-decoration:underline; flex-shrink:0; }
+
 /* Tab filter bar */
 .tab-bar-wrap {
   position:sticky; top:0; z-index:50;
@@ -478,6 +513,47 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 <div class="hist-toggle" id="hist-toggle" onclick="toggleHistory()">▾ 查看遊玩紀錄</div>
 <div id="history-section" style="display:none;margin-top:6px"></div>
 
+<!-- Switch Modal -->
+<div id="switch-modal">
+  <div class="sw-box">
+    <div id="sw-s1">
+      <div class="sw-title">🔄 切換帳號</div>
+      <div class="sw-sub">依排行榜順序排列</div>
+      <div class="sw-field-label">帳號名稱</div>
+      <div class="sw-sel-header" id="sw-sel-header" onclick="toggleSwDd()">
+        <span id="sw-sel-emoji">😊</span>
+        <span id="sw-sel-name">選擇帳號…</span>
+        <span class="sw-arr">▼</span>
+      </div>
+      <div class="sw-dd" id="sw-dd" style="display:none">
+        <div id="sw-dd-list"></div>
+        <div class="sw-new-row" onclick="switchToNew()">＋ 輸入新帳號…</div>
+      </div>
+    </div>
+    <div id="sw-s2" style="display:none">
+      <div class="sw-title">🔑 生日驗證</div>
+      <div class="sw-sub">確認是本人操作</div>
+      <div class="sw-field-label">切換至</div>
+      <div class="sw-acc-card" id="sw-acc-card">
+        <div class="sw-acc-emoji" id="sw-acc-emoji">😊</div>
+        <div class="sw-acc-info">
+          <div class="sw-acc-name" id="sw-acc-name"></div>
+          <div class="sw-acc-rank" id="sw-acc-rank"></div>
+        </div>
+        <div class="sw-change" onclick="swBack()">更換</div>
+      </div>
+      <div class="sw-field-label">生日密碼</div>
+      <input id="sw-bday" class="modal-input" type="tel" maxlength="4" placeholder="如 0115 = 1月15日">
+      <div class="auth-err" id="sw-err"></div>
+      <button class="modal-btn" onclick="confirmSwitch()">確認登入 ✔</button>
+      <button class="modal-btn-sub" onclick="swBack()">← 重新選擇帳號</button>
+    </div>
+    <div id="sw-loading" style="display:none">
+      <div class="auth-loading">⌛ 連線中…</div>
+    </div>
+  </div>
+</div>
+
 <div id="auth-modal">
   <div class="modal-box">
     <!-- Step 1: username -->
@@ -619,11 +695,138 @@ function backStep() {
 }
 
 function signOut() {
-  if (!confirm('確定要切換帳號？\n目前資料已備份到雲端。')) return;
-  ['xr_name','xr_bday','xr_stars','xr_owned','xr_equipped','xr_redeemed',
-   'xr_records','xr_mistakes','xr_cooldowns'].forEach(k=>localStorage.removeItem(k));
-  location.reload();
+  syncToCloud();
+  showSwitchModal();
 }
+
+/* ── Switch Modal ── */
+let _swAccounts = [], _swSelected = null;
+
+async function showSwitchModal() {
+  document.getElementById('switch-modal').classList.add('show');
+  showSwPanel('loading');
+  try {
+    const res = await fetch(`${FB_URL}/accounts.json`);
+    const data = await res.json();
+    _swAccounts = data
+      ? Object.entries(data)
+          .map(([uname,p])=>({uname,...p}))
+          .filter(p=>p.uname)
+          .sort((a,b)=>(b.totalEarned||b.stars||0)-(a.totalEarned||a.stars||0))
+      : [];
+  } catch(e) { _swAccounts = []; }
+  renderSwDd();
+  _swSelected = null;
+  const me = getName();
+  const meAcc = _swAccounts.find(a=>a.uname===me);
+  document.getElementById('sw-sel-emoji').textContent = (meAcc&&meAcc.badge) || '😊';
+  document.getElementById('sw-sel-name').textContent = me || '選擇帳號…';
+  document.getElementById('sw-dd').style.display = 'none';
+  document.getElementById('sw-sel-header').classList.remove('open');
+  showSwPanel('s1');
+}
+
+function showSwPanel(p) {
+  ['s1','s2','loading'].forEach(id=>{
+    document.getElementById('sw-'+id).style.display = id===p ? '' : 'none';
+  });
+}
+
+function renderSwDd() {
+  const me = getName();
+  const medals = ['🥇','🥈','🥉'];
+  const rankClasses = ['sw-r1','sw-r2','sw-r3'];
+  const html = _swAccounts.map((acc,i)=>{
+    const isMe = acc.uname===me;
+    const rClass = i<3 ? rankClasses[i] : 'sw-rn';
+    const rLabel = i<3 ? medals[i] : (i+1);
+    const stars = acc.totalEarned||acc.stars||0;
+    const emoji = acc.badge||'😊';
+    return `<div class="sw-dd-row${isMe?' is-me':''}" onclick="swSelectAcc(${i})">
+      <div class="sw-rank ${rClass}">${rLabel}</div>
+      <div class="sw-dd-emoji">${emoji}</div>
+      <div class="sw-dd-name${isMe?' me':''}">${acc.uname}${isMe?' ✓':''}</div>
+      <div class="sw-dd-stars">⭐ ${stars}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('sw-dd-list').innerHTML = html;
+}
+
+function toggleSwDd() {
+  const dd = document.getElementById('sw-dd');
+  const hdr = document.getElementById('sw-sel-header');
+  const open = dd.style.display !== 'none';
+  dd.style.display = open ? 'none' : '';
+  hdr.classList.toggle('open', !open);
+}
+
+function swSelectAcc(idx) {
+  const acc = _swAccounts[idx];
+  const me = getName();
+  if (acc.uname===me) {
+    document.getElementById('switch-modal').classList.remove('show');
+    return;
+  }
+  _swSelected = acc;
+  const medals = ['🥇','🥈','🥉'];
+  const stars = acc.totalEarned||acc.stars||0;
+  const rankText = idx<3 ? `${medals[idx]} 排行第 ${idx+1}` : `排行第 ${idx+1}`;
+  document.getElementById('sw-acc-emoji').textContent = acc.badge||'😊';
+  document.getElementById('sw-acc-name').textContent = acc.uname;
+  document.getElementById('sw-acc-rank').textContent = `${rankText}　⭐ ${stars}`;
+  document.getElementById('sw-acc-card').classList.remove('err');
+  document.getElementById('sw-acc-rank').classList.remove('err');
+  document.getElementById('sw-bday').value = '';
+  document.getElementById('sw-err').textContent = '';
+  showSwPanel('s2');
+  setTimeout(()=>document.getElementById('sw-bday').focus(), 120);
+}
+
+function swBack() {
+  _swSelected = null;
+  document.getElementById('sw-bday').value = '';
+  document.getElementById('sw-err').textContent = '';
+  document.getElementById('sw-dd').style.display = 'none';
+  document.getElementById('sw-sel-header').classList.remove('open');
+  showSwPanel('s1');
+}
+
+function switchToNew() {
+  document.getElementById('switch-modal').classList.remove('show');
+  document.getElementById('auth-name').value = '';
+  showAuthPanel('s1');
+}
+
+async function confirmSwitch() {
+  const bday = document.getElementById('sw-bday').value.trim();
+  if (!/^\d{4}$/.test(bday)) {
+    document.getElementById('sw-err').textContent = '請輸入4位數字（月月日日，如0115）'; return;
+  }
+  if (!_swSelected) return;
+  showSwPanel('loading');
+  try {
+    const res = await fetch(`${FB_URL}/accounts/${encodeURIComponent(_swSelected.uname)}.json`);
+    const data = await res.json();
+    if (data.bday && data.bday!==bday) {
+      document.getElementById('sw-err').textContent = '❌ 生日錯誤，請再試一次';
+      document.getElementById('sw-acc-card').classList.add('err');
+      document.getElementById('sw-acc-rank').classList.add('err');
+      showSwPanel('s2'); return;
+    }
+    ['xr_stars','xr_owned','xr_equipped','xr_redeemed',
+     'xr_records','xr_mistakes','xr_cooldowns'].forEach(k=>localStorage.removeItem(k));
+    applyData(data);
+    localStorage.setItem('xr_name', _swSelected.uname);
+    localStorage.setItem('xr_bday', bday);
+    document.getElementById('switch-modal').classList.remove('show');
+    render();
+  } catch(e) {
+    document.getElementById('sw-err').textContent = '連線失敗，請重試';
+    showSwPanel('s2');
+  }
+}
+
+document.getElementById('sw-bday').addEventListener('keydown',e=>{ if(e.key==='Enter') confirmSwitch(); });
 
 /* ── Admin badge ── */
 async function loadAdminBadge() {

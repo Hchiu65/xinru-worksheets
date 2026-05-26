@@ -188,6 +188,38 @@ header h1 { font-size:18px; letter-spacing:1px; }
 #file-input { display:none; }
 
 .empty-msg { text-align:center; color:#aaa; padding:30px; font-size:15px; }
+
+/* ── 批量刪除 ── */
+.btn-batch { background:rgba(231,76,60,.15); color:#c0392b; border:1.5px solid rgba(231,76,60,.3); }
+.btn-batch.active { background:#c0392b; color:#fff; border-color:#c0392b; }
+.batch-quick { display:none; gap:6px; flex-wrap:wrap; padding:0 12px 10px; }
+.batch-quick.show { display:flex; }
+.btn-qsel {
+  padding:6px 14px; border-radius:20px; border:1.5px solid #e0e0e0;
+  background:#fff; font-size:12px; font-family:inherit; cursor:pointer; color:#555;
+}
+.btn-qsel:active { background:#f0f2ff; border-color:#667eea; }
+.btn-qsel.danger { border-color:rgba(231,76,60,.4); color:#c0392b; background:#fff5f5; }
+.stu-checkbox {
+  display:none; width:22px; height:22px; cursor:pointer;
+  flex-shrink:0; accent-color:#667eea; margin-right:2px;
+}
+.batch-mode .stu-checkbox { display:block; }
+.batch-bar {
+  display:none; position:sticky; bottom:0; z-index:80;
+  background:#2c2c3e; color:#fff;
+  padding:12px 16px; align-items:center; gap:10px;
+  border-radius:16px 16px 0 0;
+  box-shadow:0 -4px 20px rgba(0,0,0,.25);
+}
+.batch-bar.show { display:flex; }
+.batch-count { flex:1; font-size:14px; }
+.batch-count span { font-weight:bold; color:#ffd200; }
+.btn-bd-selall { background:rgba(255,255,255,.12); color:#fff; border:1.5px solid rgba(255,255,255,.25); border-radius:10px; padding:7px 13px; font-size:13px; font-family:inherit; cursor:pointer; }
+.btn-bd-delete { background:#e74c3c; color:#fff; border:none; border-radius:10px; padding:8px 18px; font-size:14px; font-family:inherit; cursor:pointer; font-weight:bold; }
+.btn-bd-delete:disabled { background:#888; cursor:not-allowed; }
+.btn-bd-cancel { background:none; border:1.5px solid rgba(255,255,255,.25); color:#ccc; border-radius:10px; padding:7px 13px; font-size:13px; font-family:inherit; cursor:pointer; }
+.inactive-tag { background:#fee2e2; color:#c0392b; font-size:10px; padding:2px 6px; border-radius:8px; margin-left:4px; }
 </style>
 </head>
 <body>
@@ -228,8 +260,26 @@ header h1 { font-size:18px; letter-spacing:1px; }
       <option value="mistakes">錯題數↓</option>
       <option value="updated">最近活躍</option>
     </select>
+    <button class="btn-sm btn-batch" id="btn-batch-toggle" onclick="toggleBatchMode()">🗑 批量刪除</button>
   </div>
+
+  <!-- 快速選取列（批量模式時顯示） -->
+  <div class="batch-quick" id="batch-quick">
+    <button class="btn-qsel danger" onclick="selectInactive(0)">全選（0次，未遊玩）</button>
+    <button class="btn-qsel danger" onclick="selectInactive(1)">全選（≤1次）</button>
+    <button class="btn-qsel" onclick="selectAll()">全選所有人</button>
+    <button class="btn-qsel" onclick="deselectAll()">取消全選</button>
+  </div>
+
   <div class="student-list" id="student-list"></div>
+
+  <!-- 批量操作底部 bar -->
+  <div class="batch-bar" id="batch-bar">
+    <div class="batch-count">已選 <span id="batch-count-num">0</span> 人</div>
+    <button class="btn-bd-selall" onclick="selectInactive(0)">選未遊玩</button>
+    <button class="btn-bd-delete" id="btn-bd-delete" onclick="askBatchDelete()" disabled>🗑 刪除選取</button>
+    <button class="btn-bd-cancel" onclick="toggleBatchMode()">取消</button>
+  </div>
 
   <div class="backup-section" style="margin-top:20px">
     <div class="backup-title">📦 本地備份紀錄</div>
@@ -341,11 +391,14 @@ function renderStudents() {
     const rankIcon= i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
     const locked = Object.values(s.cooldowns).filter(g=>g.locked&&(g.unlockBy||[]).length<2).length;
     const lastOn = s.updated ? new Date(s.updated).toLocaleDateString('zh-TW') : '—';
+    const inactive = s.records === 0 ? '未遊玩' : s.records === 1 ? '僅1次' : '';
     return `
     <div class="stu-card" id="card-${encodeURIComponent(s.name)}">
       <div class="stu-header" onclick="toggleDetail('${encodeURIComponent(s.name)}')">
+        <input type="checkbox" class="stu-checkbox" id="chk-${encodeURIComponent(s.name)}"
+          onclick="event.stopPropagation();updateBatchBar()">
         <div class="stu-rank ${rankCls}">${rankIcon}</div>
-        <div class="stu-name">${s.name}</div>
+        <div class="stu-name">${s.name}${inactive?`<span class="inactive-tag">${inactive}</span>`:''}</div>
         <div style="font-size:12px;color:#aaa;margin-right:8px">最近：${lastOn}</div>
         <div class="stu-stars">⭐ ${s.stars}</div>
         <div class="stu-arr" id="arr-${encodeURIComponent(s.name)}">›</div>
@@ -396,6 +449,65 @@ function toggleDetail(key) {
 
 function toggleMistakes(key) {
   document.getElementById(`mist-${key}`).classList.toggle('open');
+}
+
+/* ── 批量刪除 ── */
+let _batchMode = false;
+
+function toggleBatchMode() {
+  _batchMode = !_batchMode;
+  const list = document.getElementById('student-list');
+  const bar  = document.getElementById('batch-bar');
+  const quick= document.getElementById('batch-quick');
+  const btn  = document.getElementById('btn-batch-toggle');
+  list.classList.toggle('batch-mode', _batchMode);
+  bar.classList.toggle('show', _batchMode);
+  quick.classList.toggle('show', _batchMode);
+  btn.classList.toggle('active', _batchMode);
+  btn.textContent = _batchMode ? '✕ 取消批量' : '🗑 批量刪除';
+  if (!_batchMode) deselectAll();
+}
+
+function selectInactive(maxPlays) {
+  const students = getStudents();
+  document.querySelectorAll('.stu-checkbox').forEach(chk => {
+    const name = decodeURIComponent(chk.id.replace('chk-',''));
+    const s = students.find(st => st.name === name);
+    chk.checked = s ? s.records <= maxPlays : false;
+  });
+  updateBatchBar();
+}
+
+function selectAll() {
+  document.querySelectorAll('.stu-checkbox').forEach(c => c.checked = true);
+  updateBatchBar();
+}
+
+function deselectAll() {
+  document.querySelectorAll('.stu-checkbox').forEach(c => c.checked = false);
+  updateBatchBar();
+}
+
+function updateBatchBar() {
+  const n = document.querySelectorAll('.stu-checkbox:checked').length;
+  document.getElementById('batch-count-num').textContent = n;
+  document.getElementById('btn-bd-delete').disabled = n === 0;
+}
+
+function askBatchDelete() {
+  const checked = Array.from(document.querySelectorAll('.stu-checkbox:checked'));
+  if (!checked.length) return;
+  const names = checked.map(c => decodeURIComponent(c.id.replace('chk-','')));
+  confirmAction  = 'batchDelete';
+  confirmPayload = { names };
+  confirmPhase   = 1;
+  document.getElementById('confirm-title').textContent   = `🗑 批量刪除 ${names.length} 個帳號`;
+  document.getElementById('confirm-desc').textContent    = names.join('、');
+  document.getElementById('confirm-warning').textContent = '⚠️ 這將永久刪除這些帳號的所有資料，無法還原！建議先匯出 JSON 備份。';
+  document.getElementById('confirm-count').textContent   = '第 1 次確認，共需確認 2 次';
+  document.getElementById('confirm-btn').textContent     = '我確認，繼續';
+  document.getElementById('confirm-btn').disabled        = false;
+  document.getElementById('confirm-modal').classList.add('show');
 }
 
 /* ── 雙重確認機制 ── */
@@ -475,6 +587,18 @@ async function executeAction(action, payload) {
     } else if (action === 'resetAll') {
       await fetch(`${FB_URL}/accounts/${encodeURIComponent(decoded)}.json`, { method:'DELETE' });
       alert(`✅ 已清除「${decoded}」的全部資料`);
+    } else if (action === 'batchDelete') {
+      const { names } = payload;
+      for (const n of names) {
+        await fetch(`${FB_URL}/accounts/${encodeURIComponent(n)}.json`, { method:'DELETE' });
+      }
+      alert(`✅ 已刪除 ${names.length} 個帳號`);
+      _batchMode = false;
+      document.getElementById('student-list').classList.remove('batch-mode');
+      document.getElementById('batch-bar').classList.remove('show');
+      document.getElementById('batch-quick').classList.remove('show');
+      document.getElementById('btn-batch-toggle').classList.remove('active');
+      document.getElementById('btn-batch-toggle').textContent = '🗑 批量刪除';
     } else if (action === 'importRestore') {
       const data = payload.data;
       await fetch(`${FB_URL}/accounts.json`,
