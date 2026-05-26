@@ -458,6 +458,20 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
       <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
     </div>
   </a>
+  <a class="unit-card" href="y3c-gaicuo.html" data-gid="y3c-gaicuo" data-unit="0">
+    <div class="card-left">
+      <div class="unit-emoji ue-red">✏️</div>
+      <div class="unit-title">改錯字</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">12題，找出錯字並改正</div>
+        <div class="unit-tags"><span class="tag tg-gold">改錯</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
 
 </div>
 
@@ -497,7 +511,7 @@ const FB_URL = "https://xinru-class-default-rtdb.firebaseio.com";
 const BADGES = {b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'};
 const TITLES  = {t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王'};
 const MEDALS  = ['🥇','🥈','🥉'];
-const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)'};
+const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)'};
 
 function getStars()    { return parseInt(localStorage.getItem('xr_stars')||'0'); }
 function getName()     { return localStorage.getItem('xr_name')||''; }
@@ -735,7 +749,7 @@ const GID_TO_UNIT = {
   unit6:'unit6', unit6m:'unit6-match',
   u7match:'u7match', u7ziyin:'unit7-ziyin', u7bianzi:'unit7-bianzi',
   u7chengyu:'u7chengyu', u7gaicuo:'u7gaicuo', u7bopomo:'u7bopomo', u7vocab:'u7vocab',
-  'y3c-match':'y3c-match', 'y3c-chengyu':'y3c-chengyu', 'y3c-vocab':'y3c-vocab'
+  'y3c-match':'y3c-match', 'y3c-chengyu':'y3c-chengyu', 'y3c-vocab':'y3c-vocab', 'y3c-gaicuo':'y3c-gaicuo'
 };
 
 function scoreEmoji(pct) {
