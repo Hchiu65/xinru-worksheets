@@ -23,7 +23,14 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 }
 .hero-info { flex:1; min-width:0; }
 .hero-name { font-size:20px; color:#fff; font-weight:bold; letter-spacing:1px; }
-.hero-edit  { font-size:12px; color:rgba(255,255,255,.6); cursor:pointer; text-decoration:underline; margin-top:2px; }
+.hero-edit  {
+  display:inline-flex; align-items:center; gap:5px;
+  margin-top:6px;
+  background:rgba(255,255,255,.2); border:1.5px solid rgba(255,255,255,.45);
+  border-radius:20px; padding:5px 13px;
+  font-size:13px; color:#fff; cursor:pointer;
+  transition:background .15s;
+}
 .admin-link { display:none; font-size:16px; color:#ffd580; text-decoration:none; margin-top:6px; font-weight:bold; letter-spacing:.5px; }
 .admin-badge { background:#e74c3c; color:#fff; border-radius:12px; padding:2px 8px; font-size:13px; margin-left:6px; display:none; animation:admin-pulse 1.2s ease-in-out infinite; }
 @keyframes admin-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.7;transform:scale(1.15)} }
@@ -214,7 +221,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
   /* Hero */
   .avatar       { width:60px; height:60px; font-size:28px; }
   .hero-name    { font-size:26px; }
-  .hero-edit    { font-size:14px; }
+  .hero-edit    { font-size:16px; padding:7px 18px; }
   .star-pill    { font-size:22px; padding:8px 16px; }
   .badge-chip   { font-size:20px; }
   .title-chip   { font-size:15px; }
