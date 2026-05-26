@@ -1,0 +1,155 @@
+{
+  "skill_name": "chinese-game-generator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "幫我把以下題目做成「改錯字」遊戲，GAME_ID 用 u8gaicuo，單元名稱「第八單元　作業練習　改錯字」，橙紅色主題：\n1. 錯字詞：嘻笑怒罵，錯字「嘻」，正確「嬉」，完整詞「嬉笑怒罵」，意思「形容言論或作品不受拘束，喜怒哀樂自然流露」，選項：嬉嫁嫌媳\n2. 錯字詞：鬼鬼崇崇，錯字「崇」，正確「祟」，完整詞「鬼鬼祟祟」，意思「形容行為神秘，不光明正大」，選項：祟崇宗崇\n3. 錯字詞：巧立名木，錯字「木」，正確「目」，完整詞「巧立名目」，意思「想出種種名義，藉以達到某種不正當的目的」，選項：目木牧沐\n4. 錯字詞：草管人命，錯字「管」，正確「菅」，完整詞「草菅人命」，意思「把人命看得像草一樣輕賤，任意殺害」，選項：菅管管慣\n5. 錯字詞：義正嚴辭，錯字「嚴」，正確「言」，完整詞「義正言辭」，意思「立場正確，說話嚴正」，選項：言嚴顏延\n\n請生成完整的 HTML 檔案，儲存為 C:\\Users\\Charlie_Chiu\\xinru-worksheets\\unit8-gaicuo.html，不需要更新 index.html 或其他檔案。",
+      "expected_output": "完整可用的 unit8-gaicuo.html，包含：正確的 GAME_ID='u8gaicuo'、GAME_SOURCE='第八單元　作業練習　改錯字'、5題資料、冷卻系統、星星系統、Firebase sync、TTS、答錯可重試邏輯",
+      "files": [],
+      "assertions": [
+        {
+          "text": "檔案包含 GAME_ID = 'u8gaicuo'",
+          "type": "file_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "GAME_ID = 'u8gaicuo'"
+        },
+        {
+          "text": "檔案包含 GAME_SOURCE 且含第八單元",
+          "type": "file_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "GAME_SOURCE"
+        },
+        {
+          "text": "檔案包含5題資料（至少有嬉笑怒罵和草菅人命）",
+          "type": "file_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "草菅人命"
+        },
+        {
+          "text": "包含 Firebase URL",
+          "type": "file_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "xinru-class-default-rtdb.firebaseio.com"
+        },
+        {
+          "text": "包含冷卻系統 getCDs 函數",
+          "type": "file_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "getCDs"
+        },
+        {
+          "text": "包含 recordMistake 函數",
+          "type": "file_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "recordMistake"
+        },
+        {
+          "text": "是合法的 HTML（有 <!DOCTYPE html> 開頭）",
+          "type": "file_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "<!DOCTYPE html>"
+        },
+        {
+          "text": "包含橙紅漸層主題色",
+          "type": "file_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "e67e22"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "幫我把以下句子做成「詞語填空」遊戲，GAME_ID 用 u8fillin，單元「第八單元　詞語填空」，翠綠主題色（#16a085 → #1abc9c）：\n\n詞語庫：披荊斬棘、如魚得水、功敗垂成、力挽狂瀾、一鳴驚人\n\n題目：\n1. 他多年默默努力，終於在比賽中（　　），讓所有人刮目相看。→ 一鳴驚人\n2. 到了新環境，他很快就適應，感覺（　　），工作得心應手。→ 如魚得水\n3. 創業初期，他（　　），克服重重困難才有今日的成就。→ 披荊斬棘\n4. 眼看局勢危急，他挺身而出，（　　），化解了這場危機。→ 力挽狂瀾\n5. 計畫已接近完成，卻因一時疏忽而（　　），令人扼腕。→ 功敗垂成\n\n請生成完整 HTML 檔案，儲存為 C:\\Users\\Charlie_Chiu\\xinru-worksheets\\unit8-fillin.html，不需要更新其他檔案。",
+      "expected_output": "完整可用的 unit8-fillin.html，使用詞語晶片＋空格填入模式，包含 GAME_ID='u8fillin'、5題句子、5個詞語晶片、getSentence 摘錄函數、checkAll 對答案按鈕",
+      "files": [],
+      "assertions": [
+        {
+          "text": "包含 GAME_ID = 'u8fillin'",
+          "type": "file_contains",
+          "file": "unit8-fillin.html",
+          "pattern": "GAME_ID = 'u8fillin'"
+        },
+        {
+          "text": "包含詞語晶片（chip class）",
+          "type": "file_contains",
+          "file": "unit8-fillin.html",
+          "pattern": "class=\"chip\""
+        },
+        {
+          "text": "包含空格 blank class",
+          "type": "file_contains",
+          "file": "unit8-fillin.html",
+          "pattern": "class=\"blank\""
+        },
+        {
+          "text": "包含 getSentence 函數",
+          "type": "file_contains",
+          "file": "unit8-fillin.html",
+          "pattern": "getSentence"
+        },
+        {
+          "text": "包含5個答案（含一鳴驚人）",
+          "type": "file_contains",
+          "file": "unit8-fillin.html",
+          "pattern": "一鳴驚人"
+        },
+        {
+          "text": "包含 checkAll 函數",
+          "type": "file_contains",
+          "file": "unit8-fillin.html",
+          "pattern": "checkAll"
+        },
+        {
+          "text": "包含 Firebase 同步",
+          "type": "file_contains",
+          "file": "unit8-fillin.html",
+          "pattern": "pushToCloud"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "幫我把以下題目做成「字音辨正」遊戲，GAME_ID 用 u8ziyin，單元「第八單元　字音辨正」，藍紫主題色（#5b6de6 → #9b59b6）：\n\n1. 詞語「一蹴「可」幾」，目標字「可」，正確注音「ㄎㄜˇ」，錯誤選項：ㄏㄜˊ、ㄎㄜˋ、ㄏㄜˋ，意思「形容事情容易做到，一下就能成功」\n2. 詞語「「蒞」臨指導」，目標字「蒞」，正確注音「ㄌ一ˋ」，錯誤選項：ㄌ一ˊ、ㄌㄧˇ、ㄒ一ˋ，意思「光臨、到達」\n3. 詞語「誨「人」不倦」，目標字「人」，正確注音「ㄖㄣˊ」，錯誤選項：ㄖㄣˇ、ㄖㄣˋ、ㄌㄧㄣˊ，意思「此為測試，正解ㄖㄣˊ」\n4. 詞語「孜孜「矻」矻」，目標字「矻」，正確注音「ㄎㄨ」，錯誤選項：ㄎㄨˊ、ㄎㄨˇ、ㄍㄨ，意思「勤勞不懈的樣子」\n5. 詞語「「扞」格不入」，目標字「扞」，正確注音「ㄏㄢˋ」，錯誤選項：ㄍㄢˇ、ㄏㄢˇ、ㄍㄢˋ，意思「彼此牴觸，難以融合」\n\n請生成完整 HTML 檔案，儲存為 C:\\Users\\Charlie_Chiu\\xinru-worksheets\\unit8-ziyin.html，不需要更新其他檔案。",
+      "expected_output": "完整可用的 unit8-ziyin.html，GAME_ID='u8ziyin'，5題字音辨正，選項為注音符號（非漢字），目標字用橙色highlight，包含完整冷卻/星星/Firebase系統",
+      "files": [],
+      "assertions": [
+        {
+          "text": "包含 GAME_ID = 'u8ziyin'",
+          "type": "file_contains",
+          "file": "unit8-ziyin.html",
+          "pattern": "GAME_ID = 'u8ziyin'"
+        },
+        {
+          "text": "包含 ZIYIN 資料陣列",
+          "type": "file_contains",
+          "file": "unit8-ziyin.html",
+          "pattern": "ZIYIN"
+        },
+        {
+          "text": "包含注音選項（含ㄌ一ˋ）",
+          "type": "file_contains",
+          "file": "unit8-ziyin.html",
+          "pattern": "ㄌ一ˋ"
+        },
+        {
+          "text": "包含 focus-char class（目標字橙色標示）",
+          "type": "file_contains",
+          "file": "unit8-ziyin.html",
+          "pattern": "focus-char"
+        },
+        {
+          "text": "包含 Firebase 同步",
+          "type": "file_contains",
+          "file": "unit8-ziyin.html",
+          "pattern": "xinru-class-default-rtdb.firebaseio.com"
+        },
+        {
+          "text": "包含 recordMistake 函數",
+          "type": "file_contains",
+          "file": "unit8-ziyin.html",
+          "pattern": "recordMistake"
+        }
+      ]
+    }
+  ]
+}
