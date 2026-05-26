@@ -2,15 +2,28 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>錯誤回報管理</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>管理中心 — 興儒國文班</title>
 <style>
-* { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:"標楷體","DFKai-SB",serif; background:#f5f0ee; color:#333; padding-bottom:40px; }
-header { background:linear-gradient(135deg,#7a6060,#6b5252); color:#fff; padding:16px 20px; display:flex; align-items:center; gap:14px; }
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body { font-family:"標楷體","DFKai-SB",serif; background:#f5f0ee; color:#333; padding-bottom:60px; }
+
+/* ── Header ── */
+header { background:linear-gradient(135deg,#7a6060,#6b5252); color:#fff; padding:14px 18px; display:flex; align-items:center; gap:12px; }
 .btn-home { font-size:22px; text-decoration:none; }
-h1 { font-size:20px; flex:1; }
-.badge-count { background:rgba(255,255,255,.2); border-radius:20px; padding:4px 14px; font-size:14px; }
+header h1 { font-size:18px; flex:1; }
+.hdr-badge { background:rgba(255,255,255,.2); border-radius:20px; padding:4px 14px; font-size:14px; }
+
+/* ── Main tab bar ── */
+.main-tabs { display:flex; background:#6b5252; padding:0 16px; }
+.main-tab {
+  padding:11px 20px; font-size:15px; font-family:inherit; cursor:pointer;
+  background:none; border:none; color:rgba(255,255,255,.6); border-bottom:3px solid transparent;
+  font-weight:bold; transition:all .15s;
+}
+.main-tab.active { color:#fff; border-bottom-color:#ffd700; }
+
+/* ── 錯誤回報 tab ── */
 .filter-bar { display:flex; gap:8px; padding:12px 16px; background:#fff; border-bottom:1px solid #ede8e6; flex-wrap:wrap; }
 .filter-btn { padding:6px 16px; border-radius:20px; border:1.5px solid #ccc; background:#fff; font-size:14px; font-family:inherit; cursor:pointer; color:#666; }
 .filter-btn.active { background:#7a6060; color:#fff; border-color:#7a6060; }
@@ -31,7 +44,6 @@ h1 { font-size:20px; flex:1; }
 .btn-resolve { padding:6px 16px; border-radius:20px; border:none; background:#27ae60; color:#fff; font-size:13px; font-family:inherit; cursor:pointer; font-weight:bold; }
 .btn-resolve:disabled { background:#ccc; cursor:default; }
 .btn-delete { padding:6px 12px; border-radius:20px; border:none; background:#fee2e2; color:#e74c3c; font-size:13px; font-family:inherit; cursor:pointer; }
-/* Admin-only review section */
 .rc-review { margin-top:10px; padding:10px 12px; background:#fff8f0; border-radius:10px; border:1px solid #f0d9c0; display:none; }
 .rc-review.visible { display:block; }
 .verdict-label { font-size:12px; color:#a08060; margin-bottom:6px; }
@@ -48,25 +60,213 @@ h1 { font-size:20px; flex:1; }
 .empty { text-align:center; color:#bbb; padding:40px 20px; font-size:16px; }
 .loading { text-align:center; color:#aaa; padding:40px; font-size:15px; }
 .admin-label { font-size:12px; color:#e67e22; margin-left:6px; padding:2px 8px; border:1px solid #e67e22; border-radius:10px; }
+
+/* ── 管理後台 gate ── */
+#admin-gate {
+  min-height:60vh; display:flex; align-items:center; justify-content:center; padding:30px;
+}
+.gate-box {
+  background:#fff; border-radius:22px; padding:36px 28px;
+  width:300px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,.15);
+}
+.gate-box h2 { color:#7a6060; font-size:20px; margin-bottom:6px; }
+.gate-box p  { font-size:13px; color:#aaa; margin-bottom:20px; }
+.gate-input {
+  width:100%; padding:12px; font-size:20px; font-family:inherit;
+  border:2px solid #e0d8d8; border-radius:11px; margin-bottom:12px;
+  text-align:center; outline:none; letter-spacing:6px;
+}
+.gate-input:focus { border-color:#7a6060; }
+.gate-btn {
+  width:100%; padding:13px; background:linear-gradient(135deg,#7a6060,#6b5252);
+  color:#fff; border:none; border-radius:11px; font-size:17px;
+  font-family:inherit; cursor:pointer; font-weight:bold;
+}
+.gate-err { color:#e74c3c; font-size:13px; margin-top:8px; min-height:18px; }
+
+/* ── 管理後台 主體 ── */
+#admin-app { display:none; }
+.adm-toolbar {
+  display:flex; gap:8px; padding:10px 12px; background:#fff;
+  border-bottom:1px solid #ede8e6; align-items:center; flex-wrap:wrap;
+}
+.btn-sm {
+  padding:6px 14px; border-radius:20px; border:none; cursor:pointer;
+  font-size:13px; font-family:inherit; font-weight:bold;
+}
+.btn-export { background:#e8f5e9; color:#388e3c; }
+.btn-csv    { background:#e3f2fd; color:#1565c0; }
+.btn-batch  { background:rgba(231,76,60,.12); color:#c0392b; border:1.5px solid rgba(231,76,60,.3); }
+.btn-batch.active { background:#c0392b; color:#fff; border-color:#c0392b; }
+
+.stat-bar { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:10px 12px; }
+.stat-card { background:#fff; border-radius:12px; padding:12px 8px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+.stat-card .val { font-size:24px; font-weight:bold; color:#7a6060; }
+.stat-card .lbl { font-size:11px; color:#aaa; margin-top:2px; }
+
+.adm-search-row { display:flex; gap:8px; padding:0 12px 10px; align-items:center; }
+.search-input { flex:1; min-width:0; padding:8px 12px; border:1.5px solid #dde; border-radius:20px; font-size:14px; font-family:inherit; outline:none; }
+.search-input:focus { border-color:#7a6060; }
+.sort-sel { padding:8px 10px; border:1.5px solid #dde; border-radius:20px; font-size:13px; font-family:inherit; background:#fff; outline:none; }
+
+/* Batch quick */
+.batch-quick { display:none; gap:6px; padding:0 12px 8px; flex-wrap:wrap; }
+.batch-quick.show { display:flex; }
+.btn-qsel { padding:5px 12px; border-radius:16px; border:1.5px solid #e0e0e0; background:#fff; font-size:12px; font-family:inherit; cursor:pointer; color:#555; }
+.btn-qsel.danger { border-color:rgba(231,76,60,.4); color:#c0392b; background:#fff5f5; }
+
+/* Student list */
+.student-list { padding:0 12px; display:flex; flex-direction:column; gap:8px; }
+.stu-card { background:#fff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,.07); overflow:hidden; }
+.stu-header { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; user-select:none; }
+.stu-rank { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:bold; flex-shrink:0; background:#f0f4f0; color:#7a6060; }
+.stu-rank.gold   { background:#fff8e1; color:#f39c12; }
+.stu-rank.silver { background:#f5f5f5; color:#888; }
+.stu-rank.bronze { background:#fff3e0; color:#c0692a; }
+.stu-name { flex:1; font-size:15px; font-weight:bold; }
+.stu-stars { color:#f39c12; font-weight:bold; font-size:14px; white-space:nowrap; }
+.stu-arr { color:#ccc; font-size:18px; transition:transform .2s; }
+.stu-arr.open { transform:rotate(90deg); }
+.stu-detail { display:none; border-top:1px solid #f0f0f0; padding:12px 14px; background:#fafbff; }
+.stu-detail.open { display:block; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px; }
+.d-box { background:#fff; border-radius:10px; padding:10px 6px; text-align:center; box-shadow:0 1px 4px rgba(0,0,0,.06); }
+.d-val { font-size:18px; font-weight:bold; color:#7a6060; }
+.d-lbl { font-size:11px; color:#aaa; margin-top:2px; }
+.detail-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.btn-action { padding:7px 14px; border-radius:20px; border:none; cursor:pointer; font-size:12px; font-family:inherit; font-weight:bold; }
+.btn-reset-cd    { background:#fff3cd; color:#856404; }
+.btn-reset-stars { background:#f8d7da; color:#721c24; }
+.btn-view-mistakes { background:#d1ecf1; color:#0c5460; }
+.btn-reset-all   { background:#f8d7da; color:#721c24; }
+.mistakes-panel { display:none; margin-top:10px; background:#fff; border-radius:10px; padding:10px; max-height:180px; overflow-y:auto; box-shadow:0 1px 4px rgba(0,0,0,.06); }
+.mistakes-panel.open { display:block; }
+.mist-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid #f0f0f0; font-size:13px; }
+.mist-row:last-child { border-bottom:none; }
+.mist-word { font-weight:bold; }
+.mist-cnt  { color:#c0392b; font-size:12px; }
+
+/* Batch mode */
+.stu-checkbox { display:none; width:20px; height:20px; cursor:pointer; flex-shrink:0; accent-color:#7a6060; }
+.batch-mode .stu-checkbox { display:block; }
+.inactive-tag { background:#fee2e2; color:#c0392b; font-size:10px; padding:2px 6px; border-radius:7px; margin-left:4px; }
+.batch-bar { display:none; position:sticky; bottom:0; z-index:80; background:#2c2c3e; color:#fff; padding:11px 14px; align-items:center; gap:8px; border-radius:14px 14px 0 0; box-shadow:0 -4px 20px rgba(0,0,0,.25); }
+.batch-bar.show { display:flex; }
+.batch-count { flex:1; font-size:14px; }
+.batch-count span { font-weight:bold; color:#ffd200; }
+.bb-del { background:#e74c3c; color:#fff; border:none; border-radius:9px; padding:7px 16px; font-size:13px; font-family:inherit; cursor:pointer; font-weight:bold; }
+.bb-del:disabled { background:#888; cursor:not-allowed; }
+.bb-cancel { background:none; border:1.5px solid rgba(255,255,255,.25); color:#ccc; border-radius:9px; padding:6px 12px; font-size:13px; font-family:inherit; cursor:pointer; }
+
+/* Confirm modal */
+#confirm-modal { display:none; position:fixed; inset:0; background:rgba(50,30,80,.55); align-items:center; justify-content:center; z-index:900; }
+#confirm-modal.show { display:flex; }
+.confirm-box { background:#fff; border-radius:18px; padding:26px 20px; width:300px; text-align:center; box-shadow:0 8px 30px rgba(0,0,0,.2); }
+.confirm-box h3 { color:#c0392b; font-size:17px; margin-bottom:8px; }
+.confirm-box p  { font-size:13px; color:#555; line-height:1.6; margin-bottom:10px; }
+.confirm-warning { background:#fff3cd; border-radius:8px; padding:10px; font-size:12px; color:#856404; margin-bottom:12px; line-height:1.5; }
+.confirm-count { font-size:12px; color:#aaa; margin-bottom:12px; }
+.confirm-btns { display:flex; gap:10px; }
+.btn-cancel-c { flex:1; padding:11px; background:#eee; color:#555; border:none; border-radius:10px; font-size:15px; font-family:inherit; cursor:pointer; font-weight:bold; }
+.btn-danger  { flex:1; padding:11px; background:#c0392b; color:#fff; border:none; border-radius:10px; font-size:15px; font-family:inherit; cursor:pointer; font-weight:bold; }
+.btn-danger:disabled { background:#ccc; cursor:not-allowed; }
+
+.empty-msg { text-align:center; color:#aaa; padding:30px; font-size:15px; }
 </style>
 </head>
 <body>
 
 <header>
   <a class="btn-home" href="index.html">🏠</a>
-  <h1>⚠️ 錯誤回報管理</h1>
-  <div class="badge-count" id="unresolved-count">載入中…</div>
+  <h1>管理中心</h1>
+  <div class="hdr-badge" id="unresolved-count">載入中…</div>
 </header>
 
-<div class="filter-bar">
-  <button class="filter-btn active" onclick="setFilter('unresolved')" id="f-unresolved">待處理</button>
-  <button class="filter-btn review-tab" onclick="setFilter('review')" id="f-review">🤖 需確認</button>
-  <button class="filter-btn" onclick="setFilter('all')" id="f-all">全部</button>
-  <button class="filter-btn" onclick="setFilter('resolved')" id="f-resolved">已處理</button>
+<div class="main-tabs">
+  <button class="main-tab active" id="tab-btn-reports" onclick="switchMainTab('reports')">⚠️ 錯誤回報</button>
+  <button class="main-tab" id="tab-btn-admin" onclick="switchMainTab('admin')">🛠 管理後台</button>
 </div>
 
-<div class="report-list" id="report-list">
-  <div class="loading">載入中…</div>
+<!-- ══ 錯誤回報 tab ══ -->
+<div id="tab-reports">
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setFilter('unresolved')" id="f-unresolved">待處理</button>
+    <button class="filter-btn review-tab" onclick="setFilter('review')" id="f-review">🤖 需確認</button>
+    <button class="filter-btn" onclick="setFilter('all')" id="f-all">全部</button>
+    <button class="filter-btn" onclick="setFilter('resolved')" id="f-resolved">已處理</button>
+  </div>
+  <div class="report-list" id="report-list">
+    <div class="loading">載入中…</div>
+  </div>
+</div>
+
+<!-- ══ 管理後台 tab ══ -->
+<div id="tab-admin" style="display:none">
+
+  <!-- 密碼 gate -->
+  <div id="admin-gate">
+    <div class="gate-box">
+      <div style="font-size:40px;margin-bottom:10px">🔐</div>
+      <h2>管理後台</h2>
+      <p>請輸入查理布朗的生日密碼</p>
+      <input class="gate-input" id="gate-pw" type="tel" maxlength="4" placeholder="••••"
+        onkeydown="if(event.key==='Enter')tryAdminLogin()">
+      <button class="gate-btn" onclick="tryAdminLogin()">進入</button>
+      <div class="gate-err" id="gate-err"></div>
+    </div>
+  </div>
+
+  <!-- 管理後台主體 -->
+  <div id="admin-app">
+    <div class="adm-toolbar">
+      <button class="btn-sm btn-export" onclick="exportJSON()">⬇ 備份 JSON</button>
+      <button class="btn-sm btn-csv"    onclick="exportCSV()">📊 匯出 CSV</button>
+      <div style="flex:1"></div>
+      <button class="btn-sm btn-batch" id="btn-batch-toggle" onclick="toggleBatchMode()">🗑 批量刪除</button>
+    </div>
+
+    <div class="stat-bar" id="stat-bar"></div>
+
+    <div class="adm-search-row">
+      <input class="search-input" id="search-box" placeholder="🔍 搜尋學生姓名…" oninput="renderStudents()">
+      <select class="sort-sel" id="sort-sel" onchange="renderStudents()">
+        <option value="stars">星星↓</option>
+        <option value="name">姓名</option>
+        <option value="records">遊玩次數↓</option>
+        <option value="mistakes">錯題數↓</option>
+        <option value="updated">最近活躍</option>
+      </select>
+    </div>
+
+    <div class="batch-quick" id="batch-quick">
+      <button class="btn-qsel danger" onclick="selectInactive(0)">全選（0次，未遊玩）</button>
+      <button class="btn-qsel danger" onclick="selectInactive(1)">全選（≤1次）</button>
+      <button class="btn-qsel" onclick="selectAll()">全選所有人</button>
+      <button class="btn-qsel" onclick="deselectAll()">取消全選</button>
+    </div>
+
+    <div class="student-list" id="student-list"></div>
+
+    <div class="batch-bar" id="batch-bar">
+      <div class="batch-count">已選 <span id="batch-count-num">0</span> 人</div>
+      <button class="bb-del" id="btn-bd-delete" onclick="askBatchDelete()" disabled>🗑 刪除選取</button>
+      <button class="bb-cancel" onclick="toggleBatchMode()">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 確認 modal -->
+<div id="confirm-modal">
+  <div class="confirm-box">
+    <h3 id="confirm-title">⚠️ 確認操作</h3>
+    <p id="confirm-desc"></p>
+    <div class="confirm-warning" id="confirm-warning"></div>
+    <div class="confirm-count" id="confirm-count"></div>
+    <div class="confirm-btns">
+      <button class="btn-cancel-c" onclick="closeConfirm()">取消</button>
+      <button class="btn-danger" id="confirm-btn" onclick="confirmStep()">確認</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -75,20 +275,56 @@ const ADMINS = ['查理布朗', '艾美女'];
 const currentUser = localStorage.getItem('xr_name') || '';
 const isAdmin = ADMINS.includes(currentUser);
 
+/* ══ 主 Tab 切換 ══ */
+function switchMainTab(tab) {
+  document.getElementById('tab-reports').style.display = tab === 'reports' ? '' : 'none';
+  document.getElementById('tab-admin').style.display   = tab === 'admin'   ? '' : 'none';
+  document.getElementById('tab-btn-reports').classList.toggle('active', tab === 'reports');
+  document.getElementById('tab-btn-admin').classList.toggle('active', tab === 'admin');
+  if (tab === 'admin' && !sessionStorage.getItem('xr_admin_unlocked')) {
+    document.getElementById('admin-gate').style.display = 'flex';
+    document.getElementById('admin-app').style.display  = 'none';
+  }
+}
+
+/* ══ 管理後台登入 ══ */
+async function tryAdminLogin() {
+  const pw = document.getElementById('gate-pw').value.trim();
+  if (!/^\d{4}$/.test(pw)) {
+    document.getElementById('gate-err').textContent = '請輸入 4 位生日密碼'; return;
+  }
+  document.getElementById('gate-err').textContent = '驗證中…';
+  try {
+    const res  = await fetch(`${FB_URL}/accounts/${encodeURIComponent('查理布朗')}.json`);
+    const data = await res.json();
+    if (!data || data.bday !== pw) {
+      document.getElementById('gate-err').textContent = '密碼錯誤，請再試一次';
+      document.getElementById('gate-pw').value = '';
+      return;
+    }
+    sessionStorage.setItem('xr_admin_unlocked', '1');
+    document.getElementById('admin-gate').style.display = 'none';
+    document.getElementById('admin-app').style.display  = '';
+    loadAll();
+  } catch(e) {
+    document.getElementById('gate-err').textContent = '連線失敗，請重試';
+  }
+}
+document.getElementById('gate-pw').addEventListener('keydown', e => { if(e.key==='Enter') tryAdminLogin(); });
+
+/* ══ 錯誤回報 ══ */
 let allReports = [];
 let currentFilter = 'unresolved';
 
-async function load() {
+async function loadReports() {
   try {
     const res = await fetch(`${FB_URL}/error_reports.json`);
     const data = await res.json();
-    if (!data) { allReports = []; }
-    else {
-      allReports = Object.entries(data).map(([key, v]) => ({ key, ...v }))
-        .sort((a, b) => (b.ts || 0) - (a.ts || 0));
-    }
+    allReports = data
+      ? Object.entries(data).map(([key, v]) => ({ key, ...v })).sort((a,b) => (b.ts||0)-(a.ts||0))
+      : [];
     updateCount();
-    render();
+    renderReports();
   } catch(e) {
     document.getElementById('report-list').innerHTML = '<div class="loading">載入失敗，請檢查網路</div>';
   }
@@ -100,12 +336,9 @@ function updateCount() {
   let text = `待處理 ${pending} 件`;
   if (needsReview > 0) text += ` ／ 🤖 ${needsReview}`;
   document.getElementById('unresolved-count').textContent = text;
-  // update review tab badge
   const reviewTab = document.getElementById('f-review');
   const reviewCount = allReports.filter(r => r.needsReview).length;
-  reviewTab.innerHTML = reviewCount > 0
-    ? `🤖 需確認 <span class="review-badge">${reviewCount}</span>`
-    : '🤖 需確認';
+  reviewTab.innerHTML = reviewCount > 0 ? `🤖 需確認 <span class="review-badge">${reviewCount}</span>` : '🤖 需確認';
 }
 
 function setFilter(f) {
@@ -116,32 +349,26 @@ function setFilter(f) {
     const base = k === 'review' ? 'filter-btn review-tab' : 'filter-btn';
     el.className = base + (k===f ? ' active' : '');
   });
-  render();
+  renderReports();
 }
 
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function render() {
+function renderReports() {
   const list = allReports.filter(r => {
     if (currentFilter === 'unresolved') return !r.resolved;
     if (currentFilter === 'resolved') return r.resolved;
     if (currentFilter === 'review') return r.needsReview;
     return true;
   });
-
-  if (!list.length) {
-    document.getElementById('report-list').innerHTML = '<div class="empty">沒有回報記錄</div>';
-    return;
-  }
-
+  if (!list.length) { document.getElementById('report-list').innerHTML = '<div class="empty">沒有回報記錄</div>'; return; }
   document.getElementById('report-list').innerHTML = list.map(r => {
     const cardClass = r.resolved ? 'report-card resolved' : (r.needsReview ? 'report-card needs-review' : 'report-card');
     const resolveBtn = !r.resolved
       ? `<button class="btn-resolve" onclick="resolve('${r.key}')">✓ 已處理</button>`
       : '<span style="font-size:13px;color:#27ae60">✓ 已處理</span>';
-
     const vw = r.adminVerdict === 'wrong'   ? ' v-wrong'   : '';
     const vc = r.adminVerdict === 'correct' ? ' v-correct' : '';
     const reviewSection = isAdmin ? `
@@ -152,14 +379,11 @@ function render() {
           <button class="btn-verdict${vc}" onclick="setVerdict('${r.key}','correct')">✓ 題目正確</button>
         </div>
         <div class="review-check-row">
-          <label>
-            <input type="checkbox" id="chk-${r.key}" ${r.needsReview ? 'checked' : ''} onchange="toggleReview('${r.key}', this.checked)">
-            🤖 需要 Claude 確認來源
-          </label>
+          <label><input type="checkbox" id="chk-${r.key}" ${r.needsReview ? 'checked' : ''} onchange="toggleReview('${r.key}', this.checked)">🤖 需要 Claude 確認來源</label>
         </div>
         <textarea class="review-note-input" id="note-${r.key}" placeholder="描述需要確認的內容…" onblur="saveReviewNote('${r.key}')">${escHtml(r.reviewNote||'')}</textarea>
-      </div>` : (r.needsReview ? `<div class="rc-review visible" style="font-size:13px;color:#c0681a;">🤖 待 Claude 確認${r.reviewNote ? '：' + escHtml(r.reviewNote) : ''}</div>` : (r.adminVerdict === 'correct' ? `<div style="font-size:13px;color:#27ae60;margin-top:6px;">✓ 管理員確認題目正確</div>` : ''));
-
+      </div>`
+      : (r.needsReview ? `<div class="rc-review visible" style="font-size:13px;color:#c0681a;">🤖 待 Claude 確認${r.reviewNote ? '：' + escHtml(r.reviewNote) : ''}</div>` : (r.adminVerdict === 'correct' ? `<div style="font-size:13px;color:#27ae60;margin-top:6px;">✓ 管理員確認題目正確</div>` : ''));
     return `
     <div class="${cardClass}" id="card-${r.key}">
       <div class="rc-head">
@@ -171,10 +395,7 @@ function render() {
       ${reviewSection}
       <div class="rc-foot">
         <div class="rc-player">回報者：${escHtml(r.player || '匿名')}</div>
-        <div class="rc-actions">
-          ${resolveBtn}
-          <button class="btn-delete" onclick="del('${r.key}')">🗑</button>
-        </div>
+        <div class="rc-actions">${resolveBtn}<button class="btn-delete" onclick="del('${r.key}')">🗑</button></div>
       </div>
     </div>`;
   }).join('');
@@ -182,79 +403,274 @@ function render() {
 
 async function resolve(key) {
   try {
-    await fetch(`${FB_URL}/error_reports/${key}.json`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ resolved: true })
-    });
+    await fetch(`${FB_URL}/error_reports/${key}.json`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ resolved:true }) });
     const r = allReports.find(r => r.key === key);
     if (r) r.resolved = true;
-    updateCount();
-    render();
+    updateCount(); renderReports();
   } catch(e) {}
 }
 
 async function del(key) {
   if (!confirm('確定刪除這筆回報？')) return;
   try {
-    await fetch(`${FB_URL}/error_reports/${key}.json`, { method: 'DELETE' });
+    await fetch(`${FB_URL}/error_reports/${key}.json`, { method:'DELETE' });
     allReports = allReports.filter(r => r.key !== key);
-    updateCount();
-    render();
+    updateCount(); renderReports();
   } catch(e) {}
 }
 
 async function toggleReview(key, checked) {
   try {
-    await fetch(`${FB_URL}/error_reports/${key}.json`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ needsReview: checked })
-    });
+    await fetch(`${FB_URL}/error_reports/${key}.json`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ needsReview:checked }) });
     const r = allReports.find(r => r.key === key);
     if (r) r.needsReview = checked;
     updateCount();
-    // Update card border class without full re-render to avoid losing textarea state
     const card = document.getElementById('card-' + key);
-    if (card) {
-      if (checked) { card.classList.add('needs-review'); card.classList.remove('resolved'); }
-      else { card.classList.remove('needs-review'); }
-    }
+    if (card) { if (checked) { card.classList.add('needs-review'); card.classList.remove('resolved'); } else { card.classList.remove('needs-review'); } }
   } catch(e) {}
 }
 
 async function saveReviewNote(key) {
   const el = document.getElementById('note-' + key);
   if (!el) return;
-  const note = el.value.trim();
   try {
-    await fetch(`${FB_URL}/error_reports/${key}.json`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reviewNote: note })
-    });
+    await fetch(`${FB_URL}/error_reports/${key}.json`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ reviewNote:el.value.trim() }) });
     const r = allReports.find(r => r.key === key);
-    if (r) r.reviewNote = note;
+    if (r) r.reviewNote = el.value.trim();
   } catch(e) {}
 }
 
 async function setVerdict(key, verdict) {
-  const patch = { adminVerdict: verdict };
+  const patch = { adminVerdict:verdict };
   if (verdict === 'wrong') patch.needsReview = true;
   try {
-    await fetch(`${FB_URL}/error_reports/${key}.json`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(patch)
-    });
+    await fetch(`${FB_URL}/error_reports/${key}.json`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(patch) });
     const r = allReports.find(r => r.key === key);
     if (r) { r.adminVerdict = verdict; if (verdict === 'wrong') r.needsReview = true; }
-    updateCount();
-    render();
+    updateCount(); renderReports();
   } catch(e) {}
 }
 
-load();
+/* ══ 管理後台 ══ */
+let allData = {};
+let confirmAction = null, confirmPayload = null, confirmPhase = 0;
+let _batchMode = false;
+
+async function loadAll() {
+  document.getElementById('student-list').innerHTML = '<div class="empty-msg">載入中…</div>';
+  try {
+    const res = await fetch(`${FB_URL}/accounts.json`);
+    allData = (await res.json()) || {};
+    renderStats();
+    renderStudents();
+  } catch(e) {
+    document.getElementById('student-list').innerHTML = '<div class="empty-msg">⚠️ 無法連線</div>';
+  }
+}
+
+function getStudents() {
+  return Object.entries(allData).map(([name, d]) => ({
+    name, stars:d.stars||0, records:(d.records||[]).length,
+    mistakes:Object.keys(d.mistakes||{}).filter(k=>!(d.mistakes[k].mastered)).length,
+    updated:d.updated||0, cooldowns:d.cooldowns||{}, raw:d
+  }));
+}
+
+function renderStats() {
+  const s = getStudents();
+  document.getElementById('stat-bar').innerHTML = `
+    <div class="stat-card"><div class="val">${s.length}</div><div class="lbl">學生人數</div></div>
+    <div class="stat-card"><div class="val" style="color:#f39c12">${s.reduce((a,p)=>a+p.stars,0)}</div><div class="lbl">全班星星</div></div>
+    <div class="stat-card"><div class="val" style="color:#2ecc71">${s.reduce((a,p)=>a+p.records,0)}</div><div class="lbl">遊玩次數</div></div>
+    <div class="stat-card"><div class="val" style="color:#e74c3c">${s.reduce((a,p)=>a+p.mistakes,0)}</div><div class="lbl">待複習錯題</div></div>`;
+}
+
+function renderStudents() {
+  let students = getStudents();
+  const q = document.getElementById('search-box').value.trim();
+  if (q) students = students.filter(s => s.name.includes(q));
+  const sort = document.getElementById('sort-sel').value;
+  if (sort==='stars')   students.sort((a,b)=>b.stars-a.stars);
+  if (sort==='name')    students.sort((a,b)=>a.name.localeCompare(b.name));
+  if (sort==='records') students.sort((a,b)=>b.records-a.records);
+  if (sort==='mistakes')students.sort((a,b)=>b.mistakes-a.mistakes);
+  if (sort==='updated') students.sort((a,b)=>b.updated-a.updated);
+  const el = document.getElementById('student-list');
+  if (!students.length) { el.innerHTML = '<div class="empty-msg">查無資料</div>'; return; }
+  el.innerHTML = students.map((s,i) => {
+    const rCls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    const rIcon= i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
+    const locked = Object.values(s.cooldowns).filter(g=>g.locked&&(g.unlockBy||[]).length<2).length;
+    const lastOn = s.updated ? new Date(s.updated).toLocaleDateString('zh-TW') : '—';
+    const inactive = s.records===0?'未遊玩':s.records===1?'僅1次':'';
+    return `
+    <div class="stu-card">
+      <div class="stu-header" onclick="toggleStuDetail('${encodeURIComponent(s.name)}')">
+        <input type="checkbox" class="stu-checkbox" id="chk-${encodeURIComponent(s.name)}" onclick="event.stopPropagation();updateBatchBar()">
+        <div class="stu-rank ${rCls}">${rIcon}</div>
+        <div class="stu-name">${s.name}${inactive?`<span class="inactive-tag">${inactive}</span>`:''}</div>
+        <div style="font-size:11px;color:#bbb;margin-right:6px">最近：${lastOn}</div>
+        <div class="stu-stars">⭐ ${s.stars}</div>
+        <div class="stu-arr" id="arr-${encodeURIComponent(s.name)}">›</div>
+      </div>
+      <div class="stu-detail" id="det-${encodeURIComponent(s.name)}">
+        <div class="detail-grid">
+          <div class="d-box"><div class="d-val" style="color:#f39c12">${s.stars}</div><div class="d-lbl">星星</div></div>
+          <div class="d-box"><div class="d-val" style="color:#2ecc71">${s.records}</div><div class="d-lbl">遊玩次數</div></div>
+          <div class="d-box"><div class="d-val" style="color:#e74c3c">${s.mistakes}</div><div class="d-lbl">待複習</div></div>
+          <div class="d-box"><div class="d-val" style="color:#9b59b6">${locked}</div><div class="d-lbl">鎖定關卡</div></div>
+          <div class="d-box"><div class="d-val" style="color:#3498db">${Object.keys(s.raw.mistakes||{}).length}</div><div class="d-lbl">總錯題</div></div>
+          <div class="d-box"><div class="d-val" style="color:#16a085">${Object.values(s.raw.mistakes||{}).filter(m=>m.mastered).length}</div><div class="d-lbl">已熟練</div></div>
+        </div>
+        <div class="detail-actions">
+          <button class="btn-action btn-reset-cd" onclick="askReset('resetCD','${encodeURIComponent(s.name)}','${s.name}')">🔓 解冷卻</button>
+          <button class="btn-action btn-reset-stars" onclick="askReset('resetStars','${encodeURIComponent(s.name)}','${s.name}')">⭐ 歸零星星</button>
+          <button class="btn-action btn-view-mistakes" onclick="toggleMistakes('${encodeURIComponent(s.name)}')">📝 錯題</button>
+          <button class="btn-action btn-reset-all" onclick="askReset('resetAll','${encodeURIComponent(s.name)}','${s.name}')">🗑 刪除帳號</button>
+        </div>
+        <div class="mistakes-panel" id="mist-${encodeURIComponent(s.name)}">
+          ${renderMistakes(s.raw.mistakes||{})}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderMistakes(m) {
+  const items = Object.values(m).sort((a,b)=>b.wrongCount-a.wrongCount);
+  if (!items.length) return '<div style="text-align:center;color:#aaa;padding:8px">沒有錯題</div>';
+  return items.map(it => `<div class="mist-row"><span class="mist-word">${it.question||it.word}</span><span class="mist-cnt">錯 ${it.wrongCount} 次 ${it.mastered?'✅':''}</span></div>`).join('');
+}
+
+function toggleStuDetail(key) {
+  document.getElementById('det-'+key).classList.toggle('open');
+  document.getElementById('arr-'+key).classList.toggle('open');
+}
+function toggleMistakes(key) {
+  document.getElementById('mist-'+key).classList.toggle('open');
+}
+
+/* Batch */
+function toggleBatchMode() {
+  _batchMode = !_batchMode;
+  document.getElementById('student-list').classList.toggle('batch-mode', _batchMode);
+  document.getElementById('batch-bar').classList.toggle('show', _batchMode);
+  document.getElementById('batch-quick').classList.toggle('show', _batchMode);
+  document.getElementById('btn-batch-toggle').classList.toggle('active', _batchMode);
+  document.getElementById('btn-batch-toggle').textContent = _batchMode ? '✕ 取消批量' : '🗑 批量刪除';
+  if (!_batchMode) deselectAll();
+}
+function selectInactive(max) {
+  const students = getStudents();
+  document.querySelectorAll('.stu-checkbox').forEach(c => {
+    const n = decodeURIComponent(c.id.replace('chk-',''));
+    const s = students.find(st=>st.name===n);
+    c.checked = s ? s.records<=max : false;
+  });
+  updateBatchBar();
+}
+function selectAll() { document.querySelectorAll('.stu-checkbox').forEach(c=>c.checked=true); updateBatchBar(); }
+function deselectAll() { document.querySelectorAll('.stu-checkbox').forEach(c=>c.checked=false); updateBatchBar(); }
+function updateBatchBar() {
+  const n = document.querySelectorAll('.stu-checkbox:checked').length;
+  document.getElementById('batch-count-num').textContent = n;
+  document.getElementById('btn-bd-delete').disabled = n===0;
+}
+function askBatchDelete() {
+  const names = Array.from(document.querySelectorAll('.stu-checkbox:checked')).map(c=>decodeURIComponent(c.id.replace('chk-','')));
+  if (!names.length) return;
+  confirmAction='batchDelete'; confirmPayload={names}; confirmPhase=1;
+  document.getElementById('confirm-title').textContent   = `🗑 批量刪除 ${names.length} 個帳號`;
+  document.getElementById('confirm-desc').textContent    = names.join('、');
+  document.getElementById('confirm-warning').textContent = '⚠️ 永久刪除所有資料，無法還原！';
+  document.getElementById('confirm-count').textContent   = '第 1 次確認，共需確認 2 次';
+  document.getElementById('confirm-btn').textContent     = '我確認，繼續';
+  document.getElementById('confirm-btn').disabled        = false;
+  document.getElementById('confirm-modal').classList.add('show');
+}
+
+/* Single reset */
+function askReset(action, key, name) {
+  const cfgs = {
+    resetCD:    { t:'🔓 解除冷卻', d:`解除「${name}」所有鎖定？`, w:'清除所有 cooldown 紀錄。' },
+    resetStars: { t:'⭐ 歸零星星', d:`將「${name}」星星歸零？`,   w:'⚠️ 不可還原！' },
+    resetAll:   { t:'🗑 刪除帳號', d:`刪除「${name}」全部資料？`, w:'⚠️ 永久刪除，無法還原！' }
+  };
+  const cfg = cfgs[action];
+  confirmAction=action; confirmPayload={key,name}; confirmPhase=1;
+  document.getElementById('confirm-title').textContent   = cfg.t;
+  document.getElementById('confirm-desc').textContent    = cfg.d;
+  document.getElementById('confirm-warning').textContent = cfg.w;
+  document.getElementById('confirm-count').textContent   = '第 1 次確認，共需確認 2 次';
+  document.getElementById('confirm-btn').textContent     = '我確認，繼續';
+  document.getElementById('confirm-btn').disabled        = false;
+  document.getElementById('confirm-modal').classList.add('show');
+}
+
+function confirmStep() {
+  if (confirmPhase===1) {
+    confirmPhase=2;
+    document.getElementById('confirm-count').textContent='⚠️ 第 2 次確認（最後機會取消）';
+    document.getElementById('confirm-btn').textContent='是，確定執行';
+    document.getElementById('confirm-btn').style.background='#8b0000';
+  } else if (confirmPhase===2) {
+    closeConfirm();
+    executeAction(confirmAction, confirmPayload);
+  }
+}
+function closeConfirm() {
+  document.getElementById('confirm-modal').classList.remove('show');
+  confirmPhase=0; confirmAction=null; confirmPayload=null;
+  document.getElementById('confirm-btn').style.background='';
+}
+
+async function executeAction(action, payload) {
+  try {
+    if (action==='resetCD') {
+      await fetch(`${FB_URL}/accounts/${encodeURIComponent(payload.name)}/cooldowns.json`, {method:'PUT',headers:{'Content-Type':'application/json'},body:'{}'});
+      alert(`✅ 已解除「${payload.name}」冷卻`);
+    } else if (action==='resetStars') {
+      await fetch(`${FB_URL}/accounts/${encodeURIComponent(payload.name)}/stars.json`, {method:'PUT',headers:{'Content-Type':'application/json'},body:'0'});
+      alert(`✅ 已歸零「${payload.name}」星星`);
+    } else if (action==='resetAll') {
+      await fetch(`${FB_URL}/accounts/${encodeURIComponent(payload.name)}.json`, {method:'DELETE'});
+      alert(`✅ 已刪除「${payload.name}」`);
+    } else if (action==='batchDelete') {
+      for (const n of payload.names) await fetch(`${FB_URL}/accounts/${encodeURIComponent(n)}.json`, {method:'DELETE'});
+      alert(`✅ 已刪除 ${payload.names.length} 個帳號`);
+      _batchMode=false;
+      document.getElementById('student-list').classList.remove('batch-mode');
+      document.getElementById('batch-bar').classList.remove('show');
+      document.getElementById('batch-quick').classList.remove('show');
+      document.getElementById('btn-batch-toggle').classList.remove('active');
+      document.getElementById('btn-batch-toggle').textContent='🗑 批量刪除';
+    }
+    loadAll();
+  } catch(e) { alert('❌ 操作失敗：' + e.message); }
+}
+
+function exportJSON() {
+  const ts = new Date().toISOString().slice(0,16).replace('T','_').replace(':','-');
+  const blob = new Blob([JSON.stringify(allData,null,2)], {type:'application/json'});
+  const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download:`xinru_backup_${ts}.json`});
+  a.click(); URL.revokeObjectURL(a.href);
+}
+function exportCSV() {
+  const rows = [['姓名','星星','遊玩次數','待複習錯題','最後上線']];
+  getStudents().sort((a,b)=>b.stars-a.stars).forEach(s => {
+    rows.push([s.name, s.stars, s.records, s.mistakes, s.updated?new Date(s.updated).toLocaleDateString('zh-TW'):'—']);
+  });
+  const blob = new Blob(['﻿'+rows.map(r=>r.join(',')).join('\n')], {type:'text/csv;charset=utf-8'});
+  const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download:`xinru_students.csv`});
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+/* init */
+loadReports();
+if (sessionStorage.getItem('xr_admin_unlocked')) {
+  document.getElementById('admin-gate').style.display='none';
+  document.getElementById('admin-app').style.display='';
+}
 </script>
 </body>
 </html>
