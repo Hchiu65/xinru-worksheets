@@ -281,9 +281,15 @@ function switchMainTab(tab) {
   document.getElementById('tab-admin').style.display   = tab === 'admin'   ? '' : 'none';
   document.getElementById('tab-btn-reports').classList.toggle('active', tab === 'reports');
   document.getElementById('tab-btn-admin').classList.toggle('active', tab === 'admin');
-  if (tab === 'admin' && !sessionStorage.getItem('xr_admin_unlocked')) {
-    document.getElementById('admin-gate').style.display = 'flex';
-    document.getElementById('admin-app').style.display  = 'none';
+  if (tab === 'admin') {
+    if (sessionStorage.getItem('xr_admin_unlocked')) {
+      document.getElementById('admin-gate').style.display = 'none';
+      document.getElementById('admin-app').style.display  = '';
+      loadAll();
+    } else {
+      document.getElementById('admin-gate').style.display = 'flex';
+      document.getElementById('admin-app').style.display  = 'none';
+    }
   }
 }
 
@@ -667,9 +673,9 @@ function exportCSV() {
 
 /* init */
 loadReports();
+/* session 已解鎖時只預設 gate 隱藏，loadAll 等點 tab 時才觸發 */
 if (sessionStorage.getItem('xr_admin_unlocked')) {
   document.getElementById('admin-gate').style.display='none';
-  document.getElementById('admin-app').style.display='';
 }
 </script>
 </body>
