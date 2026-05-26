@@ -639,10 +639,14 @@ async function executeAction(action, payload) {
       await fetch(`${FB_URL}/accounts/${encodeURIComponent(payload.name)}/stars.json`, {method:'PUT',headers:{'Content-Type':'application/json'},body:'0'});
       alert(`✅ 已歸零「${payload.name}」星星`);
     } else if (action==='resetAll') {
-      await fetch(`${FB_URL}/accounts/${encodeURIComponent(payload.name)}.json`, {method:'DELETE'});
+      const r = await fetch(`${FB_URL}/accounts/${encodeURIComponent(payload.name)}.json`, {method:'DELETE'});
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
       alert(`✅ 已刪除「${payload.name}」`);
     } else if (action==='batchDelete') {
-      for (const n of payload.names) await fetch(`${FB_URL}/accounts/${encodeURIComponent(n)}.json`, {method:'DELETE'});
+      for (const n of payload.names) {
+        const r = await fetch(`${FB_URL}/accounts/${encodeURIComponent(n)}.json`, {method:'DELETE'});
+        if (!r.ok) throw new Error(`刪除「${n}」失敗 HTTP ${r.status}`);
+      }
       alert(`✅ 已刪除 ${payload.names.length} 個帳號`);
       _batchMode=false;
       document.getElementById('student-list').classList.remove('batch-mode');
