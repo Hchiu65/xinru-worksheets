@@ -155,37 +155,38 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 /* ── Switch Modal ── */
 #switch-modal { display:none; position:fixed; inset:0; background:rgba(50,30,80,.55); align-items:center; justify-content:center; z-index:900; }
 #switch-modal.show { display:flex; }
-.sw-box { background:#fff; border-radius:22px; padding:22px 18px 20px; width:290px; box-shadow:0 10px 40px rgba(0,0,0,.22); }
-.sw-title { font-size:17px; font-weight:bold; color:#333; margin-bottom:2px; }
-.sw-sub { font-size:11px; color:#bbb; margin-bottom:14px; }
-.sw-field-label { font-size:12px; color:#888; margin-bottom:5px; }
-.sw-sel-header { display:flex; align-items:center; gap:8px; border:2px solid #667eea; border-radius:13px; padding:10px 12px; background:#fafcff; cursor:pointer; font-size:14px; color:#333; font-weight:bold; }
-.sw-sel-header .sw-arr { margin-left:auto; color:#667eea; font-size:12px; transition:transform .15s; }
+.sw-box { background:#fff; border-radius:24px; padding:26px 22px 22px; width:340px; box-shadow:0 10px 40px rgba(0,0,0,.22); }
+.sw-title { font-size:19px; font-weight:bold; color:#333; margin-bottom:3px; }
+.sw-sub { font-size:12px; color:#bbb; margin-bottom:16px; }
+.sw-field-label { font-size:13px; color:#888; margin-bottom:6px; }
+.sw-sel-header { display:flex; align-items:center; gap:9px; border:2px solid #667eea; border-radius:14px; padding:12px 14px; background:#fafcff; cursor:pointer; font-size:15px; color:#333; font-weight:bold; }
+.sw-sel-header .sw-arr { margin-left:auto; color:#667eea; font-size:13px; transition:transform .15s; }
 .sw-sel-header.open .sw-arr { transform:rotate(180deg); }
-.sw-dd { border:1.5px solid #e8e8f0; border-top:none; border-radius:0 0 13px 13px; max-height:210px; overflow-y:auto; margin-bottom:14px; box-shadow:0 6px 18px rgba(0,0,0,.08); }
-.sw-dd-row { display:flex; align-items:center; gap:8px; padding:9px 12px; border-bottom:1px solid #f5f5f5; cursor:pointer; font-size:13px; }
+.sw-dd { border:1.5px solid #e8e8f0; border-top:none; border-radius:0 0 14px 14px; max-height:260px; overflow-y:auto; margin-bottom:14px; box-shadow:0 6px 18px rgba(0,0,0,.08); }
+.sw-dd-row { display:flex; align-items:center; gap:10px; padding:11px 14px; border-bottom:1px solid #f5f5f5; cursor:pointer; font-size:14px; }
 .sw-dd-row:last-child { border-bottom:none; }
 .sw-dd-row:active { background:#f0f2ff; }
 .sw-dd-row.is-me { background:#f8f8ff; }
-.sw-rank { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold; flex-shrink:0; color:#fff; }
+.sw-rank { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; flex-shrink:0; color:#fff; }
 .sw-r1 { background:linear-gradient(135deg,#f7971e,#ffd200); color:#7a5000; }
 .sw-r2 { background:linear-gradient(135deg,#b0bec5,#90a4ae); }
 .sw-r3 { background:linear-gradient(135deg,#a0522d,#cd853f); }
 .sw-rn { background:#ececec; color:#999; }
-.sw-dd-emoji { font-size:19px; }
+.sw-dd-emoji { font-size:21px; }
 .sw-dd-name { flex:1; color:#333; }
 .sw-dd-name.me { color:#667eea; font-weight:bold; }
-.sw-dd-stars { font-size:11px; color:#f39c12; white-space:nowrap; }
-.sw-new-row { display:flex; align-items:center; gap:8px; padding:9px 12px; cursor:pointer; font-size:13px; color:#aaa; font-style:italic; border-top:1px solid #f0f0f0; }
+.sw-dd-stars { font-size:12px; color:#f39c12; white-space:nowrap; }
+.sw-new-row { display:flex; align-items:center; gap:10px; padding:11px 14px; cursor:pointer; font-size:14px; color:#aaa; font-style:italic; border-top:1px solid #f0f0f0; }
 .sw-new-row:active { background:#f9f9f9; }
-.sw-acc-card { display:flex; align-items:center; gap:10px; background:linear-gradient(135deg,#f0f2ff,#f5f0ff); border:2px solid #667eea; border-radius:13px; padding:10px 12px; margin-bottom:12px; }
+.sw-acc-card { display:flex; align-items:center; gap:12px; background:linear-gradient(135deg,#f0f2ff,#f5f0ff); border:2px solid #667eea; border-radius:14px; padding:12px 14px; margin-bottom:14px; }
 .sw-acc-card.err { border-color:#e74c3c; background:linear-gradient(135deg,#fff5f5,#fff0f0); }
-.sw-acc-emoji { font-size:26px; }
+.sw-acc-emoji { font-size:30px; }
 .sw-acc-info { flex:1; }
-.sw-acc-name { font-size:15px; font-weight:bold; color:#333; }
-.sw-acc-rank { font-size:11px; color:#667eea; }
+.sw-acc-name { font-size:16px; font-weight:bold; color:#333; }
+.sw-acc-rank { font-size:12px; color:#667eea; }
 .sw-acc-rank.err { color:#e74c3c; }
-.sw-change { font-size:11px; color:#aaa; cursor:pointer; text-decoration:underline; flex-shrink:0; }
+.sw-change { font-size:12px; color:#aaa; cursor:pointer; text-decoration:underline; flex-shrink:0; }
+.sw-cancel-btn { width:100%; padding:11px; background:none; border:1.5px solid #eee; border-radius:13px; font-size:14px; font-family:inherit; cursor:pointer; color:#aaa; margin-top:8px; }
 
 /* Tab filter bar */
 .tab-bar-wrap {
@@ -529,6 +530,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
         <div id="sw-dd-list"></div>
         <div class="sw-new-row" onclick="switchToNew()">＋ 輸入新帳號…</div>
       </div>
+      <button class="sw-cancel-btn" onclick="closeSwitchModal()">✕ 取消，不切換</button>
     </div>
     <div id="sw-s2" style="display:none">
       <div class="sw-title">🔑 生日驗證</div>
@@ -547,6 +549,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
       <div class="auth-err" id="sw-err"></div>
       <button class="modal-btn" onclick="confirmSwitch()">確認登入 ✔</button>
       <button class="modal-btn-sub" onclick="swBack()">← 重新選擇帳號</button>
+      <button class="sw-cancel-btn" onclick="closeSwitchModal()">✕ 取消，不切換</button>
     </div>
     <div id="sw-loading" style="display:none">
       <div class="auth-loading">⌛ 連線中…</div>
@@ -789,6 +792,11 @@ function swBack() {
   document.getElementById('sw-dd').style.display = 'none';
   document.getElementById('sw-sel-header').classList.remove('open');
   showSwPanel('s1');
+}
+
+function closeSwitchModal() {
+  document.getElementById('switch-modal').classList.remove('show');
+  _swSelected = null;
 }
 
 function switchToNew() {
