@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>長式子四則運算 · 自己判斷計算順序</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: '標楷體','DFKai-SB',serif; background: #f5f0e8; padding: 20px; }
+h1 { text-align:center; color:#5a3e2b; margin-bottom:4px; font-size:1.35em; }
+.sub { text-align:center; color:#888; font-size:.85em; margin-bottom:22px; }
+
+.card { background:white; border-radius:12px; padding:20px 22px; margin-bottom:20px;
+        box-shadow:0 2px 8px rgba(0,0,0,.08); border-left:5px solid #c0a06e; }
+.card.done { border-left-color:#4caf50; }
+
+.card-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.card-title { font-weight:bold; font-size:1em; }
+.tag { font-size:.7em; background:#fff3e0; color:#e65100; border:1px solid #ffcc80;
+       border-radius:4px; padding:2px 7px; }
+
+.prog { display:flex; gap:5px; margin-bottom:10px; }
+.pdot { width:9px; height:9px; border-radius:50%; background:#ddd; }
+.pdot.done { background:#4caf50; }
+.pdot.cur  { background:#5c8aff; }
+
+.expr-box { background:#f0f4ff; border-radius:8px; padding:11px 15px;
+            font-size:1.25em; color:#1a237e; letter-spacing:.5px;
+            margin-bottom:12px; line-height:1.9; min-height:48px; }
+mark.g { background:#e8f5e9; color:#1b5e20; border:1px solid #4caf50;
+         border-radius:4px; padding:1px 4px; font-style:italic; }
+
+.note { font-size:.82em; color:#7d5a00; background:#fffde7; border-radius:6px;
+        padding:5px 10px; margin-bottom:9px; }
+.qlabel { font-size:.88em; color:#5a3e2b; font-weight:bold; margin-bottom:7px; }
+.opts { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:9px; }
+.opt { padding:7px 15px; border:2px solid #ccc; border-radius:8px; background:white;
+       cursor:pointer; font-size:.95em; font-family:inherit; transition:all .15s; }
+.opt:hover { border-color:#5c8aff; background:#f0f4ff; }
+.opt.ok  { border-color:#4caf50; background:#e8f5e9; color:#2e7d32; pointer-events:none; }
+.opt.bad { border-color:#e53935; background:#ffebee; color:#c62828; pointer-events:none; }
+
+.wmsg { background:#fff8e1; border:1px solid #ffe082; border-radius:6px;
+        padding:7px 11px; font-size:.85em; color:#6d4c00; margin-bottom:8px; display:none; }
+.wmsg.on { display:block; }
+
+.vrow { display:none; align-items:center; gap:8px; padding:11px 13px;
+        background:#f9f9f9; border-radius:8px; margin-bottom:6px; flex-wrap:wrap; }
+.vrow.on { display:flex; }
+.vdesc { font-size:.98em; color:#333; }
+.vinp { width:90px; font-size:1.05em; text-align:center; border:2px solid #5c8aff;
+        border-radius:6px; padding:4px 7px; font-family:inherit; }
+.vinp.ok  { border-color:#4caf50; background:#e8f5e9; }
+.vinp.bad { border-color:#e53935; background:#ffebee; }
+.sbtn { padding:6px 16px; background:#5c8aff; color:white; border:none;
+        border-radius:6px; font-size:.9em; cursor:pointer; font-family:inherit; }
+.sbtn:hover { background:#3d6ee0; }
+.vfb { font-size:.85em; }
+.vfb.ok  { color:#2e7d32; }
+.vfb.bad { color:#c62828; }
+
+.elog { background:#fff5f5; border:1px solid #ffcdd2; border-radius:8px;
+        padding:10px 13px; margin-top:8px; font-size:.82em; display:none; }
+.elog.on { display:block; }
+.elog h4 { color:#c62828; margin-bottom:6px; }
+.elog li { margin:3px 0 3px 14px; color:#444; line-height:1.5; }
+.elog .etype { display:inline-block; background:#fce4ec; color:#880e4f;
+               border-radius:4px; padding:0px 5px; font-size:.85em; margin-right:5px; }
+
+.done-banner { display:none; text-align:center; background:#e8f5e9; border-radius:8px;
+               padding:9px; color:#2e7d32; font-weight:bold; margin-top:8px; }
+.done-banner.on { display:block; }
+
+/* Summary */
+.summary { background:white; border-radius:12px; padding:20px 22px;
+           margin-top:24px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+.summary h2 { color:#5a3e2b; margin-bottom:14px; font-size:1.05em; }
+.summary h3 { color:#7b5e3a; margin:16px 0 8px; font-size:.95em; border-bottom:1px solid #eee; padding-bottom:4px; }
+table { width:100%; border-collapse:collapse; font-size:.88em; margin-bottom:4px; }
+th { background:#f5f0e8; padding:7px 11px; text-align:left; color:#5a3e2b; }
+td { padding:6px 11px; border-top:1px solid #eee; vertical-align:top; }
+.eok { color:#2e7d32; font-weight:bold; }
+.err { color:#c62828; font-weight:bold; }
+.concept-badge { display:inline-block; background:#fce4ec; color:#880e4f; border-radius:4px;
+                 padding:1px 7px; font-size:.82em; margin:1px 2px; }
+.concept-row td:first-child { font-weight:bold; color:#333; }
+.bar-wrap { display:flex; align-items:center; gap:8px; }
+.bar { height:10px; background:#e53935; border-radius:5px; min-width:4px; }
+.no-err { color:#999; font-size:.85em; padding:8px 11px; }
+</style>
+</head>
+<body>
+<h1>長式子四則運算 · 自己判斷計算順序</h1>
+<p class="sub">先點「你要先算哪一部分」，再填入答案 — 點錯順序或算錯都會分析錯誤類型</p>
+<div id="app"></div>
+
+<div class="summary">
+  <h2>診斷摘要</h2>
+  <h3>各題狀況</h3>
+  <table><thead><tr><th>題目</th><th>順序錯誤</th><th>計算錯誤</th><th>狀態</th></tr></thead>
+  <tbody id="stbl"><tr><td colspan="4" class="no-err">完成題目後顯示</td></tr></tbody></table>
+
+  <h3>概念弱點分析</h3>
+  <table id="ctbl">
+    <thead><tr><th>觀念</th><th>錯誤次數</th><th>出現題目</th></tr></thead>
+    <tbody id="ctbl-body"><tr><td colspan="3" class="no-err">完成題目後顯示</td></tr></tbody>
+  </table>
+
+  <h3>詳細錯誤紀錄</h3>
+  <div id="detail-log"><p class="no-err">完成題目後顯示</p></div>
+</div>
+
+<script>
+// ── 錯誤類型標籤 ────────────────────────────────────────────────
+var ELABEL = {
+  bracket_priority: '括號優先不記得（選了外層括號，裡面還沒算完）',
+  mult_first:       '先乘除後加減的順序亂掉（加減法選太早）',
+  abs_interior:     '絕對值裡的算式還沒算完就選絕對值',
+  sign_mult:        '正負號相乘/除（符號判斷錯誤）',
+  sub_neg:          '減負號沒有轉換（減負數＝加正數）',
+  abs_val:          '絕對值觀念（取絕對值計算錯誤）',
+  neg_arith:        '負數加減（方向或大小判斷錯）',
+  arith:            '一般計算錯誤（數字算錯）',
+  fraction_denom:   '通分時分子沒有跟著變',
+  fraction_mult:    '分數乘法忘記乘整數部分',
+};
+
+var ESHORT = {
+  bracket_priority: '括號優先不記得',
+  mult_first:       '先乘除後加減',
+  abs_interior:     '絕對值裡還沒算完',
+  sign_mult:        '正負號相乘/除',
+  sub_neg:          '減負號→加正數',
+  abs_val:          '絕對值觀念',
+  neg_arith:        '負數加減方向',
+  arith:            '一般計算錯誤',
+  fraction_denom:   '通分分子未變',
+  fraction_mult:    '分數乘法漏乘',
+};
+
+// ── 題目資料 ──────────────────────────────────────────────────────
+// opts: {t, ok, m, type}  — type = 順序錯誤類型
+// calcType = 計算錯誤類型（當值答錯時記錄）
+var P = [
+ {id:1, title:"第 1 題", tag:"負係數 × 括號", turns:[
+  {expr:'12 ＋ (－3) × [5 － (－2) × 3]',
+   calcType:'sign_mult',
+   opts:[{t:"(－2) × 3", ok:true},
+         {t:"[5 － ???]", ok:false, type:'bracket_priority', m:"方括號 [ ] 裡還有小括號沒算完，要先把<b>裡面</b>的算完！"},
+         {t:"12 ＋ ???",  ok:false, type:'mult_first',       m:"加法要等右邊的括號與乘法都算完才能做"}],
+   ans:-6, next:'12 ＋ (－3) × [5 － <mark class="g">(－6)</mark>]'},
+
+  {expr:'12 ＋ (－3) × [5 － (－6)]',
+   calcType:'sub_neg',
+   opts:[{t:"5 － (－6)",  ok:true},
+         {t:"(－3) × ???", ok:false, type:'bracket_priority', m:"方括號 [ ] 裡還沒算完，先把裡面的減法做好"},
+         {t:"12 ＋ ???",   ok:false, type:'mult_first',       m:"加法最後才做"}],
+   ans:11, next:'12 ＋ (－3) × <mark class="g">11</mark>'},
+
+  {expr:'12 ＋ (－3) × 11',
+   calcType:'sign_mult',
+   opts:[{t:"(－3) × 11", ok:true},
+         {t:"12 ＋ ???",  ok:false, type:'mult_first', m:"先乘除，後加減！乘法要在加法前做"}],
+   ans:-33, next:'12 ＋ <mark class="g">(－33)</mark>'},
+
+  {expr:'12 ＋ (－33)',
+   calcType:'neg_arith',
+   opts:[{t:"12 ＋ (－33)", ok:true}],
+   ans:-21, next:'<mark class="g">－21 ✓</mark>'}
+ ]},
+
+ {id:2, title:"第 2 題", tag:"負係數 × 括號", turns:[
+  {expr:'6 ＋ (－2) × [7 － (－2) × 3]',
+   calcType:'sign_mult',
+   opts:[{t:"(－2) × 3", ok:true},
+         {t:"[7 － ???]", ok:false, type:'bracket_priority', m:"方括號裡還有小括號，要先算裡面的"},
+         {t:"6 ＋ ???",   ok:false, type:'mult_first',       m:"加法要等括號與乘法都做完"}],
+   ans:-6, next:'6 ＋ (－2) × [7 － <mark class="g">(－6)</mark>]'},
+
+  {expr:'6 ＋ (－2) × [7 － (－6)]',
+   calcType:'sub_neg',
+   opts:[{t:"7 － (－6)",  ok:true},
+         {t:"(－2) × ???", ok:false, type:'bracket_priority', m:"方括號還沒算完，先把 [ ] 裡的做好"},
+         {t:"6 ＋ ???",    ok:false, type:'mult_first',       m:"加法最後才做"}],
+   ans:13, next:'6 ＋ (－2) × <mark class="g">13</mark>'},
+
+  {expr:'6 ＋ (－2) × 13',
+   calcType:'sign_mult',
+   opts:[{t:"(－2) × 13", ok:true},
+         {t:"6 ＋ ???",   ok:false, type:'mult_first', m:"先乘除，後加減！先做乘法"}],
+   ans:-26, next:'6 ＋ <mark class="g">(－26)</mark>'},
+
+  {expr:'6 ＋ (－26)',
+   calcType:'neg_arith',
+   opts:[{t:"6 ＋ (－26)", ok:true}],
+   ans:-20, next:'<mark class="g">－20 ✓</mark>'}
+ ]},
+
+ {id:3, title:"第 3 題", tag:"絕對值 ＋ 負係數", turns:[
+  {expr:'37 － 2 × [(－5) × 2 － |－13|]',
+   note:"方括號裡兩部分都可以先算（哪個先都行），選一個",
+   calcType:null, // 由分支決定
+   opts:[{t:"(－5) × 2",    ok:true},
+         {t:"|－13|",        ok:true},
+         {t:"[??? － ???]",  ok:false, type:'bracket_priority', m:"方括號裡面還沒算完，兩部分都要先做"},
+         {t:"37 － ???",     ok:false, type:'mult_first',       m:"外層加減最後才做"}],
+   isParallel:true,
+   calcTypeMap:{"(－5) × 2":'sign_mult', "|－13|":'abs_val'},
+   multiAns:{"(－5) × 2":-10, "|－13|":13},
+   nextA:'37 － 2 × [<mark class="g">(－10)</mark> － |－13|]',
+   nextB:'37 － 2 × [(－5) × 2 － <mark class="g">13</mark>]',
+   branchTo:{A:1, B:2}},
+
+  {expr:'37 － 2 × [(－10) － |－13|]',
+   calcType:'abs_val',
+   opts:[{t:"|－13|", ok:true}],
+   ans:13, next:'37 － 2 × [<mark class="g">(－10)</mark> － <mark class="g">13</mark>]', goto:3},
+
+  {expr:'37 － 2 × [(－5) × 2 － 13]',
+   calcType:'sign_mult',
+   opts:[{t:"(－5) × 2", ok:true}],
+   ans:-10, next:'37 － 2 × [<mark class="g">(－10)</mark> － <mark class="g">13</mark>]', goto:3},
+
+  {expr:'37 － 2 × [(－10) － 13]',
+   calcType:'neg_arith',
+   opts:[{t:"(－10) － 13", ok:true},
+         {t:"2 × ???",      ok:false, type:'bracket_priority', m:"方括號還沒算完，先把裡面的做好"},
+         {t:"37 － ???",    ok:false, type:'mult_first',       m:"外層加減最後才做"}],
+   ans:-23, next:'37 － 2 × <mark class="g">(－23)</mark>'},
+
+  {expr:'37 － 2 × (－23)',
+   calcType:'sign_mult',
+   opts:[{t:"2 × (－23)", ok:true},
+         {t:"37 － ???",  ok:false, type:'mult_first', m:"先乘除，後加減！"}],
+   ans:-46, next:'37 － <mark class="g">(－46)</mark>'},
+
+  {expr:'37 － (－46)',
+   note:"減負數 ＝ 加正數，小心！",
+   calcType:'sub_neg',
+   opts:[{t:"37 － (－46)", ok:true}],
+   ans:83, next:'<mark class="g">83 ✓</mark>'}
+ ]},
+
+ {id:4, title:"第 4 題", tag:"絕對值內含運算 ＋ 多層", turns:[
+  {expr:'(3－7) × (－4) － 2 × |36 ÷ (－4) － 9| ÷ (－3)',
+   note:"左右各有一個小括號，都可以先算，選一個",
+   calcType:null,
+   opts:[{t:"3 － 7",       ok:true},
+         {t:"36 ÷ (－4)",  ok:true},
+         {t:"|??? － 9|",   ok:false, type:'abs_interior', m:"絕對值 |　| 裡面還沒算完，先算裡面！"}],
+   isParallel:true,
+   calcTypeMap:{"3 － 7":'neg_arith', "36 ÷ (－4)":'sign_mult'},
+   multiAns:{"3 － 7":-4, "36 ÷ (－4)":-9},
+   nextA:'<mark class="g">(－4)</mark> × (－4) － 2 × |36 ÷ (－4) － 9| ÷ (－3)',
+   nextB:'(3－7) × (－4) － 2 × |<mark class="g">(－9)</mark> － 9| ÷ (－3)',
+   branchTo:{A:1, B:2}},
+
+  {expr:'(－4) × (－4) － 2 × |36 ÷ (－4) － 9| ÷ (－3)',
+   calcType:'sign_mult',
+   opts:[{t:"36 ÷ (－4)", ok:true}],
+   ans:-9, next:'<mark class="g">(－4)</mark> × (－4) － 2 × |<mark class="g">(－9)</mark> － 9| ÷ (－3)', goto:3},
+
+  {expr:'(3－7) × (－4) － 2 × |(－9) － 9| ÷ (－3)',
+   calcType:'neg_arith',
+   opts:[{t:"3 － 7", ok:true}],
+   ans:-4, next:'<mark class="g">(－4)</mark> × (－4) － 2 × |<mark class="g">(－9)</mark> － 9| ÷ (－3)', goto:3},
+
+  {expr:'(－4) × (－4) － 2 × |(－9) － 9| ÷ (－3)',
+   calcType:'neg_arith',
+   opts:[{t:"(－9) － 9", ok:true},
+         {t:"|???|",       ok:false, type:'abs_interior', m:"絕對值裡面還沒算完！先算 (－9) － 9"}],
+   ans:-18, next:'(－4) × (－4) － 2 × |<mark class="g">(－18)</mark>| ÷ (－3)'},
+
+  {expr:'(－4) × (－4) － 2 × |(－18)| ÷ (－3)',
+   note:"這兩個都可以先算，選一個",
+   calcType:null,
+   opts:[{t:"(－4) × (－4)", ok:true},
+         {t:"|－18|",         ok:true}],
+   isParallel:true,
+   calcTypeMap:{"(－4) × (－4)":'sign_mult', "|－18|":'abs_val'},
+   multiAns:{"(－4) × (－4)":16, "|－18|":18},
+   nextA:'<mark class="g">16</mark> － 2 × |(－18)| ÷ (－3)',
+   nextB:'(－4) × (－4) － 2 × <mark class="g">18</mark> ÷ (－3)',
+   branchTo:{A:5, B:6}},
+
+  {expr:'16 － 2 × |(－18)| ÷ (－3)',
+   calcType:'abs_val',
+   opts:[{t:"|－18|", ok:true}],
+   ans:18, next:'16 － 2 × <mark class="g">18</mark> ÷ (－3)', goto:7},
+
+  {expr:'(－4) × (－4) － 2 × 18 ÷ (－3)',
+   calcType:'sign_mult',
+   opts:[{t:"(－4) × (－4)", ok:true}],
+   ans:16, next:'<mark class="g">16</mark> － 2 × 18 ÷ (－3)', goto:7},
+
+  {expr:'16 － 2 × 18 ÷ (－3)',
+   calcType:'sign_mult',
+   opts:[{t:"2 × 18 ÷ (－3)", ok:true},
+         {t:"16 － ???",       ok:false, type:'mult_first', m:"右邊乘除還沒做完，先把乘除算完"}],
+   ans:-12, next:'16 － <mark class="g">(－12)</mark>'},
+
+  {expr:'16 － (－12)',
+   note:"減負數小心！",
+   calcType:'sub_neg',
+   opts:[{t:"16 － (－12)", ok:true}],
+   ans:28, next:'<mark class="g">28 ✓</mark>'}
+ ]},
+
+ {id:5, title:"第 5 題", tag:"負×負得正 ＋ 減負號", turns:[
+  {expr:'[(－13) × (－4) － 4] × (－5) － (－27)',
+   calcType:'sign_mult',
+   opts:[{t:"(－13) × (－4)",    ok:true},
+         {t:"[(－13)×(－4) － 4]", ok:false, type:'bracket_priority', m:"方括號裡還有小括號的乘法，先把小括號算完"},
+         {t:"[???] × (－5)",      ok:false, type:'bracket_priority', m:"方括號裡面還沒算完，不能先做外面的乘法"}],
+   ans:52, next:'[<mark class="g">52</mark> － 4] × (－5) － (－27)'},
+
+  {expr:'[52 － 4] × (－5) － (－27)',
+   calcType:'arith',
+   opts:[{t:"52 － 4",     ok:true},
+         {t:"??? × (－5)", ok:false, type:'bracket_priority', m:"方括號還沒算完，先把 [ ] 裡的做好"}],
+   ans:48, next:'<mark class="g">48</mark> × (－5) － (－27)'},
+
+  {expr:'48 × (－5) － (－27)',
+   calcType:'sign_mult',
+   opts:[{t:"48 × (－5)",    ok:true},
+         {t:"??? － (－27)", ok:false, type:'mult_first', m:"先乘除，後加減！左邊乘法先做"}],
+   ans:-240, next:'<mark class="g">(－240)</mark> － (－27)'},
+
+  {expr:'(－240) － (－27)',
+   note:"減負數小心！",
+   calcType:'sub_neg',
+   opts:[{t:"(－240) － (－27)", ok:true}],
+   ans:-213, next:'<mark class="g">－213 ✓</mark>'}
+ ]}
+];
+
+// ── 狀態 ──────────────────────────────────────────────────────────
+var ST = {};
+P.forEach(function(p){
+  ST[p.id] = { ti:0, oErr:0, cErr:0, done:false, branch:null, errors:[] };
+});
+
+// ── 渲染 ──────────────────────────────────────────────────────────
+function render(){
+  var app = document.getElementById('app');
+  app.innerHTML = '';
+  P.forEach(function(p){ app.appendChild(makeCard(p)); });
+}
+
+function dots(p, ti){
+  return p.turns.map(function(_,i){
+    return '<div class="pdot '+(i<ti?'done':i===ti?'cur':'')+'"></div>';
+  }).join('');
+}
+
+function makeCard(p){
+  var s = ST[p.id], t = p.turns[s.ti];
+  var div = document.createElement('div');
+  div.className = 'card' + (s.done?' done':'');
+  div.id = 'c'+p.id;
+  div.innerHTML =
+    '<div class="card-header">'+
+      '<span class="card-title">'+p.title+'</span>'+
+      '<span class="tag">'+p.tag+'</span>'+
+    '</div>'+
+    '<div class="prog" id="prog'+p.id+'">'+dots(p,s.ti)+'</div>'+
+    '<div class="expr-box" id="expr'+p.id+'">'+t.expr+'</div>'+
+    (t.note?'<div class="note">💡 '+t.note+'</div>':'')+
+    '<div class="qlabel">你想先算哪一部分？</div>'+
+    '<div class="opts" id="opts'+p.id+'">'+
+      t.opts.map(function(o,i){
+        return '<button class="opt" onclick="pick('+p.id+','+i+')">'+o.t+'</button>';
+      }).join('')+
+    '</div>'+
+    '<div class="wmsg" id="wmsg'+p.id+'"></div>'+
+    '<div class="vrow" id="vrow'+p.id+'">'+
+      '<span class="vdesc" id="vdesc'+p.id+'"></span> ＝ '+
+      '<input class="vinp" id="vinp'+p.id+'" placeholder="?" '+
+             'onkeydown="if(event.key===\'Enter\')subval('+p.id+')">'+
+      '<button class="sbtn" onclick="subval('+p.id+')">確認</button>'+
+      '<span class="vfb" id="vfb'+p.id+'"></span>'+
+    '</div>'+
+    '<div class="elog" id="elog'+p.id+'"><h4>本題出錯紀錄</h4><ul id="elist'+p.id+'"></ul></div>'+
+    '<div class="done-banner" id="doneb'+p.id+'">✅ 完成！答案：<b id="fans'+p.id+'"></b></div>';
+  return div;
+}
+
+// ── 選擇選項 ──────────────────────────────────────────────────────
+function pick(pid, oi){
+  var p = P.find(function(x){return x.id===pid;}),
+      s = ST[pid], t = p.turns[s.ti];
+  if(s.done) return;
+  var opt = t.opts[oi];
+
+  var wmsg = document.getElementById('wmsg'+pid);
+  var vrow = document.getElementById('vrow'+pid);
+  wmsg.className = 'wmsg'; wmsg.innerHTML = '';
+  vrow.className = 'vrow';
+  document.querySelectorAll('#opts'+pid+' .opt').forEach(function(b){b.className='opt';});
+  var btn = document.querySelectorAll('#opts'+pid+' .opt')[oi];
+
+  if(!opt.ok){
+    btn.className = 'opt bad';
+    wmsg.innerHTML = '⚠️ '+opt.m;
+    wmsg.className = 'wmsg on';
+    s.oErr++;
+    s.errors.push({kind:'order', type:opt.type||'arith', step:s.ti+1,
+                   detail:'選了「'+opt.t+'」'});
+    updateSummary();
+    return;
+  }
+
+  btn.className = 'opt ok';
+  s.branch = opt.t;
+  document.getElementById('vdesc'+pid).textContent = opt.t;
+  document.getElementById('vinp'+pid).value = '';
+  document.getElementById('vinp'+pid).className = 'vinp';
+  document.getElementById('vfb'+pid).textContent = '';
+  vrow.className = 'vrow on';
+  document.getElementById('vinp'+pid).focus();
+}
+
+// ── 提交答案 ──────────────────────────────────────────────────────
+function subval(pid){
+  var p = P.find(function(x){return x.id===pid;}),
+      s = ST[pid], t = p.turns[s.ti];
+  if(s.done) return;
+  var vinp = document.getElementById('vinp'+pid);
+  var vfb  = document.getElementById('vfb'+pid);
+  var raw  = vinp.value.trim();
+  var uval = parseFloat(raw.replace(/[＋]/g,'+').replace(/[－]/g,'-'));
+
+  var correctAns = t.ans, nextExpr = t.next, nextTi = s.ti+1;
+  var ctype = t.calcType;
+
+  if(t.isParallel && t.multiAns){
+    var chosen = s.branch || '';
+    var keys = Object.keys(t.multiAns);
+    var isA = chosen.indexOf(keys[0].trim())>=0 || keys[0].trim().indexOf(chosen.trim())>=0;
+    correctAns = isA ? t.multiAns[keys[0]] : t.multiAns[keys[1]];
+    nextExpr   = isA ? t.nextA : t.nextB;
+    nextTi     = isA ? t.branchTo.A : t.branchTo.B;
+    if(t.calcTypeMap) ctype = isA ? t.calcTypeMap[keys[0]] : t.calcTypeMap[keys[1]];
+  }
+
+  if(isNaN(uval) || uval !== correctAns){
+    vinp.className = 'vinp bad';
+    vfb.textContent = '✗ 再算算（正確答案：'+correctAns+'）';
+    vfb.className = 'vfb bad';
+    s.cErr++;
+    s.errors.push({kind:'calc', type:ctype||'arith', step:s.ti+1,
+                   detail:'「'+(s.branch||t.opts[0].t)+'」填了 '+raw+'，正確是 '+correctAns});
+    addElog(pid, s.errors[s.errors.length-1]);
+    updateSummary();
+    vinp.select();
+    return;
+  }
+
+  vinp.className = 'vinp ok';
+  vfb.textContent = '✓';
+  vfb.className = 'vfb ok';
+  setTimeout(function(){ advance(pid, nextExpr, nextTi, p, t); }, 500);
+}
+
+// ── 推進 ──────────────────────────────────────────────────────────
+function advance(pid, nextExpr, nextTi, p, prevTurn){
+  var s = ST[pid];
+  if(prevTurn.goto !== undefined) nextTi = prevTurn.goto;
+  document.getElementById('expr'+pid).innerHTML = nextExpr;
+
+  if(nextTi >= p.turns.length){
+    s.done = true;
+    document.getElementById('c'+pid).classList.add('done');
+    document.getElementById('opts'+pid).innerHTML = '';
+    document.getElementById('vrow'+pid).className = 'vrow';
+    document.getElementById('wmsg'+pid).className = 'wmsg';
+    document.getElementById('doneb'+pid).className = 'done-banner on';
+    document.getElementById('fans'+pid).textContent =
+      p.turns[p.turns.length-1].ans || '完成';
+    updateSummary(); return;
+  }
+
+  s.ti = nextTi;
+  var t = p.turns[s.ti];
+  document.getElementById('prog'+pid).innerHTML = dots(p, s.ti);
+  document.getElementById('opts'+pid).innerHTML = t.opts.map(function(o,i){
+    return '<button class="opt" onclick="pick('+pid+','+i+')">'+o.t+'</button>';
+  }).join('');
+
+  var oldNote = document.querySelector('#c'+pid+' .note');
+  if(oldNote) oldNote.remove();
+  if(t.note){
+    var nb = document.createElement('div');
+    nb.className = 'note'; nb.innerHTML = '💡 '+t.note;
+    document.getElementById('opts'+pid).before(nb);
+  }
+  document.getElementById('wmsg'+pid).className = 'wmsg';
+  document.getElementById('vrow'+pid).className = 'vrow';
+  updateSummary();
+}
+
+// ── 錯誤記錄 ──────────────────────────────────────────────────────
+function addElog(pid, e){
+  var el = document.getElementById('elog'+pid);
+  el.className = 'elog on';
+  var li = document.createElement('li');
+  var shortLabel = ESHORT[e.type] || e.type;
+  var kindLabel  = e.kind==='order' ? '順序' : '計算';
+  li.innerHTML = '<span class="etype">'+kindLabel+'·'+shortLabel+'</span>'+e.detail;
+  document.getElementById('elist'+pid).appendChild(li);
+}
+
+// ── 摘要更新 ──────────────────────────────────────────────────────
+function updateSummary(){
+  // 1. 各題表
+  var rows = P.map(function(p){
+    var s = ST[p.id];
+    if(!s.done && s.oErr===0 && s.cErr===0) return '';
+    return '<tr><td>'+p.title+'</td>'+
+      '<td class="'+(s.oErr?'err':'eok')+'">'+(s.oErr?s.oErr+'次':'無 ✓')+'</td>'+
+      '<td class="'+(s.cErr?'err':'eok')+'">'+(s.cErr?s.cErr+'次':'無 ✓')+'</td>'+
+      '<td>'+(s.done?'✅ 完成':'進行中')+'</td></tr>';
+  }).join('');
+  document.getElementById('stbl').innerHTML = rows ||
+    '<tr><td colspan="4" class="no-err">完成題目後顯示</td></tr>';
+
+  // 2. 概念弱點表
+  var conceptMap = {}; // type → {count, pids:[]}
+  P.forEach(function(p){
+    var s = ST[p.id];
+    s.errors.forEach(function(e){
+      if(!conceptMap[e.type]) conceptMap[e.type] = {count:0, pids:[]};
+      conceptMap[e.type].count++;
+      if(conceptMap[e.type].pids.indexOf(p.id)<0) conceptMap[e.type].pids.push(p.id);
+    });
+  });
+  var ctypes = Object.keys(conceptMap);
+  if(ctypes.length===0){
+    document.getElementById('ctbl-body').innerHTML =
+      '<tr><td colspan="3" class="no-err">目前尚無錯誤</td></tr>';
+  } else {
+    ctypes.sort(function(a,b){return conceptMap[b].count - conceptMap[a].count;});
+    var maxC = conceptMap[ctypes[0]].count;
+    document.getElementById('ctbl-body').innerHTML = ctypes.map(function(k){
+      var d = conceptMap[k];
+      var pTags = d.pids.map(function(pid){
+        return '<span class="concept-badge">第'+pid+'題</span>';
+      }).join('');
+      var barW = Math.round(d.count/maxC*80);
+      return '<tr class="concept-row">'+
+        '<td>'+ELABEL[k]+'</td>'+
+        '<td><div class="bar-wrap"><div class="bar" style="width:'+barW+'px"></div>'+
+             '<b class="err">'+d.count+'次</b></div></td>'+
+        '<td>'+pTags+'</td></tr>';
+    }).join('');
+  }
+
+  // 3. 詳細紀錄
+  var allErrs = [];
+  P.forEach(function(p){
+    var s = ST[p.id];
+    s.errors.forEach(function(e){
+      allErrs.push({pid:p.id, title:p.title, e:e});
+    });
+  });
+  if(allErrs.length===0){
+    document.getElementById('detail-log').innerHTML =
+      '<p class="no-err">目前尚無錯誤</p>';
+  } else {
+    document.getElementById('detail-log').innerHTML = allErrs.map(function(x){
+      var kindLabel = x.e.kind==='order' ? '順序' : '計算';
+      var shortLabel = ESHORT[x.e.type] || x.e.type;
+      return '<div style="padding:5px 0; border-bottom:1px solid #eee; font-size:.85em;">'+
+        '<span class="etype">'+x.title+' · 步驟'+x.e.step+' · '+kindLabel+'</span>'+
+        '<span class="concept-badge" style="background:#fff3e0;color:#e65100;">'+shortLabel+'</span>'+
+        '　'+x.e.detail+
+        '</div>';
+    }).join('');
+  }
+}
+
+// ── order errors also need elog ──────────────────────────────────
+var _origPick = pick;
+pick = function(pid, oi){
+  var p = P.find(function(x){return x.id===pid;}),
+      s = ST[pid], t = p.turns[s.ti];
+  var opt = t.opts[oi];
+  _origPick(pid, oi);
+  // if it was a wrong pick, add to elog
+  if(opt && !opt.ok && s.errors.length){
+    var lastErr = s.errors[s.errors.length-1];
+    if(lastErr.kind==='order') addElog(pid, lastErr);
+  }
+};
+
+render();
+</script>
+</body>
+</html>
