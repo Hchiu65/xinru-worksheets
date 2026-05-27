@@ -115,6 +115,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 .ue-purple { background:linear-gradient(135deg,#ede9fe,#c4b5fd); }
 .ue-red    { background:linear-gradient(135deg,#fee2e2,#fca5a5); }
 .ue-green  { background:linear-gradient(135deg,#d1fae5,#a7f3d0); }
+.ue-orange { background:linear-gradient(135deg,#ffedd5,#fed7aa); }
 .unit-title { font-size:11px; font-weight:bold; text-align:center; line-height:1.3; color:#333; word-break:keep-all; }
 
 /* 中間：描述 + tag + 次數 */
@@ -320,6 +321,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     <button class="tab-btn" data-u="6" onclick="switchUnit(6)">第六單元</button>
     <button class="tab-btn" data-u="7" onclick="switchUnit(7)">第七單元</button>
     <button class="tab-btn" data-u="0" onclick="switchUnit(0)">有得3C</button>
+    <button class="tab-btn" data-u="99" onclick="switchUnit(99)">🔢 數學練習</button>
   </div>
 </div>
 <div class="unit-sec-label" id="unit-sec-label"></div>
@@ -457,6 +459,22 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     </div>
   </a>
 
+
+  <!-- 數學練習 -->
+  <a class="unit-card" href="file:///C:/Users/Charlie_Chiu/Desktop/math-diag.html" data-gid="math-diag" data-unit="99">
+    <div class="card-left">
+      <div class="unit-emoji ue-orange">🔢</div>
+      <div class="unit-title">四則運算診斷</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">自選計算順序，找出哪裡卡住</div>
+        <div class="unit-tags"><span class="tag tg-gold">診斷</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
 
   <!-- 有得3C -->
   <a class="unit-card" href="y3c-match.html" data-gid="y3c-match" data-unit="0">
@@ -597,7 +615,7 @@ const FB_URL = "https://xinru-class-default-rtdb.firebaseio.com";
 const BADGES = {b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'};
 const TITLES  = {t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王'};
 const MEDALS  = ['🥇','🥈','🥉'];
-const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)'};
+const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)','math-diag':'四則運算診斷'};
 
 function getStars()    { return parseInt(localStorage.getItem('xr_stars')||'0'); }
 function getName()     { return localStorage.getItem('xr_name')||''; }
@@ -967,7 +985,8 @@ const GID_TO_UNIT = {
   unit6:'unit6', unit6m:'unit6-match',
   u7match:'u7match', u7ziyin:'unit7-ziyin', u7bianzi:'unit7-bianzi',
   u7chengyu:'u7chengyu', u7gaicuo:'u7gaicuo', u7bopomo:'u7bopomo', u7vocab:'u7vocab',
-  'y3c-match':'y3c-match', 'y3c-chengyu':'y3c-chengyu', 'y3c-vocab':'y3c-vocab', 'y3c-gaicuo':'y3c-gaicuo'
+  'y3c-match':'y3c-match', 'y3c-chengyu':'y3c-chengyu', 'y3c-vocab':'y3c-vocab', 'y3c-gaicuo':'y3c-gaicuo',
+  'math-diag':'math-diag'
 };
 
 function scoreEmoji(pct) {
@@ -999,7 +1018,7 @@ function updateCardStats() {
 }
 
 /* ── Unit Tab Filter ── */
-const UNIT_NAMES = {6:'第六單元',7:'第七單元',0:'有得3C'};
+const UNIT_NAMES = {6:'第六單元',7:'第七單元',0:'有得3C',99:'🔢 數學練習'};
 
 function switchUnit(n) {
   const cards = document.querySelectorAll('#unit-card-list .unit-card[data-unit]');
