@@ -87,10 +87,43 @@ td { padding:6px 11px; border-top:1px solid #eee; vertical-align:top; }
 .bar-wrap { display:flex; align-items:center; gap:8px; }
 .bar { height:10px; background:#e53935; border-radius:5px; min-width:4px; }
 .no-err { color:#999; font-size:.85em; padding:8px 11px; }
+
+/* ── Header ── */
+.hdr { display:flex; align-items:center; gap:10px;
+       background:linear-gradient(135deg,#f97316,#fb923c);
+       padding:12px 16px; margin:-20px -20px 16px; }
+.btn-home { font-size:22px; text-decoration:none; flex-shrink:0; }
+.hdr-title { flex:1; font-size:18px; font-weight:bold; color:#fff; letter-spacing:2px; }
+.hdr-star { background:rgba(255,255,255,.22); border:1.5px solid rgba(255,255,255,.4);
+            border-radius:20px; padding:5px 12px;
+            font-size:18px; font-weight:bold; color:#fff; white-space:nowrap; }
+
+/* ── Final overlay ── */
+#final-overlay { display:none; position:fixed; inset:0;
+                 background:rgba(0,0,0,.6); z-index:900;
+                 align-items:center; justify-content:center; }
+#final-overlay.show { display:flex; }
+.final-box { background:#fff; border-radius:24px; padding:30px 24px;
+             width:88%; max-width:360px; text-align:center;
+             box-shadow:0 10px 40px rgba(0,0,0,.25); }
+.final-stars { font-size:52px; margin-bottom:4px; }
+.final-title { font-size:20px; font-weight:bold; color:#f97316; margin-bottom:6px; }
+.final-sub { font-size:14px; color:#aaa; margin-bottom:18px; }
+.final-btn { display:block; width:100%; padding:13px;
+             background:linear-gradient(135deg,#f97316,#fb923c);
+             color:#fff; border:none; border-radius:13px;
+             font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold; margin-bottom:8px; }
+.final-btn-sec { display:block; width:100%; padding:10px;
+                 background:none; border:1.5px solid #eee; border-radius:13px;
+                 font-size:14px; font-family:inherit; cursor:pointer; color:#aaa; }
 </style>
 </head>
 <body>
-<h1>長式子四則運算 · 自己判斷計算順序</h1>
+<div class="hdr">
+  <a class="btn-home" href="index.html">🏠</a>
+  <div class="hdr-title">四則運算診斷</div>
+  <div class="hdr-star">⭐ <span id="star-count">0</span></div>
+</div>
 <p class="sub">先點「你要先算哪一部分」，再填入答案 — 點錯順序或算錯都會分析錯誤類型</p>
 <div id="app"></div>
 
@@ -110,7 +143,76 @@ td { padding:6px 11px; border-top:1px solid #eee; vertical-align:top; }
   <div id="detail-log"><p class="no-err">完成題目後顯示</p></div>
 </div>
 
+<!-- Final overlay -->
+<div id="final-overlay">
+  <div class="final-box">
+    <div class="final-stars" id="final-star-emoji">⭐</div>
+    <div class="final-title" id="final-title">全部完成！</div>
+    <div class="final-sub" id="final-sub"></div>
+    <button class="final-btn" onclick="location.href='index.html'">🏠 回首頁</button>
+    <button class="final-btn-sec" onclick="location.reload()">再玩一次</button>
+  </div>
+</div>
+
 <script>
+// ── 系統常數 ──────────────────────────────────────────────────────
+var GAME_ID     = 'math-diag';
+var GAME_SOURCE = '四則運算診斷';
+var FB_URL      = 'https://xinru-class-default-rtdb.firebaseio.com';
+var STARS_PER_Q = 2;
+
+var earnedStars = 0;
+
+function updateStarDisplay(){
+  document.getElementById('star-count').textContent = earnedStars;
+}
+
+function onProblemDone(pid){
+  earnedStars += STARS_PER_Q;
+  updateStarDisplay();
+  // 動畫提示
+  var t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#f97316;color:#fff;padding:10px 22px;border-radius:20px;font-size:16px;font-weight:bold;z-index:999;pointer-events:none;';
+  t.textContent = '+' + STARS_PER_Q + ' ⭐';
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 1500);
+
+  // 全部做完？
+  var allDone = P.every(function(p){ return ST[p.id] && ST[p.id].done; });
+  if(allDone) setTimeout(saveFinal, 600);
+}
+
+function saveFinal(){
+  var totalQ  = P.length;
+  var perfect = P.filter(function(p){ var s=ST[p.id]; return s&&s.done&&s.oErr===0&&s.cErr===0; }).length;
+  var accPct  = Math.round(perfect / totalQ * 100);
+
+  // 存 localStorage
+  var curStars = parseInt(localStorage.getItem('xr_stars')||'0');
+  localStorage.setItem('xr_stars', curStars + earnedStars);
+  var records = JSON.parse(localStorage.getItem('xr_records')||'[]');
+  var rec = {unit:GAME_ID, date:new Date().toLocaleDateString('zh-TW'), stars:earnedStars, acc:accPct};
+  records.push(rec);
+  localStorage.setItem('xr_records', JSON.stringify(records));
+
+  // Firebase
+  var name = localStorage.getItem('xr_name');
+  if(name){
+    var newStars = curStars + earnedStars;
+    fetch(FB_URL+'/accounts/'+encodeURIComponent(name)+'.json',{
+      method:'PATCH', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({stars:newStars, records:records, acc:accPct})
+    }).catch(function(){});
+  }
+
+  // 顯示結果畫面
+  var starEmoji = earnedStars >= totalQ*STARS_PER_Q ? '🌟🌟🌟' : earnedStars > 0 ? '⭐⭐' : '⭐';
+  document.getElementById('final-star-emoji').textContent = starEmoji;
+  document.getElementById('final-title').textContent = '全部完成！獲得 ' + earnedStars + ' 顆星！';
+  document.getElementById('final-sub').textContent = totalQ + ' 題全做完，' + perfect + ' 題零失誤（正確率 ' + accPct + '%）';
+  document.getElementById('final-overlay').classList.add('show');
+}
+
 // ── 錯誤類型標籤 ────────────────────────────────────────────────
 var ELABEL = {
   bracket_priority: '括號優先不記得（選了外層括號，裡面還沒算完）',
@@ -477,7 +579,9 @@ function advance(pid, nextExpr, nextTi, p, prevTurn){
     document.getElementById('doneb'+pid).className = 'done-banner on';
     document.getElementById('fans'+pid).textContent =
       p.turns[p.turns.length-1].ans || '完成';
-    updateSummary(); return;
+    updateSummary();
+    onProblemDone(pid);
+    return;
   }
 
   s.ti = nextTi;
