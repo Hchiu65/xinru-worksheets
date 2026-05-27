@@ -283,201 +283,182 @@ var ESHORT = {
   fraction_mult:    '分數乘法漏乘',
 };
 
-// ── 題目資料 ──────────────────────────────────────────────────────
-// opts: {t, ok, m, type}  — type = 順序錯誤類型
-// calcType = 計算錯誤類型（當值答錯時記錄）
-var P = [
- {id:1, title:"第 1 題", tag:"負係數 × 括號", turns:[
-  {expr:'12 ＋ (－3) × [5 － (－2) × 3]',
-   calcType:'sign_mult',
-   opts:[{t:"(－2) × 3", ok:true},
-         {t:"[5 － ???]", ok:false, type:'bracket_priority', m:"方括號 [ ] 裡還有小括號沒算完，要先把<b>裡面</b>的算完！"},
-         {t:"12 ＋ ???",  ok:false, type:'mult_first',       m:"加法要等右邊的括號與乘法都算完才能做"}],
-   ans:-6, next:'12 ＋ (－3) × [5 － <mark class="g">(－6)</mark>]'},
+// ── 題目生成工具 ──────────────────────────────────────────────────
+function rnd(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function fmt(x){ return x<0?'(－'+(-x)+')':String(x); }
+function fmtAbs(x){ return x<0?'－'+(-x):String(x); }
+function G(x){ return '<mark class="g">'+fmt(x)+'</mark>'; }
 
-  {expr:'12 ＋ (－3) × [5 － (－6)]',
-   calcType:'sub_neg',
-   opts:[{t:"5 － (－6)",  ok:true},
-         {t:"(－3) × ???", ok:false, type:'bracket_priority', m:"方括號 [ ] 裡還沒算完，先把裡面的減法做好"},
-         {t:"12 ＋ ???",   ok:false, type:'mult_first',       m:"加法最後才做"}],
-   ans:11, next:'12 ＋ (－3) × <mark class="g">11</mark>'},
+// 題型 1 & 2：a ＋ (－b) × [c － (－d) × e]
+function genType12(id){
+  var a,b,c,d,e,s1,s2,s3,s4,tries=0;
+  do {
+    a=rnd([8,10,12,15,18,20]); b=rnd([2,3,4,5]);
+    c=rnd([4,5,6,7,8,9]); d=rnd([2,3,4]); e=rnd([2,3,4]);
+    s1=-(d*e); s2=c-s1; s3=-b*s2; s4=a+s3; tries++;
+  } while(Math.abs(s4)>100 && tries<50);
+  return {id:id, title:"第 "+id+" 題", tag:"負係數 × 括號", turns:[
+    {expr:a+' ＋ (－'+b+') × ['+c+' － (－'+d+') × '+e+']',
+     calcType:'sign_mult',
+     opts:[{t:'(－'+d+') × '+e, ok:true},
+           {t:'['+c+' － ???]', ok:false, type:'bracket_priority', m:"方括號 [ ] 裡還有小括號沒算完，要先把<b>裡面</b>的算完！"},
+           {t:a+' ＋ ???', ok:false, type:'mult_first', m:"加法要等右邊的括號與乘法都算完才能做"}],
+     ans:s1, next:a+' ＋ (－'+b+') × ['+c+' － '+G(s1)+']'},
+    {expr:a+' ＋ (－'+b+') × ['+c+' － '+fmt(s1)+']',
+     calcType:'sub_neg',
+     opts:[{t:c+' － '+fmt(s1), ok:true},
+           {t:'(－'+b+') × ???', ok:false, type:'bracket_priority', m:"方括號 [ ] 裡還沒算完，先把裡面的減法做好"},
+           {t:a+' ＋ ???', ok:false, type:'mult_first', m:"加法最後才做"}],
+     ans:s2, next:a+' ＋ (－'+b+') × '+G(s2)},
+    {expr:a+' ＋ (－'+b+') × '+s2,
+     calcType:'sign_mult',
+     opts:[{t:'(－'+b+') × '+s2, ok:true},
+           {t:a+' ＋ ???', ok:false, type:'mult_first', m:"先乘除，後加減！乘法要在加法前做"}],
+     ans:s3, next:a+' ＋ '+G(s3)},
+    {expr:a+' ＋ '+fmt(s3),
+     calcType:'neg_arith',
+     opts:[{t:a+' ＋ '+fmt(s3), ok:true}],
+     ans:s4, next:G(s4)+' ✓'}
+  ]};
+}
 
-  {expr:'12 ＋ (－3) × 11',
-   calcType:'sign_mult',
-   opts:[{t:"(－3) × 11", ok:true},
-         {t:"12 ＋ ???",  ok:false, type:'mult_first', m:"先乘除，後加減！乘法要在加法前做"}],
-   ans:-33, next:'12 ＋ <mark class="g">(－33)</mark>'},
+// 題型 3：a － b × [(－c) × d － |－e|]
+function genType3(id){
+  var a,b,c,d,e,s1a,s1b,s2,s3,s4,tries=0;
+  do {
+    a=rnd([25,30,33,37,40,42,45]); b=rnd([2,3,4]);
+    c=rnd([4,5,6]); d=rnd([2,3,4]); e=rnd([10,11,12,13,14,15,16,17]);
+    s1a=-(c*d); s1b=e; s2=s1a-e; s3=b*s2; s4=a-s3; tries++;
+  } while((Math.abs(s4)>200||Math.abs(s3)>150) && tries<50);
+  var kA='(－'+c+') × '+d, kB='|－'+e+'|';
+  var cm={}, ma={}; cm[kA]='sign_mult'; cm[kB]='abs_val'; ma[kA]=s1a; ma[kB]=s1b;
+  return {id:id, title:"第 "+id+" 題", tag:"絕對值 ＋ 負係數", turns:[
+    {expr:a+' － '+b+' × [(－'+c+') × '+d+' － |－'+e+'|]',
+     note:"方括號裡兩部分都可以先算（哪個先都行），選一個",
+     calcType:null,
+     opts:[{t:kA, ok:true}, {t:kB, ok:true},
+           {t:'[??? － ???]', ok:false, type:'bracket_priority', m:"方括號裡面還沒算完，兩部分都要先做"},
+           {t:a+' － ???', ok:false, type:'mult_first', m:"外層減法最後才做"}],
+     isParallel:true, calcTypeMap:cm, multiAns:ma,
+     nextA:a+' － '+b+' × ['+G(s1a)+' － |－'+e+'|]',
+     nextB:a+' － '+b+' × [(－'+c+') × '+d+' － '+G(s1b)+']',
+     branchTo:{A:1, B:2}},
+    {calcType:'abs_val', opts:[{t:kB, ok:true}], ans:s1b,
+     next:a+' － '+b+' × ['+G(s1a)+' － '+G(s1b)+']', goto:3},
+    {calcType:'sign_mult', opts:[{t:kA, ok:true}], ans:s1a,
+     next:a+' － '+b+' × ['+G(s1a)+' － '+G(s1b)+']', goto:3},
+    {calcType:'neg_arith',
+     opts:[{t:fmt(s1a)+' － '+e, ok:true},
+           {t:b+' × ???', ok:false, type:'bracket_priority', m:"方括號還沒算完，先把裡面的做好"},
+           {t:a+' － ???', ok:false, type:'mult_first', m:"外層加減最後才做"}],
+     ans:s2, next:a+' － '+b+' × '+G(s2)},
+    {calcType:'sign_mult',
+     opts:[{t:b+' × '+fmt(s2), ok:true},
+           {t:a+' － ???', ok:false, type:'mult_first', m:"先乘除，後加減！"}],
+     ans:s3, next:a+' － '+G(s3)},
+    {note:"減負數 ＝ 加正數，小心！", calcType:'sub_neg',
+     opts:[{t:a+' － '+fmt(s3), ok:true}],
+     ans:s4, next:G(s4)+' ✓'}
+  ]};
+}
 
-  {expr:'12 ＋ (－33)',
-   calcType:'neg_arith',
-   opts:[{t:"12 ＋ (－33)", ok:true}],
-   ans:-21, next:'<mark class="g">－21 ✓</mark>'}
- ]},
-
- {id:2, title:"第 2 題", tag:"負係數 × 括號", turns:[
-  {expr:'6 ＋ (－2) × [7 － (－2) × 3]',
-   calcType:'sign_mult',
-   opts:[{t:"(－2) × 3", ok:true},
-         {t:"[7 － ???]", ok:false, type:'bracket_priority', m:"方括號裡還有小括號，要先算裡面的"},
-         {t:"6 ＋ ???",   ok:false, type:'mult_first',       m:"加法要等括號與乘法都做完"}],
-   ans:-6, next:'6 ＋ (－2) × [7 － <mark class="g">(－6)</mark>]'},
-
-  {expr:'6 ＋ (－2) × [7 － (－6)]',
-   calcType:'sub_neg',
-   opts:[{t:"7 － (－6)",  ok:true},
-         {t:"(－2) × ???", ok:false, type:'bracket_priority', m:"方括號還沒算完，先把 [ ] 裡的做好"},
-         {t:"6 ＋ ???",    ok:false, type:'mult_first',       m:"加法最後才做"}],
-   ans:13, next:'6 ＋ (－2) × <mark class="g">13</mark>'},
-
-  {expr:'6 ＋ (－2) × 13',
-   calcType:'sign_mult',
-   opts:[{t:"(－2) × 13", ok:true},
-         {t:"6 ＋ ???",   ok:false, type:'mult_first', m:"先乘除，後加減！先做乘法"}],
-   ans:-26, next:'6 ＋ <mark class="g">(－26)</mark>'},
-
-  {expr:'6 ＋ (－26)',
-   calcType:'neg_arith',
-   opts:[{t:"6 ＋ (－26)", ok:true}],
-   ans:-20, next:'<mark class="g">－20 ✓</mark>'}
- ]},
-
- {id:3, title:"第 3 題", tag:"絕對值 ＋ 負係數", turns:[
-  {expr:'37 － 2 × [(－5) × 2 － |－13|]',
-   note:"方括號裡兩部分都可以先算（哪個先都行），選一個",
-   calcType:null, // 由分支決定
-   opts:[{t:"(－5) × 2",    ok:true},
-         {t:"|－13|",        ok:true},
-         {t:"[??? － ???]",  ok:false, type:'bracket_priority', m:"方括號裡面還沒算完，兩部分都要先做"},
-         {t:"37 － ???",     ok:false, type:'mult_first',       m:"外層加減最後才做"}],
-   isParallel:true,
-   calcTypeMap:{"(－5) × 2":'sign_mult', "|－13|":'abs_val'},
-   multiAns:{"(－5) × 2":-10, "|－13|":13},
-   nextA:'37 － 2 × [<mark class="g">(－10)</mark> － |－13|]',
-   nextB:'37 － 2 × [(－5) × 2 － <mark class="g">13</mark>]',
-   branchTo:{A:1, B:2}},
-
-  {expr:'37 － 2 × [(－10) － |－13|]',
-   calcType:'abs_val',
-   opts:[{t:"|－13|", ok:true}],
-   ans:13, next:'37 － 2 × [<mark class="g">(－10)</mark> － <mark class="g">13</mark>]', goto:3},
-
-  {expr:'37 － 2 × [(－5) × 2 － 13]',
-   calcType:'sign_mult',
-   opts:[{t:"(－5) × 2", ok:true}],
-   ans:-10, next:'37 － 2 × [<mark class="g">(－10)</mark> － <mark class="g">13</mark>]', goto:3},
-
-  {expr:'37 － 2 × [(－10) － 13]',
-   calcType:'neg_arith',
-   opts:[{t:"(－10) － 13", ok:true},
-         {t:"2 × ???",      ok:false, type:'bracket_priority', m:"方括號還沒算完，先把裡面的做好"},
-         {t:"37 － ???",    ok:false, type:'mult_first',       m:"外層加減最後才做"}],
-   ans:-23, next:'37 － 2 × <mark class="g">(－23)</mark>'},
-
-  {expr:'37 － 2 × (－23)',
-   calcType:'sign_mult',
-   opts:[{t:"2 × (－23)", ok:true},
-         {t:"37 － ???",  ok:false, type:'mult_first', m:"先乘除，後加減！"}],
-   ans:-46, next:'37 － <mark class="g">(－46)</mark>'},
-
-  {expr:'37 － (－46)',
-   note:"減負數 ＝ 加正數，小心！",
-   calcType:'sub_neg',
-   opts:[{t:"37 － (－46)", ok:true}],
-   ans:83, next:'<mark class="g">83 ✓</mark>'}
- ]},
-
- {id:4, title:"第 4 題", tag:"絕對值內含運算 ＋ 多層", turns:[
-  {expr:'(3－7) × (－4) － 2 × |36 ÷ (－4) － 9| ÷ (－3)',
-   note:"左右各有一個小括號，都可以先算，選一個",
-   calcType:null,
-   opts:[{t:"3 － 7",       ok:true},
-         {t:"36 ÷ (－4)",  ok:true},
-         {t:"|??? － 9|",   ok:false, type:'abs_interior', m:"絕對值 |　| 裡面還沒算完，先算裡面！"}],
-   isParallel:true,
-   calcTypeMap:{"3 － 7":'neg_arith', "36 ÷ (－4)":'sign_mult'},
-   multiAns:{"3 － 7":-4, "36 ÷ (－4)":-9},
-   nextA:'<mark class="g">(－4)</mark> × (－4) － 2 × |36 ÷ (－4) － 9| ÷ (－3)',
-   nextB:'(3－7) × (－4) － 2 × |<mark class="g">(－9)</mark> － 9| ÷ (－3)',
-   branchTo:{A:1, B:2}},
-
-  {expr:'(－4) × (－4) － 2 × |36 ÷ (－4) － 9| ÷ (－3)',
-   calcType:'sign_mult',
-   opts:[{t:"36 ÷ (－4)", ok:true}],
-   ans:-9, next:'<mark class="g">(－4)</mark> × (－4) － 2 × |<mark class="g">(－9)</mark> － 9| ÷ (－3)', goto:3},
-
-  {expr:'(3－7) × (－4) － 2 × |(－9) － 9| ÷ (－3)',
-   calcType:'neg_arith',
-   opts:[{t:"3 － 7", ok:true}],
-   ans:-4, next:'<mark class="g">(－4)</mark> × (－4) － 2 × |<mark class="g">(－9)</mark> － 9| ÷ (－3)', goto:3},
-
-  {expr:'(－4) × (－4) － 2 × |(－9) － 9| ÷ (－3)',
-   calcType:'neg_arith',
-   opts:[{t:"(－9) － 9", ok:true},
-         {t:"|???|",       ok:false, type:'abs_interior', m:"絕對值裡面還沒算完！先算 (－9) － 9"}],
-   ans:-18, next:'(－4) × (－4) － 2 × |<mark class="g">(－18)</mark>| ÷ (－3)'},
-
-  {expr:'(－4) × (－4) － 2 × |(－18)| ÷ (－3)',
-   note:"這兩個都可以先算，選一個",
-   calcType:null,
-   opts:[{t:"(－4) × (－4)", ok:true},
-         {t:"|－18|",         ok:true}],
-   isParallel:true,
-   calcTypeMap:{"(－4) × (－4)":'sign_mult', "|－18|":'abs_val'},
-   multiAns:{"(－4) × (－4)":16, "|－18|":18},
-   nextA:'<mark class="g">16</mark> － 2 × |(－18)| ÷ (－3)',
-   nextB:'(－4) × (－4) － 2 × <mark class="g">18</mark> ÷ (－3)',
-   branchTo:{A:5, B:6}},
-
-  {expr:'16 － 2 × |(－18)| ÷ (－3)',
-   calcType:'abs_val',
-   opts:[{t:"|－18|", ok:true}],
-   ans:18, next:'16 － 2 × <mark class="g">18</mark> ÷ (－3)', goto:7},
-
-  {expr:'(－4) × (－4) － 2 × 18 ÷ (－3)',
-   calcType:'sign_mult',
-   opts:[{t:"(－4) × (－4)", ok:true}],
-   ans:16, next:'<mark class="g">16</mark> － 2 × 18 ÷ (－3)', goto:7},
-
-  {expr:'16 － 2 × 18 ÷ (－3)',
-   calcType:'sign_mult',
-   opts:[{t:"2 × 18 ÷ (－3)", ok:true},
-         {t:"16 － ???",       ok:false, type:'mult_first', m:"右邊乘除還沒做完，先把乘除算完"}],
-   ans:-12, next:'16 － <mark class="g">(－12)</mark>'},
-
-  {expr:'16 － (－12)',
-   note:"減負數小心！",
-   calcType:'sub_neg',
-   opts:[{t:"16 － (－12)", ok:true}],
-   ans:28, next:'<mark class="g">28 ✓</mark>'}
- ]},
-
- {id:5, title:"第 5 題", tag:"負×負得正 ＋ 減負號", turns:[
-  {expr:'[(－13) × (－4) － 4] × (－5) － (－27)',
-   calcType:'sign_mult',
-   opts:[{t:"(－13) × (－4)",    ok:true},
-         {t:"[(－13)×(－4) － 4]", ok:false, type:'bracket_priority', m:"方括號裡還有小括號的乘法，先把小括號算完"},
-         {t:"[???] × (－5)",      ok:false, type:'bracket_priority', m:"方括號裡面還沒算完，不能先做外面的乘法"}],
-   ans:52, next:'[<mark class="g">52</mark> － 4] × (－5) － (－27)'},
-
-  {expr:'[52 － 4] × (－5) － (－27)',
-   calcType:'arith',
-   opts:[{t:"52 － 4",     ok:true},
-         {t:"??? × (－5)", ok:false, type:'bracket_priority', m:"方括號還沒算完，先把 [ ] 裡的做好"}],
-   ans:48, next:'<mark class="g">48</mark> × (－5) － (－27)'},
-
-  {expr:'48 × (－5) － (－27)',
-   calcType:'sign_mult',
-   opts:[{t:"48 × (－5)",    ok:true},
-         {t:"??? － (－27)", ok:false, type:'mult_first', m:"先乘除，後加減！左邊乘法先做"}],
-   ans:-240, next:'<mark class="g">(－240)</mark> － (－27)'},
-
-  {expr:'(－240) － (－27)',
-   note:"減負數小心！",
-   calcType:'sub_neg',
-   opts:[{t:"(－240) － (－27)", ok:true}],
-   ans:-213, next:'<mark class="g">－213 ✓</mark>'}
- ]}
+// 題型 4：(a－b)×(－c) － 2×|c*k÷(－c)－k|÷(－f)，九步驟雙層分支
+// 需保證 4k % f === 0
+var P4V=[
+  {a:3,b:7,c:4,k:9,f:3},{a:2,b:8,c:3,k:8,f:4},
+  {a:4,b:9,c:5,k:6,f:3},{a:1,b:7,c:4,k:6,f:3},
+  {a:3,b:9,c:3,k:7,f:7},{a:2,b:6,c:4,k:8,f:4}
 ];
+function genType4(id){
+  var v=rnd(P4V);
+  var a=v.a,b=v.b,c=v.c,k=v.k,f=v.f;
+  var sAB=a-b, d=c*k, e=k, sDC=-k, sIn=-2*k, absV=2*k;
+  var sLeft=sAB*(-c), sRight=-(4*k/f), sFin=sLeft-sRight;
+  var kDA=String(a)+' － '+b, kDDC=String(d)+' ÷ (－'+c+')';
+  var k4A=fmt(sAB)+' × (－'+c+')', k4B='|'+fmtAbs(sIn)+'|';
+  var cm0={},ma0={},cm4={},ma4={};
+  cm0[kDA]='neg_arith'; cm0[kDDC]='sign_mult';
+  ma0[kDA]=sAB; ma0[kDDC]=sDC;
+  cm4[k4A]='sign_mult'; cm4[k4B]='abs_val';
+  ma4[k4A]=sLeft; ma4[k4B]=absV;
+  return {id:id, title:"第 "+id+" 題", tag:"絕對值內含運算 ＋ 多層", turns:[
+    {expr:'('+a+'－'+b+') × (－'+c+') － 2 × |'+d+' ÷ (－'+c+') － '+e+'| ÷ (－'+f+')',
+     note:"左右各有一個小括號，都可以先算，選一個",
+     calcType:null,
+     opts:[{t:kDA, ok:true},{t:kDDC, ok:true},
+           {t:'|??? － '+e+'|', ok:false, type:'abs_interior', m:"絕對值 |　| 裡面還沒算完，先算裡面！"}],
+     isParallel:true, calcTypeMap:cm0, multiAns:ma0,
+     nextA:G(sAB)+' × (－'+c+') － 2 × |'+d+' ÷ (－'+c+') － '+e+'| ÷ (－'+f+')',
+     nextB:'('+a+'－'+b+') × (－'+c+') － 2 × |'+G(sDC)+' － '+e+'| ÷ (－'+f+')',
+     branchTo:{A:1, B:2}},
+    {calcType:'sign_mult', opts:[{t:kDDC, ok:true}], ans:sDC,
+     next:G(sAB)+' × (－'+c+') － 2 × |'+G(sDC)+' － '+e+'| ÷ (－'+f+')', goto:3},
+    {calcType:'neg_arith', opts:[{t:kDA, ok:true}], ans:sAB,
+     next:G(sAB)+' × (－'+c+') － 2 × |'+G(sDC)+' － '+e+'| ÷ (－'+f+')', goto:3},
+    {calcType:'neg_arith',
+     opts:[{t:fmt(sDC)+' － '+e, ok:true},
+           {t:'|???|', ok:false, type:'abs_interior', m:"絕對值裡面還沒算完！先算 "+fmt(sDC)+" － "+e}],
+     ans:sIn, next:fmt(sAB)+' × (－'+c+') － 2 × |'+G(sIn)+'| ÷ (－'+f+')'},
+    {note:"這兩個都可以先算，選一個", calcType:null,
+     opts:[{t:k4A, ok:true},{t:k4B, ok:true}],
+     isParallel:true, calcTypeMap:cm4, multiAns:ma4,
+     nextA:G(sLeft)+' － 2 × |'+fmtAbs(sIn)+'| ÷ (－'+f+')',
+     nextB:fmt(sAB)+' × (－'+c+') － 2 × '+G(absV)+' ÷ (－'+f+')',
+     branchTo:{A:5, B:6}},
+    {calcType:'abs_val', opts:[{t:k4B, ok:true}], ans:absV,
+     next:G(sLeft)+' － 2 × '+G(absV)+' ÷ (－'+f+')', goto:7},
+    {calcType:'sign_mult', opts:[{t:k4A, ok:true}], ans:sLeft,
+     next:G(sLeft)+' － 2 × '+G(absV)+' ÷ (－'+f+')', goto:7},
+    {calcType:'sign_mult',
+     opts:[{t:'2 × '+absV+' ÷ (－'+f+')', ok:true},
+           {t:sLeft+' － ???', ok:false, type:'mult_first', m:"右邊乘除還沒做完，先把乘除算完"}],
+     ans:sRight, next:sLeft+' － '+G(sRight)},
+    {note:"減負數小心！", calcType:'sub_neg',
+     opts:[{t:sLeft+' － '+fmt(sRight), ok:true}],
+     ans:sFin, next:G(sFin)+' ✓'}
+  ]};
+}
+
+// 題型 5：[(－a)×(－b)－c]×(－d)－(－e)
+function genType5(id){
+  var a,b,c,d,e,s1,s2,s3,s4,tries=0;
+  do {
+    a=rnd([11,12,13,14,15]); b=rnd([3,4,5]); c=rnd([2,3,4,5,6]);
+    d=rnd([3,4,5]); e=rnd([20,25,27,30,32]);
+    s1=a*b; s2=s1-c; s3=s2*(-d); s4=s3+e; tries++;
+  } while((Math.abs(s4)>300||s2<=0) && tries<50);
+  return {id:id, title:"第 "+id+" 題", tag:"負×負得正 ＋ 減負號", turns:[
+    {expr:'[(－'+a+') × (－'+b+') － '+c+'] × (－'+d+') － (－'+e+')',
+     calcType:'sign_mult',
+     opts:[{t:'(－'+a+') × (－'+b+')', ok:true},
+           {t:'[(－'+a+')×(－'+b+') － '+c+']', ok:false, type:'bracket_priority', m:"方括號裡還有小括號的乘法，先把小括號算完"},
+           {t:'[???] × (－'+d+')', ok:false, type:'bracket_priority', m:"方括號裡面還沒算完，不能先做外面的乘法"}],
+     ans:s1, next:'['+G(s1)+' － '+c+'] × (－'+d+') － (－'+e+')'},
+    {calcType:'arith',
+     opts:[{t:s1+' － '+c, ok:true},
+           {t:'??? × (－'+d+')', ok:false, type:'bracket_priority', m:"方括號還沒算完，先把 [ ] 裡的做好"}],
+     ans:s2, next:G(s2)+' × (－'+d+') － (－'+e+')'},
+    {calcType:'sign_mult',
+     opts:[{t:s2+' × (－'+d+')', ok:true},
+           {t:'??? － (－'+e+')', ok:false, type:'mult_first', m:"先乘除，後加減！左邊乘法先做"}],
+     ans:s3, next:G(s3)+' － (－'+e+')'},
+    {note:"減負數小心！", calcType:'sub_neg',
+     opts:[{t:fmt(s3)+' － (－'+e+')', ok:true}],
+     ans:s4, next:G(s4)+' ✓'}
+  ]};
+}
+
+// 產生 P 並隨機打亂選項順序
+var P = [genType12(1), genType12(2), genType3(3), genType4(4), genType5(5)];
+P.forEach(function(p){
+  p.turns.forEach(function(t){
+    var o=t.opts;
+    for(var i=o.length-1;i>0;i--){
+      var j=Math.floor(Math.random()*(i+1));
+      var tmp=o[i]; o[i]=o[j]; o[j]=tmp;
+    }
+  });
+});
 
 // ── 狀態 ──────────────────────────────────────────────────────────
 var ST = {};
