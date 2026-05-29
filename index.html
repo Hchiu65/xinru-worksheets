@@ -591,6 +591,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
       <p>輸入你的帳號名稱</p>
       <input id="auth-name" class="modal-input" type="text" maxlength="12" placeholder="帳號名稱">
       <button class="modal-btn" onclick="authStep1()">下一步 →</button>
+      <button class="modal-btn-sub" onclick="loginAsGuest()">👀 訪客瀏覽（不儲存紀錄）</button>
     </div>
     <!-- Step 2: birthday -->
     <div id="auth-s2" style="display:none">
@@ -876,8 +877,17 @@ async function loadAdminBadge() {
 }
 
 /* ── Cloud sync ── */
+function isGuest() { return localStorage.getItem('xr_bday') === 'guest'; }
+
+function loginAsGuest() {
+  localStorage.setItem('xr_name', '訪客');
+  localStorage.setItem('xr_bday', 'guest');
+  document.getElementById('auth-modal').classList.remove('show');
+  render();
+}
+
 async function syncToCloud() {
-  if (!FB_URL || !getName()) return;
+  if (!FB_URL || !getName() || isGuest()) return;
   const eq=getEquipped(), owned=getOwned(), records=getRecords();
   const redeemed=JSON.parse(localStorage.getItem('xr_redeemed')||'[]');
   const totalEarned=records.reduce((s,r)=>s+(r.stars||0),0);
