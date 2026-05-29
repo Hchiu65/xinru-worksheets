@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>字音辨正</title>
+<title>找錯別字</title>
 <style>
 * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
 body { font-family:"標楷體","DFKai-SB",serif; background:#f9f0ff; min-height:100vh; color:#333; }
@@ -32,27 +32,20 @@ header {
   text-align:center;
 }
 .q-num { font-size:13px; color:#aaa; margin-bottom:6px; }
-.q-phrase { font-size:30px; line-height:1.4; letter-spacing:3px; margin-bottom:14px; word-break:break-all; }
-.focus-char {
-  display:inline-block; background:#ad1457; color:#fff;
-  border-radius:8px; padding:2px 8px;
-  font-size:34px; font-weight:bold; margin:0 2px;
-}
-.q-ask { font-size:16px; color:#666; margin-bottom:4px; }
-.meaning-box {
-  display:none; margin-top:14px;
-  background:#f9f0ff; border-radius:10px; padding:10px 14px;
-  font-size:15px; color:#6a1b9a; border:1px solid #ce93d8;
-}
-.meaning-box.show { display:block; }
+.q-label { font-size:14px; color:#888; margin-bottom:10px; }
+.q-idiom { font-size:34px; letter-spacing:4px; margin-bottom:10px; font-weight:bold; line-height:1.4; }
+.wrong-char { color:#e74c3c; background:#fce4ec; border-radius:6px; padding:2px 4px; }
+.q-instruction { font-size:13px; color:#aaa; margin-bottom:8px; }
+.correct-reveal { display:none; margin-top:10px; font-size:15px; color:#2e7d32; background:#e8f5e9; border-radius:10px; padding:8px 14px; }
+.correct-reveal.show { display:block; }
 
 .opts-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
 .opt-btn {
   background:#fff; border:2px solid #e8d5f5; border-radius:14px;
-  padding:18px 8px; font-size:22px; font-family:inherit;
-  cursor:pointer; color:#333; font-weight:bold; letter-spacing:1px;
+  padding:22px 8px; font-size:28px; font-family:inherit;
+  cursor:pointer; color:#333; font-weight:bold;
   transition:background .12s, border-color .12s, transform .1s;
-  text-align:center; line-height:1.3;
+  text-align:center;
 }
 .opt-btn:active { transform:scale(.95); }
 .opt-btn.correct { background:#e8f5e9; border-color:#4caf50; color:#2e7d32; }
@@ -64,7 +57,6 @@ header {
   60%{transform:translateX(6px)}
 }
 
-/* Star pop */
 .star-pop {
   position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
   font-size:28px; font-weight:bold; color:#f5a623;
@@ -77,17 +69,16 @@ header {
   100%{opacity:0;transform:translate(-50%,-200%) scale(1)}
 }
 
-/* Feedback overlay */
 #feedback { display:none; position:fixed; inset:0; background:rgba(50,10,70,.55); align-items:center; justify-content:center; z-index:800; }
 #feedback.show { display:flex; }
-.fb-box { background:#fff; border-radius:24px; padding:30px 22px; width:88%; max-width:320px; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,.25); }
+.fb-box { background:#fff; border-radius:24px; padding:30px 22px; width:88%; max-width:340px; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,.25); }
 .fb-icon  { font-size:54px; margin-bottom:8px; }
 .fb-title { font-size:22px; font-weight:bold; margin-bottom:6px; }
 .fb-stars { font-size:16px; color:#f39c12; margin-bottom:6px; }
-.fb-meaning { font-size:14px; color:#555; line-height:1.7; margin-bottom:18px; background:#fafafa; border-radius:10px; padding:10px 14px; }
+.fb-idiom { font-size:22px; font-weight:bold; color:#6a1b9a; margin-bottom:6px; letter-spacing:2px; }
+.fb-detail { font-size:14px; color:#555; line-height:1.7; margin-bottom:18px; background:#fafafa; border-radius:10px; padding:10px 14px; }
 .fb-next { width:100%; padding:14px; background:linear-gradient(135deg,#6a1b9a,#ad1457); color:#fff; border:none; border-radius:14px; font-size:18px; font-family:inherit; cursor:pointer; font-weight:bold; }
 
-/* Done screen */
 #done-screen { display:none; position:fixed; inset:0; background:#f0f4ff; align-items:center; justify-content:center; z-index:800; flex-direction:column; padding:24px; }
 #done-screen.show { display:flex; }
 .done-box { text-align:center; max-width:340px; width:100%; }
@@ -98,7 +89,6 @@ header {
 .done-btn { display:block; width:100%; padding:14px; background:linear-gradient(135deg,#6a1b9a,#ad1457); color:#fff; border:none; border-radius:14px; font-size:18px; font-family:inherit; cursor:pointer; font-weight:bold; margin-bottom:12px; text-decoration:none; text-align:center; }
 .done-btn.secondary { background:#e8eaff; color:#6a1b9a; }
 
-/* 13" iPad */
 @media (min-width:1000px) {
   header         { padding:18px 28px 16px; }
   .btn-home      { font-size:30px; }
@@ -109,19 +99,18 @@ header {
   .prog-bar      { height:7px; }
   .main          { max-width:720px; padding:22px 20px 60px; }
   .q-card        { padding:32px 28px 28px; margin-bottom:24px; border-radius:26px; }
-  .q-num         { font-size:18px; margin-bottom:10px; }
-  .q-phrase      { font-size:46px; letter-spacing:6px; margin-bottom:20px; }
-  .focus-char    { font-size:54px; border-radius:12px; padding:4px 12px; }
-  .q-ask         { font-size:22px; }
-  .meaning-box   { font-size:20px; padding:14px 18px; margin-top:18px; }
+  .q-num         { font-size:18px; }
+  .q-label       { font-size:18px; }
+  .q-idiom       { font-size:54px; letter-spacing:8px; }
+  .q-instruction { font-size:16px; }
   .opts-grid     { gap:14px; margin-bottom:24px; }
-  .opt-btn       { font-size:36px; padding:32px 10px; border-radius:18px; border-width:3px; }
-  .fb-box        { max-width:560px; padding:40px 36px 34px; border-radius:28px; }
+  .opt-btn       { font-size:40px; padding:28px 10px; border-radius:18px; border-width:3px; }
+  .fb-box        { max-width:560px; padding:40px 36px 34px; }
   .fb-icon       { font-size:80px; }
   .fb-title      { font-size:32px; }
-  .fb-stars      { font-size:30px; }
-  .fb-meaning    { font-size:22px; }
-  .fb-next       { font-size:24px; padding:17px; border-radius:16px; }
+  .fb-idiom      { font-size:28px; }
+  .fb-detail     { font-size:20px; }
+  .fb-next       { font-size:24px; padding:17px; }
   .done-box      { max-width:560px; }
   .done-icon     { font-size:100px; }
   .done-title    { font-size:38px; }
@@ -137,7 +126,6 @@ header {
   .report-btn-cancel,.report-btn-send { font-size:20px; padding:16px; }
 }
 
-/* Error report */
 .btn-report{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:16px;padding:6px 14px;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;font-family:inherit;flex-shrink:0;}
 .btn-report:active{background:rgba(255,255,255,.28);}
 #report-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:950;align-items:center;justify-content:center;}
@@ -158,7 +146,7 @@ header {
 <header>
   <div class="hdr-left">
     <a class="btn-home" href="index.html">🏠</a>
-    <div class="hdr-title">第一單元　字音辨正</div>
+    <div class="hdr-title">第一單元　找錯別字</div>
   </div>
   <div class="hdr-right">
     <div class="progress-text" id="prog-text">1 / 15</div>
@@ -171,9 +159,10 @@ header {
 <div class="main">
   <div class="q-card">
     <div class="q-num" id="q-num">第 1 題 / 共 15 題</div>
-    <div class="q-phrase" id="q-phrase"></div>
-    <div class="q-ask">上面「　」內的字，注音是？</div>
-    <div class="meaning-box" id="meaning-box"></div>
+    <div class="q-label">🔍 紅色的字寫錯了，選出正確的字！</div>
+    <div class="q-idiom" id="q-idiom"></div>
+    <div class="q-instruction">（點選下方正確的字來替換紅色的錯別字）</div>
+    <div class="correct-reveal" id="correct-reveal"></div>
   </div>
   <div class="opts-grid" id="opts-grid"></div>
 </div>
@@ -184,7 +173,8 @@ header {
     <div class="fb-icon" id="fb-icon"></div>
     <div class="fb-title" id="fb-title"></div>
     <div class="fb-stars" id="fb-stars"></div>
-    <div class="fb-meaning" id="fb-meaning"></div>
+    <div class="fb-idiom" id="fb-idiom"></div>
+    <div class="fb-detail" id="fb-detail"></div>
     <button class="fb-next" onclick="nextQ()">繼續 →</button>
   </div>
 </div>
@@ -192,8 +182,8 @@ header {
 <!-- Done -->
 <div id="done-screen">
   <div class="done-box">
-    <div class="done-icon">🎉</div>
-    <div class="done-title">字音辨正完成！</div>
+    <div class="done-icon">🏆</div>
+    <div class="done-title">找錯字完成！</div>
     <div class="done-score" id="done-score"></div>
     <div class="done-stars" id="done-stars"></div>
     <button class="done-btn" onclick="replay()">🔁 再玩一次</button>
@@ -227,11 +217,11 @@ header {
 </div>
 
 <script>
-const GAME_ID     = 'u1ziyin';
-const GAME_SOURCE = '第一單元　字音辨正';
+const GAME_ID     = 'u1bianzi';
+const GAME_SOURCE = '第一單元　找錯別字';
 const FB_URL      = 'https://xinru-class-default-rtdb.firebaseio.com';
 const GAME_LABELS = {
-  u1ziyin:'字音辮正(一)',u1bianzi:'找錯別字(一)',
+  u1ziyin:'字音辨正(一)', u1bianzi:'找錯別字(一)',
   unit6:'詞語填空', unit6m:'成語連連看',
   u7ziyin:'字音辨正', u7bianzi:'找錯別字',
   u7gaicuo:'改錯字(作業)', u7bopomo:'字音辨字(作業)',
@@ -278,50 +268,77 @@ function showLockOverlay(){
 }
 
 // ── 題目資料 ──
-const ZIYIN = [
-  { phrase:'如「沐」春風', char:'沐', correct:'ㄇㄨˋ', opts:['ㄇㄨˊ','ㄇㄨˇ','ㄈㄨˋ'], meaning:'比喻遇到良師誠摯教誨，和暖舒暢的感受' },
-  { phrase:'如火如「荼」', char:'荼', correct:'ㄊㄨˊ', opts:['ㄊㄨˇ','ㄊㄨˋ','ㄊㄨ'], meaning:'原比喻軍容壯盛，後比喻事物的熾烈或景況的繁盛熱鬧' },
-  { phrase:'如法「炮」製', char:'炮', correct:'ㄆㄠˊ', opts:['ㄆㄠˇ','ㄆㄠˋ','ㄅㄠˋ'], meaning:'本指依照古法製藥，後多指依照往例或現有的方法辦事' },
-  { phrase:'如喪考「妣」', char:'妣', correct:'ㄅㄧˇ', opts:['ㄅㄧˋ','ㄅㄧˊ','ㄆㄧˇ'], meaning:'好像死了父母一般，比喻悲痛至極' },
-  { phrase:'收到「訃」聞', char:'訃', correct:'ㄈㄨˋ', opts:['ㄈㄨˊ','ㄈㄨˇ','ㄏㄨˋ'], meaning:'報告喪事的東帖' },
-  { phrase:'汗流「浹」背', char:'浹', correct:'ㄐㄧㄚˊ', opts:['ㄐㄧㄚˇ','ㄐㄧㄚ','ㄐㄧㄝˊ'], meaning:'汗流很多溼透背部，形容非常驚恐或工作辛勞' },
-  { phrase:'池水乾「涸」', char:'涸', correct:'ㄏㄜˊ', opts:['ㄏㄜˋ','ㄏㄜˇ','ㄍㄜˊ'], meaning:'水分乾竭' },
-  { phrase:'老少「咸」宜', char:'咸', correct:'ㄒㄧㄢˊ', opts:['ㄒㄧㄢˇ','ㄒㄧㄢˋ','ㄐㄧㄢˊ'], meaning:'老人小孩都適宜' },
-  { phrase:'自慚形「穢」', char:'穢', correct:'ㄏㄨㄟˋ', opts:['ㄏㄨㄟˊ','ㄏㄨㄟˇ','ㄨㄟˋ'], meaning:'因容貌儀態不如別人而感覺羞愧，後泛指與人相比自愧不如' },
-  { phrase:'衣「缽」相傳', char:'缽', correct:'ㄅㄛ', opts:['ㄅㄛˊ','ㄅㄛˇ','ㄅㄛˋ'], meaning:'泛指思想、技術、學術等的傳授' },
-  { phrase:'克紹「箕」裘', char:'箕', correct:'ㄐㄧ', opts:['ㄐㄧˊ','ㄐㄧˇ','ㄑㄧ'], meaning:'比喻能繼父業' },
-  { phrase:'別來無「恙」', char:'恙', correct:'ㄧㄤˋ', opts:['ㄧㄤˊ','ㄧㄤˇ','ㄧㄤ'], meaning:'別離至今一切順利平安，通常當作問候語' },
-  { phrase:'吸「吮」', char:'吮', correct:'ㄕㄨㄣˇ', opts:['ㄕㄨㄣˊ','ㄕㄨㄣˋ','ㄔㄨㄣˇ'], meaning:'用口吸取' },
-  { phrase:'吹毛求「疵」', char:'疵', correct:'ㄘ', opts:['ㄘˊ','ㄘˇ','ㄘˋ'], meaning:'比喻刻意挑剔過失或缺點' },
-  { phrase:'壯士斷「腕」', char:'腕', correct:'ㄨㄢˋ', opts:['ㄨㄢˊ','ㄨㄢˇ','ㄨㄢ'], meaning:'比喻在緊要關頭，能當機立斷，知所取捨' },
+const BIANZI = [
+  { wrong:'羊腸小腔', wrongChar:'腔', correct:'徑', full:'羊腸小徑',
+    meaning:'形容狹窄曲折的小路',
+    opts:['徑','境','竟','勁'] },
+  { wrong:'老生長談', wrongChar:'長', correct:'常', full:'老生常談',
+    meaning:'比喻時常聽到，了無新意的老話',
+    opts:['常','嘗','賞','裳'] },
+  { wrong:'老奸巨滑', wrongChar:'滑', correct:'猾', full:'老奸巨猾',
+    meaning:'深歷世情而極奸詐狡猾的人',
+    opts:['猾','滑','狡','獪'] },
+  { wrong:'考試作幣', wrongChar:'幣', correct:'弊', full:'考試作弊',
+    meaning:'用不正當的方法取得不法的利益',
+    opts:['弊','幣','蔽','憋'] },
+  { wrong:'耳儒目染', wrongChar:'儒', correct:'濡', full:'耳濡目染',
+    meaning:'聽熟了，看慣了，因而深受影響',
+    opts:['濡','儒','孺','蠕'] },
+  { wrong:'自甘隆落', wrongChar:'隆', correct:'墮', full:'自甘墮落',
+    meaning:'甘願自暴自棄，不求上進',
+    opts:['墮','隆','惰','隨'] },
+  { wrong:'色彩斑爛', wrongChar:'爛', correct:'斕', full:'色彩斑斕',
+    meaning:'形容花紋鮮麗，光彩奪目',
+    opts:['斕','爛','瀾','欄'] },
+  { wrong:'行為收歛', wrongChar:'歛', correct:'斂', full:'行為收斂',
+    meaning:'檢點約束，不放縱',
+    opts:['斂','歛','儉','臉'] },
+  { wrong:'衣衫禮褸', wrongChar:'禮', correct:'褸', full:'衣衫褸褸',
+    meaning:'衣服破爛',
+    opts:['褸','禮','屢','鏤'] },
+  { wrong:'克紹基裘', wrongChar:'基', correct:'箕', full:'克紹箕裘',
+    meaning:'比喻能繼承父業',
+    opts:['箕','基','期','棋'] },
+  { wrong:'冷寞疏離', wrongChar:'寞', correct:'漠', full:'冷漠疏離',
+    meaning:'冷淡、不親熱、不關心',
+    opts:['漠','寞','莫','摸'] },
+  { wrong:'別出新裁', wrongChar:'新', correct:'心', full:'別出心裁',
+    meaning:'獨出巧思，不同流俗',
+    opts:['心','新','欣','辛'] },
+  { wrong:'別來無樣', wrongChar:'樣', correct:'恙', full:'別來無恙',
+    meaning:'別離至今一切順利平安，通常當作問候語',
+    opts:['恙','樣','癢','養'] },
+  { wrong:'即然如此', wrongChar:'即', correct:'既', full:'既然如此',
+    meaning:'已經如此',
+    opts:['既','即','跡','際'] },
+  { wrong:'含貽弄孫', wrongChar:'貽', correct:'飴', full:'含飴弄孫',
+    meaning:'上了年紀的人含飴自甘，弄孫為樂，不問餘事',
+    opts:['飴','貽','怡','詒'] },
 ];
 
 // ── 狀態 ──
-let order = [], idx = 0, sessionStars = 0;
-let mistakeCount = 0, totalCorrect = 0, anyMistake = false;
+let order=[], idx=0, sessionStars=0, mistakeCount=0, totalCorrect=0, anyMistake=false;
 
 function getStars(){ return parseInt(localStorage.getItem('xr_stars')||'0'); }
 function addStars(n){
-  const s = getStars() + n;
-  localStorage.setItem('xr_stars', s);
-  document.getElementById('star-display').textContent = s;
-  sessionStars += n;
+  const s=getStars()+n; localStorage.setItem('xr_stars',s);
+  document.getElementById('star-display').textContent=s;
+  sessionStars+=n;
 }
-function recordMistake(char, meaning, question, correct){
-  const all = JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
-  if(!all[char]) all[char]={word:char,question:question||char,meaning,correct:correct||'',source:GAME_SOURCE,wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
-  if(question && !all[char].question) all[char].question=question;
-  if(correct) all[char].correct=correct;
-  if(!all[char].source) all[char].source=GAME_SOURCE;
-  all[char].wrongCount++;
-  all[char].lastWrong=new Date().toLocaleDateString('zh-TW');
+function recordMistake(word, meaning, question){
+  const all=JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
+  if(!all[word]) all[word]={word,question:question||word,meaning,source:GAME_SOURCE,wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
+  if(question&&!all[word].question) all[word].question=question;
+  if(!all[word].source) all[word].source=GAME_SOURCE;
+  all[word].wrongCount++; all[word].lastWrong=new Date().toLocaleDateString('zh-TW');
   localStorage.setItem('xr_mistakes',JSON.stringify(all));
 }
 function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+function speak(text){ if(!window.speechSynthesis)return; const u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';u.rate=0.8;speechSynthesis.cancel();speechSynthesis.speak(u); }
 
 function startGame(){
   if(isLocked()){ showLockOverlay(); return; }
-  order=shuffle([...Array(ZIYIN.length).keys()]);
+  order=shuffle([...Array(BIANZI.length).keys()]);
   idx=0; sessionStars=0; totalCorrect=0; anyMistake=false;
   document.getElementById('star-display').textContent=getStars();
   document.getElementById('done-screen').classList.remove('show');
@@ -329,24 +346,28 @@ function startGame(){
 }
 
 function showQ(){
-  const item=ZIYIN[order[idx]];
+  const item=BIANZI[order[idx]];
   mistakeCount=0;
-  document.getElementById('prog-text').textContent=`${idx+1} / ${ZIYIN.length}`;
-  document.getElementById('q-num').textContent=`第 ${idx+1} 題 / 共 ${ZIYIN.length} 題`;
-  document.getElementById('prog-bar').style.width=`${(idx/ZIYIN.length)*100}%`;
-  const html=item.phrase.replace(/「([^」]+)」/,'<span class="focus-char">$1</span>');
-  document.getElementById('q-phrase').innerHTML=html;
-  document.getElementById('meaning-box').classList.remove('show');
-  const allOpts=shuffle([item.correct,...item.opts]);
+  document.getElementById('prog-text').textContent=`${idx+1} / ${BIANZI.length}`;
+  document.getElementById('q-num').textContent=`第 ${idx+1} 題 / 共 ${BIANZI.length} 題`;
+  document.getElementById('prog-bar').style.width=`${(idx/BIANZI.length)*100}%`;
+  document.getElementById('correct-reveal').classList.remove('show');
+
+  const idiomHtml=item.wrong.split('').map(ch=>
+    ch===item.wrongChar?`<span class="wrong-char">${ch}</span>`:ch
+  ).join('');
+  document.getElementById('q-idiom').innerHTML=idiomHtml;
+
+  const shuffledOpts=shuffle(item.opts);
   const grid=document.getElementById('opts-grid');
   grid.innerHTML='';
-  allOpts.forEach(opt=>{
+  shuffledOpts.forEach(opt=>{
     const btn=document.createElement('button');
-    btn.className='opt-btn';
-    btn.textContent=opt;
+    btn.className='opt-btn'; btn.textContent=opt;
     btn.onclick=()=>onPick(btn,opt,item);
     grid.appendChild(btn);
   });
+  speak(item.wrong);
 }
 
 function onPick(btn, picked, item){
@@ -358,19 +379,19 @@ function onPick(btn, picked, item){
     if(mistakeCount===0) totalCorrect++;
     addStars(earned);
     showStarPop(`+${earned}⭐`);
-    const mb=document.getElementById('meaning-box');
-    mb.textContent=`💡 ${item.char}：${item.meaning}`;
-    mb.classList.add('show');
+    const cr=document.getElementById('correct-reveal');
+    cr.textContent=`✅ 正確寫法：${item.full}`;
+    cr.classList.add('show');
+    speak(item.full);
     showFeedback(true,earned,item);
   } else {
     btn.classList.add('wrong');
     mistakeCount++;
-    if(mistakeCount===1){ anyMistake=true; recordMistake(item.char,item.meaning,item.phrase,item.correct); }
+    if(mistakeCount===1){ anyMistake=true; recordMistake(item.full,item.meaning,item.wrong); }
     addStars(-mistakeCount);
     showStarPop(`-${mistakeCount}⭐`);
     setTimeout(()=>{
-      btn.classList.remove('wrong');
-      btn.disabled=false;
+      btn.classList.remove('wrong'); btn.disabled=false;
       btns.forEach(b=>{ if(b!==btn) b.disabled=false; });
     },500);
   }
@@ -380,25 +401,26 @@ function showFeedback(correct, earned, item){
   document.getElementById('fb-icon').textContent=correct?'🎯':'💪';
   document.getElementById('fb-title').textContent=correct?'答對了！':'繼續加油！';
   document.getElementById('fb-stars').textContent=earned>0?`+${earned} ⭐`:'';
-  document.getElementById('fb-meaning').innerHTML=`<b>「${item.char}」</b> ${item.correct}<br>意思：${item.meaning}`;
+  document.getElementById('fb-idiom').textContent=item.full;
+  document.getElementById('fb-detail').innerHTML=`<b>「${item.wrongChar}」</b> → <b>「${item.correct}」</b><br>${item.meaning}`;
   document.getElementById('feedback').classList.add('show');
 }
 
 function nextQ(){
   document.getElementById('feedback').classList.remove('show');
   idx++;
-  if(idx>=ZIYIN.length){ showDone(); } else { showQ(); }
+  if(idx>=BIANZI.length){ showDone(); } else { showQ(); }
 }
 
 function showDone(){
   document.getElementById('prog-bar').style.width='100%';
-  document.getElementById('done-score').textContent=`首次答對 ${totalCorrect} / ${ZIYIN.length} 題`;
+  document.getElementById('done-score').textContent=`首次答對 ${totalCorrect} / ${BIANZI.length} 題`;
   document.getElementById('done-stars').textContent=`本次獲得 ⭐ ${sessionStars}`;
   const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
-  recs.push({unit:'unit1-ziyin',acc:Math.round(totalCorrect/ZIYIN.length*100),stars:sessionStars,date:new Date().toLocaleDateString('zh-TW')});
+  recs.push({unit:'unit1-bianzi',acc:Math.round(totalCorrect/BIANZI.length*100),stars:sessionStars,date:new Date().toLocaleDateString('zh-TW')});
   if(recs.length>50) recs.splice(0,recs.length-50);
   localStorage.setItem('xr_records',JSON.stringify(recs));
-  const perfect=(totalCorrect===ZIYIN.length)&&!anyMistake;
+  const perfect=(totalCorrect===BIANZI.length)&&!anyMistake;
   reportComplete(perfect);
   document.getElementById('done-screen').classList.add('show');
 }
@@ -409,11 +431,9 @@ function showStarPop(text){
   document.body.appendChild(el);
   setTimeout(()=>el.remove(),800);
 }
-
 function replay(){ startGame(); }
 
-// ── Error report ──
-function getQText(){const el=document.getElementById('q-phrase');return el?el.innerText.replace(/\s+/g,' ').trim().slice(0,120):GAME_SOURCE;}
+function getQText(){const el=document.getElementById('q-idiom');return el?el.innerText.replace(/\s+/g,' ').trim():GAME_SOURCE;}
 function showReport(){document.getElementById('report-q').textContent=getQText();document.getElementById('report-note').value='';document.getElementById('report-overlay').classList.add('show');}
 function closeReport(){document.getElementById('report-overlay').classList.remove('show');}
 async function submitReport(){const data={game:GAME_ID,source:GAME_SOURCE,qText:document.getElementById('report-q').textContent,note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
