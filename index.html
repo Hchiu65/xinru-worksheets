@@ -318,6 +318,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 <!-- Unit Tab Bar -->
 <div class="tab-bar-wrap">
   <div class="tab-bar" id="unit-tabs">
+    <button class="tab-btn" data-u="1" onclick="switchUnit(1)">第一單元</button>
     <button class="tab-btn" data-u="6" onclick="switchUnit(6)">第六單元</button>
     <button class="tab-btn" data-u="7" onclick="switchUnit(7)">第七單元</button>
     <button class="tab-btn" data-u="0" onclick="switchUnit(0)">有得3C</button>
@@ -328,6 +329,22 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 
 <!-- All unit cards (filtered by tab) -->
 <div class="unit-list" id="unit-card-list">
+
+  <!-- 第一單元 -->
+  <a class="unit-card" href="unit1-ziyin.html" data-gid="u1ziyin" data-unit="1">
+    <div class="card-left">
+      <div class="unit-emoji ue-purple">🔊</div>
+      <div class="unit-title">字音辨正</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">15 題，選出正確的注音符號</div>
+        <div class="unit-tags"><span class="tag tg-purple">選擇題</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
 
   <!-- 第六單元 -->
   <a class="unit-card" href="unit6.html" data-gid="unit6" data-unit="6">
@@ -625,7 +642,7 @@ const FB_URL = "https://xinru-class-default-rtdb.firebaseio.com";
 const BADGES = {b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'};
 const TITLES  = {t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王'};
 const MEDALS  = ['🥇','🥈','🥉'];
-const GAME_LABELS = {unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)','math-diag':'四則運算診斷'};
+const GAME_LABELS = {u1ziyin:'字音辨正(一)',unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)','math-diag':'四則運算診斷'};
 
 function getStars()    { return parseInt(localStorage.getItem('xr_stars')||'0'); }
 function getName()     { return localStorage.getItem('xr_name')||''; }
@@ -1001,6 +1018,7 @@ document.getElementById('auth-bday').addEventListener('keydown',e=>{ if(e.key===
 
 /* ── Score emoji ── */
 const GID_TO_UNIT = {
+  u1ziyin:'unit1-ziyin',
   unit6:'unit6', unit6m:'unit6-match',
   u7match:'u7match', u7ziyin:'unit7-ziyin', u7bianzi:'unit7-bianzi',
   u7chengyu:'u7chengyu', u7gaicuo:'u7gaicuo', u7bopomo:'u7bopomo', u7vocab:'u7vocab',
@@ -1037,7 +1055,7 @@ function updateCardStats() {
 }
 
 /* ── Unit Tab Filter ── */
-const UNIT_NAMES = {6:'第六單元',7:'第七單元',0:'有得3C',99:'🔢 數學練習'};
+const UNIT_NAMES = {1:'第一單元',6:'第六單元',7:'第七單元',0:'有得3C',99:'🔢 數學練習'};
 
 function switchUnit(n) {
   const cards = document.querySelectorAll('#unit-card-list .unit-card[data-unit]');
