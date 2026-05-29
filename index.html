@@ -584,14 +584,23 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 
 <div id="auth-modal">
   <div class="modal-box">
-    <!-- Step 1: username -->
-    <div id="auth-s1">
+    <!-- Step 0: choice -->
+    <div id="auth-s0">
       <div class="modal-emoji">👋</div>
       <h3>歡迎！</h3>
+      <p>請選擇登入方式</p>
+      <button class="modal-btn" onclick="showAuthPanel('s1')" style="margin-bottom:10px">🙋 帳號登入 / 註冊</button>
+      <button class="modal-btn" onclick="loginAsGuest()" style="background:linear-gradient(135deg,#aaa,#888)">👀 訪客瀏覽</button>
+      <p style="font-size:11px;color:#ccc;margin-top:10px">訪客模式不儲存任何紀錄</p>
+    </div>
+    <!-- Step 1: username -->
+    <div id="auth-s1" style="display:none">
+      <div class="modal-emoji">📝</div>
+      <h3>帳號登入</h3>
       <p>輸入你的帳號名稱</p>
       <input id="auth-name" class="modal-input" type="text" maxlength="12" placeholder="帳號名稱">
       <button class="modal-btn" onclick="authStep1()">下一步 →</button>
-      <button class="modal-btn-sub" onclick="loginAsGuest()">👀 訪客瀏覽（不儲存紀錄）</button>
+      <button class="modal-btn-sub" onclick="showAuthPanel('s0')">← 返回</button>
     </div>
     <!-- Step 2: birthday -->
     <div id="auth-s2" style="display:none">
@@ -630,7 +639,7 @@ function getCDs()      { return JSON.parse(localStorage.getItem('xr_cooldowns')|
 let _authName = '', _authExists = false;
 
 function showAuthPanel(p) {
-  ['s1','s2','loading'].forEach(id => {
+  ['s0','s1','s2','loading'].forEach(id => {
     document.getElementById('auth-'+id).style.display = id===p ? '' : 'none';
   });
   document.getElementById('auth-modal').classList.add('show');
@@ -938,7 +947,7 @@ async function loadMiniLeaderboard() {
 function render() {
   const name = getName();
   const bday = localStorage.getItem('xr_bday');
-  if (!name || !bday) { showAuthPanel('s1'); return; }
+  if (!name || !bday) { showAuthPanel('s0'); return; }
 
   const eq=getEquipped(), owned=getOwned(), records=getRecords(), cds=getCDs();
   document.getElementById('avatar').textContent = (eq.badge&&owned[eq.badge])?BADGES[eq.badge]:'😊';
