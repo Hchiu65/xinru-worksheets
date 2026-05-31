@@ -8,13 +8,6 @@
 * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:"標楷體","DFKai-SB",serif; background:#f0f7f5; margin:0; padding:0 0 20px; color:#222; min-height:100vh; }
 
-#name-modal { position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:900; }
-.modal-box { background:#fff;border-radius:18px;padding:32px 28px;text-align:center;width:300px;box-shadow:0 8px 32px rgba(0,0,0,.2); }
-.modal-box h2 { margin:0 0 6px;font-size:22px;color:#16a085; }
-.modal-box p { color:#666;font-size:16px;margin:0 0 18px; }
-#name-input { width:100%;padding:12px 14px;font-size:20px;font-family:inherit;border:2px solid #a8dfd4;border-radius:10px;margin-bottom:14px;text-align:center; }
-.btn-start { width:100%;padding:14px;background:#16a085;color:#fff;border:none;border-radius:10px;font-size:20px;font-family:inherit;cursor:pointer;letter-spacing:2px; }
-
 header { background:linear-gradient(135deg,#16a085,#1abc9c);color:#fff;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between; }
 .hdr-title { font-size:20px;letter-spacing:3px;flex:1;text-align:center; }
 .hdr-title small { display:block;font-size:12px;opacity:.7;letter-spacing:1px;margin-top:2px; }
@@ -100,15 +93,6 @@ header { background:linear-gradient(135deg,#16a085,#1abc9c);color:#fff;padding:1
 </style>
 </head>
 <body>
-
-<div id="name-modal">
-  <div class="modal-box">
-    <h2>👋 歡迎！</h2>
-    <p>請輸入你的名字開始遊戲</p>
-    <input id="name-input" type="text" placeholder="我的名字" maxlength="10">
-    <button class="btn-start" onclick="saveName()">開始 ▶</button>
-  </div>
-</div>
 
 <header>
   <a href="index.html" class="btn-home">🏠</a>
@@ -394,20 +378,9 @@ function recordMistake(word,question){
 }
 
 function init(){
-  const name=getPlayerName();
-  if(!name){document.getElementById('name-modal').style.display='flex';}
-  else{document.getElementById('name-modal').style.display='none';startGame();}
   document.getElementById('hdr-star-count').textContent=getStars();
-}
-
-function saveName(){
-  const val=document.getElementById('name-input').value.trim();
-  if(!val)return;
-  localStorage.setItem('xr_name',val);
-  document.getElementById('name-modal').style.display='none';
   startGame();
 }
-document.getElementById('name-input').addEventListener('keydown',e=>{if(e.key==='Enter')saveName();});
 
 function startGame(){
   if(isLocked()){showLockOverlay();return;}
