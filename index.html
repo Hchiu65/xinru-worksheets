@@ -766,6 +766,20 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
       <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
     </div>
   </a>
+  <a class="unit-card" href="unit8-gaicuo.html" data-gid="u8gaicuo" data-unit="8">
+    <div class="card-left">
+      <div class="unit-emoji ue-red">✏️</div>
+      <div class="unit-title">改錯字（作業）</div>
+    </div>
+    <div class="card-right">
+      <div class="card-info">
+        <div class="unit-desc">22 題，找出成語中的錯字並改正</div>
+        <div class="unit-tags"><span class="tag tg-red">改錯字</span><span class="tag tg-gold">⭐ 得星星</span></div>
+        <div class="stat-plays"></div>
+      </div>
+      <div class="card-score"><div class="face-emoji score-none">😶</div><div class="face-pct" style="color:#ccc;font-size:10px">未玩</div></div>
+    </div>
+  </a>
   <a class="unit-card" href="u8mingyan-mcq.html" data-gid="u8mingyan-mcq" data-unit="8">
     <div class="card-left">
       <div class="unit-emoji ue-teal">🧠</div>
@@ -946,7 +960,7 @@ const FB_URL = "https://xinru-class-default-rtdb.firebaseio.com";
 const BADGES = {b_panda:'🐼',b_fox:'🦊',b_penguin:'🐧',b_butterfly:'🦋',b_tiger:'🐯',b_lion:'🦁',b_dragon:'🐉',b_unicorn:'🦄'};
 const TITLES  = {t_expert:'成語小達人',t_master:'成語大師',t_king:'成語無敵王'};
 const MEDALS  = ['🥇','🥈','🥉'];
-const GAME_LABELS = {u1ziyin:'字音辨正(一)',u1bianzi:'找錯別字(一)',u1match:'連連看(一)',u2ziyin:'字音辨正(二)',u2bianzi:'找錯別字(二)',u2match:'連連看(二)',u3ziyin:'字音辨正(三)',u3bianzi:'找錯別字(三)',u3match:'連連看(三)',u4ziyin:'字音辨正(四)',u4bianzi:'找錯別字(四)',u4match:'連連看(四)',u5ziyin:'字音辨正(五)',u5bianzi:'找錯別字(五)',u5match:'連連看(五)',unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正(七)',u7bianzi:'找錯別字(七)',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)',u8ziyin:'字音辨正(八)',u8bianzi:'找錯別字(八)',u8match:'連連看(八)',u8mingyan:'名言填空(八)','u8mingyan-match':'名言連連看(八)','u8mingyan-mcq':'名言選擇題(八)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)','math-diag':'四則運算診斷'};
+const GAME_LABELS = {u1ziyin:'字音辨正(一)',u1bianzi:'找錯別字(一)',u1match:'連連看(一)',u2ziyin:'字音辨正(二)',u2bianzi:'找錯別字(二)',u2match:'連連看(二)',u3ziyin:'字音辨正(三)',u3bianzi:'找錯別字(三)',u3match:'連連看(三)',u4ziyin:'字音辨正(四)',u4bianzi:'找錯別字(四)',u4match:'連連看(四)',u5ziyin:'字音辨正(五)',u5bianzi:'找錯別字(五)',u5match:'連連看(五)',unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正(七)',u7bianzi:'找錯別字(七)',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)',u8ziyin:'字音辨正(八)',u8bianzi:'找錯別字(八)',u8match:'連連看(八)',u8mingyan:'名言填空(八)','u8mingyan-match':'名言連連看(八)','u8mingyan-mcq':'名言選擇題(八)',u8gaicuo:'改錯字(八作業)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)','math-diag':'四則運算診斷'};
 
 function getStars()    { return parseInt(localStorage.getItem('xr_stars')||'0'); }
 function getName()     { return localStorage.getItem('xr_name')||''; }
@@ -1331,7 +1345,7 @@ const GID_TO_UNIT = {
   unit6:'unit6', unit6m:'unit6-match',
   u7match:'u7match', u7ziyin:'unit7-ziyin', u7bianzi:'unit7-bianzi',
   u7chengyu:'u7chengyu', u7gaicuo:'u7gaicuo', u7bopomo:'u7bopomo', u7vocab:'u7vocab',
-  u8ziyin:'unit8-ziyin', u8bianzi:'unit8-bianzi', u8match:'u8match',
+  u8ziyin:'unit8-ziyin', u8bianzi:'unit8-bianzi', u8match:'u8match', u8gaicuo:'u8gaicuo',
   'y3c-match':'y3c-match', 'y3c-chengyu':'y3c-chengyu', 'y3c-vocab':'y3c-vocab', 'y3c-gaicuo':'y3c-gaicuo',
   'math-diag':'math-diag'
 };
