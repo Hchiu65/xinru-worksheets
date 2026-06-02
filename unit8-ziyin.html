@@ -392,6 +392,7 @@ function showFeedback(correct, earned, item) {
   document.getElementById('fb-meaning').innerHTML =
     `<b>「${item.char}」</b> ${item.correct}<br>意思：${item.meaning}`;
   document.getElementById('feedback').classList.add('show');
+  if (correct) speak(item.phrase.replace(/「([^」]+)」/, '$1'));
 }
 
 function nextQ() {
