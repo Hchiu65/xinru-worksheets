@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -186,7 +186,7 @@ function speak(text){if(!window.speechSynthesis)return;const u=new SpeechSynthes
 
 function startGame(){if(isLocked()){showLockOverlay();return;}order=shuffle([...Array(BIANZI.length).keys()]);idx=0;sessionStars=0;totalCorrect=0;anyMistake=false;document.getElementById('star-display').textContent=getStars();document.getElementById('done-screen').classList.remove('show');showQ();}
 
-function showQ(){const item=BIANZI[order[idx]];mistakeCount=0;document.getElementById('prog-text').textContent=`${idx+1} / ${BIANZI.length}`;document.getElementById('q-num').textContent=`第 ${idx+1} 題 / 共 ${BIANZI.length} 題`;document.getElementById('prog-bar').style.width=`${(idx/BIANZI.length)*100}%`;document.getElementById('correct-reveal').classList.remove('show');const idiomHtml=item.wrong.split('').map(ch=>ch===item.wrongChar?`<span class="wrong-char">${ch}</span>`:ch).join('');document.getElementById('q-idiom').innerHTML=idiomHtml;const shuffledOpts=shuffle(item.opts);const grid=document.getElementById('opts-grid');grid.innerHTML='';shuffledOpts.forEach(opt=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;btn.onclick=()=>onPick(btn,opt,item);grid.appendChild(btn);});speak(item.wrong);}
+function showQ(){const item=BIANZI[order[idx]];mistakeCount=0;document.getElementById('prog-text').textContent=`${idx+1} / ${BIANZI.length}`;document.getElementById('q-num').textContent=`第 ${idx+1} 題 / 共 ${BIANZI.length} 題`;document.getElementById('prog-bar').style.width=`${(idx/BIANZI.length)*100}%`;document.getElementById('correct-reveal').classList.remove('show');const idiomHtml=item.wrong.split('').map(ch=>ch===item.wrongChar?`<span class="wrong-char">${ch}</span>`:ch).join('');document.getElementById('q-idiom').innerHTML=idiomHtml;const shuffledOpts=shuffle(item.opts);const grid=document.getElementById('opts-grid');grid.innerHTML='';shuffledOpts.forEach(opt=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;btn.onclick=()=>onPick(btn,opt,item);grid.appendChild(btn);});speak(item.full);}
 
 function onPick(btn,picked,item){const btns=document.querySelectorAll('.opt-btn');btns.forEach(b=>b.disabled=true);if(picked===item.correct){btn.classList.add('correct');const earned=mistakeCount===0?5:1;if(mistakeCount===0)totalCorrect++;addStars(earned);showStarPop(`+${earned}⭐`);const cr=document.getElementById('correct-reveal');cr.textContent=`✅ 正確寫法：${item.full}`;cr.classList.add('show');speak(item.full);showFeedback(true,earned,item);}else{btn.classList.add('wrong');mistakeCount++;if(mistakeCount===1){anyMistake=true;recordMistake(item.full,item.meaning,item.wrong);}addStars(-mistakeCount);showStarPop(`-${mistakeCount}⭐`);setTimeout(()=>{btn.classList.remove('wrong');btn.disabled=false;btns.forEach(b=>{if(b!==btn)b.disabled=false;});},500);}}
 

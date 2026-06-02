@@ -6,10 +6,10 @@
 <title>找錯別字</title>
 <style>
 * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
-body { font-family:"標楷體","DFKai-SB",serif; background:#fff8f0; min-height:100vh; color:#333; }
+body { font-family:"標楷體","DFKai-SB",serif; background:#f0f7f0; min-height:100vh; color:#333; }
 
 header {
-  background:linear-gradient(135deg,#e67e22,#c0392b);
+  background:linear-gradient(135deg,#27ae60,#2ecc71);
   padding:14px 16px 12px;
   display:flex; align-items:center; justify-content:space-between;
   color:#fff;
@@ -29,16 +29,15 @@ header {
 
 .main { padding:16px 14px 40px; max-width:480px; margin:0 auto; }
 
-/* Question card */
 .q-card {
   background:#fff; border-radius:20px; padding:22px 18px 20px;
-  box-shadow:0 4px 20px rgba(230,126,34,.15); margin-bottom:18px;
+  box-shadow:0 4px 20px rgba(39,174,96,.15); margin-bottom:18px;
   text-align:center;
 }
 .q-num { font-size:13px; color:#aaa; margin-bottom:8px; }
 .q-label {
-  font-size:15px; color:#e67e22; font-weight:bold; margin-bottom:14px;
-  background:#fff3e0; border-radius:8px; padding:6px 12px; display:inline-block;
+  font-size:15px; color:#27ae60; font-weight:bold; margin-bottom:14px;
+  background:#f0fff4; border-radius:8px; padding:6px 12px; display:inline-block;
 }
 .q-idiom {
   font-size:34px; font-weight:bold; letter-spacing:6px; margin-bottom:16px;
@@ -62,13 +61,12 @@ header {
 }
 .correct-reveal.show { display:block; }
 
-/* Options */
 .opts-grid {
   display:grid; grid-template-columns:1fr 1fr; gap:12px;
   margin-bottom:18px;
 }
 .opt-btn {
-  background:#fff; border:2px solid #ffd7b0; border-radius:14px;
+  background:#fff; border:2px solid #b2dfdb; border-radius:14px;
   padding:20px 8px; font-size:32px; font-family:inherit;
   cursor:pointer; color:#333; font-weight:bold;
   transition:background .12s, border-color .12s, transform .1s;
@@ -84,7 +82,6 @@ header {
   60%{transform:translateX(6px)}
 }
 
-/* Feedback overlay */
 #feedback {
   display:none; position:fixed; inset:0;
   align-items:center; justify-content:center;
@@ -101,11 +98,11 @@ header {
 .fb-stars { font-size:20px; color:#f5a623; margin-bottom:8px; }
 .fb-idiom {
   font-size:24px; font-weight:bold; letter-spacing:4px;
-  color:#c0392b; margin-bottom:4px;
+  color:#27ae60; margin-bottom:4px;
 }
 .fb-detail { font-size:14px; color:#555; margin-bottom:18px; line-height:1.7; }
 .fb-next {
-  width:100%; padding:13px; background:linear-gradient(135deg,#e67e22,#c0392b);
+  width:100%; padding:13px; background:linear-gradient(135deg,#27ae60,#2ecc71);
   color:#fff; border:none; border-radius:12px;
   font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold;
 }
@@ -122,28 +119,26 @@ header {
   100%{opacity:0;transform:translate(-50%,-200%) scale(1)}
 }
 
-/* Done screen */
 #done-screen {
   display:none; position:fixed; inset:0;
-  background:#fff8f0; align-items:center; justify-content:center;
+  background:#f0f7f0; align-items:center; justify-content:center;
   z-index:800; flex-direction:column; padding:24px;
 }
 #done-screen.show { display:flex; }
 .done-box { text-align:center; max-width:340px; width:100%; }
 .done-icon { font-size:72px; margin-bottom:12px; }
-.done-title { font-size:26px; font-weight:bold; margin-bottom:8px; color:#e67e22; }
+.done-title { font-size:26px; font-weight:bold; margin-bottom:8px; color:#27ae60; }
 .done-score { font-size:18px; color:#666; margin-bottom:8px; }
 .done-stars { font-size:32px; color:#f5a623; font-weight:bold; margin-bottom:24px; }
 .done-btn {
   display:block; width:100%; padding:14px;
-  background:linear-gradient(135deg,#e67e22,#c0392b);
+  background:linear-gradient(135deg,#27ae60,#2ecc71);
   color:#fff; border:none; border-radius:14px;
   font-size:18px; font-family:inherit; cursor:pointer; font-weight:bold;
   margin-bottom:12px; text-decoration:none; text-align:center;
 }
-.done-btn.secondary { background:#fff3e0; color:#e67e22; }
+.done-btn.secondary { background:#d4efdf; color:#27ae60; }
 
-/* ── 13吋 iPad（≥1000px）─ */
 @media (min-width: 1000px) {
   header          { padding:18px 28px 16px; }
   .btn-home       { font-size:30px; }
@@ -182,7 +177,6 @@ header {
   .report-note    { font-size:18px; }
   .report-btn-cancel,.report-btn-send { font-size:20px; padding:16px; }
 }
-/* ── Error report ── */
 .btn-report{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:16px;padding:6px 14px;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;font-family:inherit;flex-shrink:0;}
 .btn-report:active{background:rgba(255,255,255,.28);}
 #report-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:950;align-items:center;justify-content:center;}
@@ -206,7 +200,7 @@ header {
     <div class="hdr-title">找錯別字</div>
   </div>
   <div class="hdr-right">
-    <div class="progress-text" id="prog-text">1 / 14</div>
+    <div class="progress-text" id="prog-text">1 / 20</div>
     <div class="star-pill">⭐ <span id="star-display">0</span></div>
     <button class="btn-report" onclick="showReport()">⚠️ 回報</button>
   </div>
@@ -215,7 +209,7 @@ header {
 
 <div class="main">
   <div class="q-card">
-    <div class="q-num" id="q-num">第 1 題 / 共 14 題</div>
+    <div class="q-num" id="q-num">第 1 題 / 共 20 題</div>
     <div class="q-label">🔍 紅色的字寫錯了，選出正確的字！</div>
     <div class="q-idiom" id="q-idiom"></div>
     <div class="q-instruction">（點選下方正確的字來替換紅色的錯別字）</div>
@@ -225,7 +219,6 @@ header {
   <div class="opts-grid" id="opts-grid"></div>
 </div>
 
-<!-- Feedback -->
 <div id="feedback">
   <div class="fb-box">
     <div class="fb-icon" id="fb-icon"></div>
@@ -237,7 +230,6 @@ header {
   </div>
 </div>
 
-<!-- Done -->
 <div id="done-screen">
   <div class="done-box">
     <div class="done-icon">🏆</div>
@@ -249,23 +241,21 @@ header {
   </div>
 </div>
 
-<!-- Lock overlay -->
 <div id="lock-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center">
   <div style="background:#fff;border-radius:22px;padding:32px 24px 28px;width:88%;max-width:340px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)">
     <div style="font-size:56px;line-height:1">🔒</div>
     <div style="font-size:22px;font-weight:bold;margin:12px 0 6px;color:#e67e22">關卡暫時鎖定</div>
     <div style="font-size:15px;color:#555;line-height:1.9;margin-bottom:6px">連續兩次全對！<br>請再完成其他 <b id="lock-remain">2</b> 個關卡再回來。</div>
     <div style="font-size:13px;color:#999;margin-bottom:20px">可去玩：<span id="lock-others"></span></div>
-    <a href="index.html" style="display:block;padding:13px;background:linear-gradient(135deg,#667eea,#9b59b6);color:#fff;border-radius:12px;font-size:17px;font-family:inherit;font-weight:bold;text-decoration:none">🏠 去選其他關卡</a>
+    <a href="index.html" style="display:block;padding:13px;background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff;border-radius:12px;font-size:17px;font-family:inherit;font-weight:bold;text-decoration:none">🏠 去選其他關卡</a>
   </div>
 </div>
 
 <script>
-// ── Cooldown / Cloud ──────────────────────────────────────────────────────────
-const GAME_ID = 'u7bianzi';
-const GAME_SOURCE = '第七單元　找錯別字';
+const GAME_ID = 'u8bianzi';
+const GAME_SOURCE = '第八單元　找錯別字';
 const FB_URL  = 'https://xinru-class-default-rtdb.firebaseio.com';
-const GAME_LABELS = {u1ziyin:'字音辨正(一)',u1bianzi:'找錯別字(一)',u1match:'連連看(一)',u2ziyin:'字音辨正(二)',u2bianzi:'找錯別字(二)',u2match:'連連看(二)',u3ziyin:'字音辨正(三)',u3bianzi:'找錯別字(三)',u3match:'連連看(三)',u4ziyin:'字音辨正(四)',u4bianzi:'找錯別字(四)',u4match:'連連看(四)',u5ziyin:'字音辨正(五)',u5bianzi:'找錯別字(五)',u5match:'連連看(五)',unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正',u7bianzi:'找錯別字',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)',u8ziyin:'字音辨正(八)',u8bianzi:'找錯別字(八)',u8match:'連連看(八)'};
+const GAME_LABELS = {u1ziyin:'字音辨正(一)',u1bianzi:'找錯別字(一)',u1match:'連連看(一)',u2ziyin:'字音辨正(二)',u2bianzi:'找錯別字(二)',u2match:'連連看(二)',u3ziyin:'字音辨正(三)',u3bianzi:'找錯別字(三)',u3match:'連連看(三)',u4ziyin:'字音辨正(四)',u4bianzi:'找錯別字(四)',u4match:'連連看(四)',u5ziyin:'字音辨正(五)',u5bianzi:'找錯別字(五)',u5match:'連連看(五)',unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正(七)',u7bianzi:'找錯別字(七)',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)',u8ziyin:'字音辨正(八)',u8bianzi:'找錯別字(八)',u8match:'連連看(八)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)','math-diag':'四則運算診斷'};
 function getCDs(){return JSON.parse(localStorage.getItem('xr_cooldowns')||'{}');}
 function saveCDs(cd){localStorage.setItem('xr_cooldowns',JSON.stringify(cd));}
 function isLocked(){const g=getCDs()[GAME_ID];return !!(g&&g.locked&&(g.unlockBy||[]).length<2);}
@@ -301,53 +291,69 @@ function showLockOverlay(){
   document.getElementById('lock-overlay').style.display='flex';
 }
 
-// ── Data ─────────────────────────────────────────────────────────────────────
 const BIANZI = [
-  { wrong:'跨下之辱', wrongChar:'跨', correct:'胯', full:'胯下之辱',
-    meaning:'忍受極大屈辱（韓信曾從惡霸胯下爬過）',
-    opts:['胯','誇','垮','夸'] },
-  { wrong:'跳望遠方', wrongChar:'跳', correct:'眺', full:'眺望遠方',
-    meaning:'向遠處眺望',
-    opts:['眺','桃','挑','逃'] },
-  { wrong:'實事求事', wrongChar:'事', correct:'是', full:'實事求是',
-    meaning:'按實際情況，切實辦事',
-    opts:['是','氏','勢','侍'] },
-  { wrong:'對牛談琴', wrongChar:'談', correct:'彈', full:'對牛彈琴',
-    meaning:'比喻對不懂道理的人講道理，彼此無法溝通',
-    opts:['彈','談','探','貪'] },
-  { wrong:'屢行義務', wrongChar:'屢', correct:'履', full:'履行義務',
-    meaning:'執行、完成（義務或承諾）',
-    opts:['履','屢','慮','旅'] },
-  { wrong:'幕名而來', wrongChar:'幕', correct:'慕', full:'慕名而來',
-    meaning:'仰慕人家的好名聲而前來',
-    opts:['慕','暮','募','謀'] },
-  { wrong:'態度輕篾', wrongChar:'篾', correct:'蔑', full:'態度輕蔑',
-    meaning:'看不起別人、藐視',
-    opts:['蔑','滅','鐵','撇'] },
-  { wrong:'慢不經心', wrongChar:'慢', correct:'漫', full:'漫不經心',
-    meaning:'做事毫不留意、隨便',
-    opts:['漫','蔓','幔','鬘'] },
-  { wrong:'摧促上路', wrongChar:'摧', correct:'催', full:'催促上路',
-    meaning:'促使他人加快動作',
-    opts:['催','崔','堆','推'] },
-  { wrong:'滿目愴痍', wrongChar:'愴', correct:'瘡', full:'滿目瘡痍',
-    meaning:'所見到的都是殘破不堪的景象',
-    opts:['瘡','蒼','倉','槍'] },
-  { wrong:'滿腹勞騷', wrongChar:'勞', correct:'牢', full:'滿腹牢騷',
-    meaning:'心情抑鬱，一肚子怨言',
-    opts:['牢','撈','嘮','囉'] },
-  { wrong:'爾愚我詐', wrongChar:'愚', correct:'虞', full:'爾虞我詐',
-    meaning:'彼此鉤心鬥角，互相欺騙',
-    opts:['虞','娛','瑜','漁'] },
-  { wrong:'精瑩剔透', wrongChar:'精', correct:'晶', full:'晶瑩剔透',
-    meaning:'光亮透明的樣子',
-    opts:['晶','睛','鯨','菁'] },
-  { wrong:'蒼海桑田', wrongChar:'蒼', correct:'滄', full:'滄海桑田',
-    meaning:'比喻世事多變，人生無常',
-    opts:['滄','艙','倉','傖'] },
+  { wrong:'蜜蜂蜇傷', wrongChar:'蜇', correct:'螫', full:'蜜蜂螫傷',
+    meaning:'被蜂、蠍等用尾針或鈎刺所刺傷（螫 ㄓㄜ）',
+    opts:['螫','蟄','蠆','螯'] },
+  { wrong:'誓死如歸', wrongChar:'誓', correct:'視', full:'視死如歸',
+    meaning:'把死看成像回家一樣，形容勇敢不怕死',
+    opts:['視','示','氏','勢'] },
+  { wrong:'誘柺小孩', wrongChar:'柺', correct:'拐', full:'誘拐小孩',
+    meaning:'用詐術騙走人或財物',
+    opts:['拐','揣','抉','拔'] },
+  { wrong:'貌然行事', wrongChar:'貌', correct:'貿', full:'貿然行事',
+    meaning:'輕率的樣子',
+    opts:['貿','茂','冒','帽'] },
+  { wrong:'辣手難事', wrongChar:'辣', correct:'棘', full:'棘手難事',
+    meaning:'比喻事情麻煩而難處理',
+    opts:['棘','刺','荊','萊'] },
+  { wrong:'遞奪公權', wrongChar:'遞', correct:'褫', full:'褫奪公權',
+    meaning:'剝奪犯人應享有的公權，是刑法的一種從刑',
+    opts:['褫','遮','褚','褪'] },
+  { wrong:'銀貨兩迄', wrongChar:'迄', correct:'訖', full:'銀貨兩訖',
+    meaning:'錢已付清，貨品已點收，表示完成交易（訖＝完畢）',
+    opts:['訖','汔','訴','記'] },
+  { wrong:'鳳毛鱗角', wrongChar:'鱗', correct:'麟', full:'鳳毛麟角',
+    meaning:'比喻稀罕珍貴的人、物',
+    opts:['麟','粼','驎','躪'] },
+  { wrong:'鳶飛唳天', wrongChar:'唳', correct:'戾', full:'鳶飛戾天',
+    meaning:'鷹在天空中飛翔，形容天地萬物各得其所（戾＝到達）',
+    opts:['戾','厲','勒','捩'] },
+  { wrong:'劈荊斬棘', wrongChar:'劈', correct:'披', full:'披荊斬棘',
+    meaning:'比喻克服種種困難',
+    opts:['披','批','砍','劃'] },
+  { wrong:'嘮叼不休', wrongChar:'叼', correct:'叨', full:'嘮叨不休',
+    meaning:'嘮嘮嗦嗦的說個不停（叨 ㄌㄠˊ ㄉㄠ）',
+    opts:['叨','叩','叫','吵'] },
+  { wrong:'嬌揉造作', wrongChar:'嬌', correct:'矯', full:'矯揉造作',
+    meaning:'虛假做作不自然',
+    opts:['矯','驕','喬','僑'] },
+  { wrong:'履戰履敗', wrongChar:'履', correct:'屢', full:'屢戰屢敗',
+    meaning:'每次打仗都失敗（屢＝每次）',
+    opts:['屢','縷','慮','旅'] },
+  { wrong:'憂心沖沖', wrongChar:'沖', correct:'忡', full:'憂心忡忡',
+    meaning:'心憂的樣子（忡 ㄔㄨㄥ）',
+    opts:['忡','衝','怔','恫'] },
+  { wrong:'憤不顧身', wrongChar:'憤', correct:'奮', full:'奮不顧身',
+    meaning:'勇往向前，不顧生死（奮＝拼命）',
+    opts:['奮','忿','勇','奄'] },
+  { wrong:'璀爛奪目', wrongChar:'爛', correct:'璨', full:'璀璨奪目',
+    meaning:'光明燦爛（璨＝美玉）',
+    opts:['璨','燦','贊','欒'] },
+  { wrong:'盤根錯結', wrongChar:'結', correct:'節', full:'盤根錯節',
+    meaning:'比喻事情複雜，不易理解（節＝枝節）',
+    opts:['節','截','劫','挫'] },
+  { wrong:'瞪目結舌', wrongChar:'瞪', correct:'瞠', full:'瞠目結舌',
+    meaning:'睜大眼睛說不出話，形容吃驚、受窘的樣子（ㄔㄥ）',
+    opts:['瞠','睜','矚','瞅'] },
+  { wrong:'稿木死灰', wrongChar:'稿', correct:'槁', full:'槁木死灰',
+    meaning:'形體寂靜有如枯木，精神渙散猶如冷灰（槁 ㄍㄠˇ）',
+    opts:['槁','藁','楷','橐'] },
+  { wrong:'箭拔弩張', wrongChar:'箭', correct:'劍', full:'劍拔弩張',
+    meaning:'形容情勢緊張或聲勢逼人，有一觸即發的可能',
+    opts:['劍','劈','刃','刀'] },
 ];
 
-// ── State ─────────────────────────────────────────────────────────────────────
 let order = [], idx = 0, sessionStars = 0;
 let mistakeCount = 0, totalCorrect = 0, anyMistake = false;
 
@@ -395,7 +401,6 @@ function showQ() {
   document.getElementById('prog-bar').style.width = `${(idx/BIANZI.length)*100}%`;
   document.getElementById('correct-reveal').classList.remove('show');
 
-  // Build idiom HTML with wrong char highlighted
   const idiomHtml = item.wrong.split('').map(ch =>
     ch === item.wrongChar
       ? `<span class="wrong-char">${ch}</span>`
@@ -403,7 +408,6 @@ function showQ() {
   ).join('');
   document.getElementById('q-idiom').innerHTML = idiomHtml;
 
-  // Options
   const shuffledOpts = shuffle(item.opts);
   const grid = document.getElementById('opts-grid');
   grid.innerHTML = '';
@@ -428,7 +432,6 @@ function onPick(btn, picked, item) {
     if (mistakeCount === 0) totalCorrect++;
     addStars(earned);
     showStarPop(`+${earned}⭐`);
-    // Show correct form
     const cr = document.getElementById('correct-reveal');
     cr.textContent = `✅ 正確寫法：${item.full}`;
     cr.classList.add('show');
@@ -474,7 +477,7 @@ function showDone() {
   document.getElementById('done-stars').textContent = `本次獲得 ⭐ ${sessionStars}`;
 
   const recs = JSON.parse(localStorage.getItem('xr_records')||'[]');
-  recs.push({ unit:'unit7-bianzi', acc:Math.round(totalCorrect/BIANZI.length*100), stars:sessionStars, date:new Date().toLocaleDateString('zh-TW') });
+  recs.push({ unit:'unit8-bianzi', acc:Math.round(totalCorrect/BIANZI.length*100), stars:sessionStars, date:new Date().toLocaleDateString('zh-TW') });
   if (recs.length > 50) recs.splice(0, recs.length - 50);
   localStorage.setItem('xr_records', JSON.stringify(recs));
 
@@ -496,7 +499,7 @@ function replay() { startGame(); }
 
 startGame();
 
-function getQText(){const el=document.getElementById('q-phrase')||document.getElementById('q-idiom')||document.querySelector('.q-card');return el?el.innerText.replace(/\s+/g,' ').trim().slice(0,120):'（無法取得題目）';}
+function getQText(){const el=document.getElementById('q-idiom')||document.querySelector('.q-card');return el?el.innerText.replace(/\s+/g,' ').trim().slice(0,120):'（無法取得題目）';}
 function showReport(){document.getElementById('report-q').textContent=getQText();document.getElementById('report-note').value='';document.getElementById('report-overlay').classList.add('show');}
 function closeReport(){document.getElementById('report-overlay').classList.remove('show');}
 async function submitReport(){const data={game:GAME_ID,source:GAME_SOURCE,qText:document.getElementById('report-q').textContent,note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}

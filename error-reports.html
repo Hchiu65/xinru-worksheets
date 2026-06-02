@@ -620,8 +620,10 @@ function confirmStep() {
     document.getElementById('confirm-btn').textContent='是，確定執行';
     document.getElementById('confirm-btn').style.background='#8b0000';
   } else if (confirmPhase===2) {
+    const action = confirmAction;
+    const payload = confirmPayload;
     closeConfirm();
-    executeAction(confirmAction, confirmPayload);
+    executeAction(action, payload);
   }
 }
 function closeConfirm() {
