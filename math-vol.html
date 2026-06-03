@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>數學單位換算練習</title>
+<style>
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:"標楷體","DFKai-SB",serif; background:#eaf4fb; margin:0; padding:0 0 20px; color:#222; min-height:100vh; }
+
+header { background:linear-gradient(135deg,#2980b9,#3498db);color:#fff;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px; }
+.hdr-title { font-size:20px;letter-spacing:3px;flex:1;text-align:center; }
+.hdr-title small { display:block;font-size:12px;opacity:.7;letter-spacing:1px;margin-top:2px; }
+.hdr-stars { background:rgba(255,255,255,.18);border-radius:20px;padding:6px 14px;font-size:20px;font-weight:bold;white-space:nowrap; }
+.btn-home { background:rgba(255,255,255,.2);border:none;border-radius:8px;color:#fff;font-size:20px;padding:7px 9px;cursor:pointer;text-decoration:none;flex-shrink:0;line-height:1;display:flex;align-items:center; }
+.btn-report { background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:16px;padding:6px 14px;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;font-family:inherit;flex-shrink:0; }
+.btn-report:active { background:rgba(255,255,255,.28); }
+
+.progress-wrap { background:#a8d4ee;height:8px; }
+.progress-fill { background:#2980b9;height:8px;transition:width .4s ease; }
+
+.q-counter { text-align:center;padding:10px 16px 0;font-size:15px;color:#888;letter-spacing:1px; }
+
+.q-card { background:#fff;border-radius:14px;margin:10px 12px;padding:18px 16px;box-shadow:0 2px 12px rgba(0,0,0,.08);line-height:1.7; }
+.q-label { font-size:13px;color:#2980b9;font-weight:bold;margin-bottom:6px;letter-spacing:1px; }
+.q-text { font-size:18px;color:#222; }
+.q-text.q-compare { font-size:20px;text-align:center;letter-spacing:3px;font-weight:bold;padding:8px 0; }
+
+/* 比比看：橫排 3 大按鈕 */
+.opts-compare { margin:10px 12px 0;display:none;gap:12px;justify-content:center; }
+.opt-cmp {
+  flex:1;max-width:100px;
+  background:#fff;border:2.5px solid #a8d4ee;border-radius:14px;
+  padding:18px 8px;font-size:26px;font-family:inherit;
+  cursor:pointer;text-align:center;
+  transition:background .12s,border-color .12s,transform .08s;
+  user-select:none;-webkit-user-select:none;
+}
+.opt-cmp:active:not(:disabled) { transform:scale(.93); }
+.opt-cmp.correct { background:#d5f5e3;border-color:#27ae60;color:#27ae60; }
+.opt-cmp.wrong   { background:#fdecea;border-color:#e74c3c;color:#e74c3c; }
+.opt-cmp:disabled { cursor:default; }
+
+/* 填填看：直排 4 按鈕 */
+.opts { margin:10px 12px 0;display:none;flex-direction:column;gap:10px; }
+.opt-btn {
+  background:#fff;border:2.5px solid #a8d4ee;border-radius:12px;
+  padding:13px 14px;font-size:16px;font-family:inherit;
+  cursor:pointer;text-align:left;display:flex;align-items:flex-start;gap:10px;
+  line-height:1.5;transition:background .12s,border-color .12s,transform .08s;
+  user-select:none;-webkit-user-select:none;
+}
+.opt-btn:active:not(:disabled) { transform:scale(.98); }
+.opt-label { flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#e8f4fb;color:#2980b9;font-weight:bold;font-size:15px;display:flex;align-items:center;justify-content:center;margin-top:1px; }
+.opt-text { flex:1; }
+.opt-btn.correct { background:#d5f5e3;border-color:#27ae60; }
+.opt-btn.correct .opt-label { background:#27ae60;color:#fff; }
+.opt-btn.wrong   { background:#fdecea;border-color:#e74c3c; }
+.opt-btn.wrong .opt-label { background:#e74c3c;color:#fff; }
+.opt-btn:disabled { cursor:default; }
+
+.exp-box { background:#fffde7;border-left:4px solid #f5a623;border-radius:0 10px 10px 0;margin:12px 12px 0;padding:12px 14px;font-size:15px;color:#5a4000;line-height:1.7;display:none; }
+.exp-box.show { display:block; }
+
+.next-btn { display:none;margin:14px 12px 0;width:calc(100% - 24px);padding:14px;background:linear-gradient(135deg,#2980b9,#3498db);color:#fff;border:none;border-radius:12px;font-size:17px;font-family:inherit;cursor:pointer;font-weight:bold;letter-spacing:2px; }
+.next-btn.show { display:block; }
+
+.star-pop { position:fixed;font-size:20px;font-weight:bold;color:#f5a623;pointer-events:none;z-index:800;animation:floatUp .9s ease forwards; }
+@keyframes floatUp { from{opacity:1;transform:translateY(0) scale(1);}to{opacity:0;transform:translateY(-70px) scale(1.3);} }
+
+.overlay-screen { display:none;position:fixed;inset:0;background:rgba(10,30,50,.6);align-items:center;justify-content:center;z-index:700;flex-direction:column; }
+.overlay-screen.show { display:flex; }
+.result-box { background:#fff;border-radius:18px;padding:28px 24px;text-align:center;width:88%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.25); }
+.result-box h2 { margin:0 0 4px;font-size:24px;color:#2980b9; }
+.result-box .big { font-size:48px;font-weight:bold;color:#f5a623;line-height:1.1;margin:10px 0; }
+.result-box .score { font-size:20px;color:#2980b9;font-weight:bold;margin:4px 0 12px; }
+.result-box .sub { font-size:15px;color:#888;margin-bottom:18px; }
+.btn-row { display:flex;gap:10px;margin-top:6px; }
+.btn-primary { flex:1;padding:14px;background:#2980b9;color:#fff;border:none;border-radius:10px;font-size:17px;font-family:inherit;cursor:pointer;font-weight:bold;letter-spacing:1px; }
+.btn-secondary { flex:1;padding:14px;background:#eee;color:#444;border:none;border-radius:10px;font-size:17px;font-family:inherit;cursor:pointer;font-weight:bold; }
+
+.confetti-piece { position:fixed;width:10px;height:10px;border-radius:2px;pointer-events:none;z-index:850;animation:confettiFall linear forwards; }
+@keyframes confettiFall { from{transform:translateY(-20px) rotate(0deg);opacity:1;}to{transform:translateY(100vh) rotate(720deg);opacity:0;} }
+
+#report-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:950;align-items:center;justify-content:center; }
+#report-overlay.show { display:flex; }
+.report-box { background:#fff;border-radius:22px;padding:28px 22px 22px;width:88%;max-width:380px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.25); }
+.report-title { font-size:18px;font-weight:bold;color:#e74c3c;margin-bottom:6px; }
+.report-sub { font-size:13px;color:#aaa;margin-bottom:12px; }
+.report-q { font-size:14px;color:#555;background:#f8f8f8;border-radius:10px;padding:10px 12px;margin-bottom:14px;line-height:1.7;text-align:left;word-break:break-all; }
+.report-note { width:100%;padding:10px;font-size:14px;font-family:inherit;border:1.5px solid #eee;border-radius:10px;margin-bottom:14px;resize:none;height:60px;outline:none;box-sizing:border-box; }
+.report-note:focus { border-color:#e74c3c; }
+.report-btns { display:flex;gap:10px; }
+.report-btn-cancel { flex:1;padding:12px;background:#f2f2f2;border:none;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;color:#666; }
+.report-btn-send { flex:1;padding:12px;background:#e74c3c;color:#fff;border:none;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;font-weight:bold; }
+
+@media (min-width:1000px) {
+  header { padding:18px 28px 16px; }
+  .hdr-title { font-size:26px;letter-spacing:4px; }
+  .hdr-stars { font-size:22px;padding:8px 18px; }
+  .q-card { margin:14px 20px;padding:22px 20px; }
+  .q-text { font-size:21px; }
+  .q-text.q-compare { font-size:26px; }
+  .opts-compare { margin:14px 20px 0; }
+  .opt-cmp { font-size:32px;padding:22px 12px; }
+  .opts { margin:14px 20px 0;gap:12px; }
+  .opt-btn { font-size:19px;padding:15px 18px; }
+  .exp-box { margin:14px 20px 0;font-size:17px; }
+  .next-btn { margin:16px 20px 0;width:calc(100% - 40px);font-size:19px; }
+  .btn-report { font-size:20px;padding:9px 22px; }
+  .report-box { max-width:520px; }
+  .report-title { font-size:24px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="btn-home">🏠</a>
+  <div class="hdr-title">
+    數學單位換算
+    <small>比比看 9 題 ＋ 填填看 13 題，共 22 題</small>
+  </div>
+  <div class="hdr-stars">⭐ <span id="hdr-star-count">0</span></div>
+  <button class="btn-report" onclick="showReport()">⚠️ 回報</button>
+</header>
+
+<div class="progress-wrap"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+<div class="q-counter" id="q-counter">題 1 / 22</div>
+
+<div class="q-card">
+  <div class="q-label" id="q-label">三、比比看</div>
+  <div class="q-text" id="q-text"></div>
+</div>
+
+<div class="opts-compare" id="opts-compare"></div>
+<div class="opts" id="opts"></div>
+<div class="exp-box" id="exp-box"></div>
+<button class="next-btn" id="next-btn" onclick="nextQ()">下一題 →</button>
+
+<div class="overlay-screen" id="final-screen">
+  <div class="result-box">
+    <h2>🎉 完成！</h2>
+    <div class="big" id="final-score"></div>
+    <div class="score" id="final-stars-txt"></div>
+    <div class="sub" id="final-sub"></div>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="restartGame()">↺ 再玩一次</button>
+      <button class="btn-primary" onclick="location.href='index.html'">回主頁</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const GAME_ID     = 'math-vol';
+const GAME_SOURCE = '數學單位換算練習';
+const FB_URL      = 'https://xinru-class-default-rtdb.firebaseio.com';
+const GAME_LABELS = {
+  'u1ziyin':'字音辨正(一)','u1bianzi':'找錯別字(一)','u1match':'連連看(一)',
+  'u2ziyin':'字音辨正(二)','u2bianzi':'找錯別字(二)','u2match':'連連看(二)',
+  'u3ziyin':'字音辨正(三)','u3bianzi':'找錯別字(三)','u3match':'連連看(三)',
+  'u4ziyin':'字音辨正(四)','u4bianzi':'找錯別字(四)','u4match':'連連看(四)',
+  'u5ziyin':'字音辨正(五)','u5bianzi':'找錯別字(五)','u5match':'連連看(五)',
+  'unit6':'詞語填空','unit6m':'成語連連看',
+  'u7ziyin':'字音辨正(七)','u7bianzi':'找錯別字(七)','u7gaicuo':'改錯字(作業)',
+  'u7bopomo':'字音辨字(作業)','u7vocab':'字彙練習(作業)','u7chengyu':'成語填空','u7match':'連連看(七)',
+  'u8ziyin':'字音辨正(八)','u8bianzi':'找錯別字(八)','u8match':'連連看(八)',
+  'u8mingyan':'名言填空(八)','u8mingyan-match':'名言連連看(八)','u8mingyan-mcq':'名言選擇題(八)',
+  'u8gaicuo':'改錯字(八作業)','u8bopomo':'字音辨字(八作業)','u8ziyin2':'字音辨正(八作業)',
+  'y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)',
+  'math-diag':'四則運算診斷','math-vol':'單位換算'
+};
+
+const QUESTIONS = [
+  // ── 三、比比看 ──
+  { s:'compare', label:'三、比比看',
+    q:'5,000 公升　□　500 立方公尺',
+    opts:['＞','＜','＝'], ans:1,
+    exp:'500 立方公尺 × 1,000 = 500,000 公升，而 5,000 < 500,000，所以填 ＜' },
+  { s:'compare', label:'三、比比看',
+    q:'49,300 公升　□　493 度',
+    opts:['＞','＜','＝'], ans:1,
+    exp:'1 度 = 1,000 公升，493 度 = 493,000 公升，49,300 < 493,000，所以填 ＜' },
+  { s:'compare', label:'三、比比看',
+    q:'2 公秉 80 公升　□　2.08 公秉',
+    opts:['＞','＜','＝'], ans:2,
+    exp:'80 公升 ÷ 1,000 = 0.08 公秉，左邊 = 2 + 0.08 = 2.08 公秉，兩邊相等，填 ＝' },
+  { s:'compare', label:'三、比比看',
+    q:'782 公升　□　0.0782 度',
+    opts:['＞','＜','＝'], ans:0,
+    exp:'0.0782 度 × 1,000 = 78.2 公升，782 > 78.2，所以填 ＞' },
+  { s:'compare', label:'三、比比看',
+    q:'910,000 毫升　□　9.1 公秉',
+    opts:['＞','＜','＝'], ans:1,
+    exp:'9.1 公秉 = 9,100 公升 = 9,100,000 毫升，910,000 < 9,100,000，填 ＜' },
+  { s:'compare', label:'三、比比看',
+    q:'1,100 公升　□　11 公秉',
+    opts:['＞','＜','＝'], ans:1,
+    exp:'11 公秉 × 1,000 = 11,000 公升，1,100 < 11,000，填 ＜' },
+  { s:'compare', label:'三、比比看',
+    q:'30 立方公尺　□　3 度',
+    opts:['＞','＜','＝'], ans:0,
+    exp:'1 立方公尺 = 1 度，30 立方公尺 = 30 度，30 > 3，填 ＞' },
+  { s:'compare', label:'三、比比看',
+    q:'82,940 立方公分　□　829.4 公升',
+    opts:['＞','＜','＝'], ans:1,
+    exp:'82,940 cm³ = 82,940 mL = 82.94 公升，82.94 < 829.4，填 ＜' },
+  { s:'compare', label:'三、比比看',
+    q:'5,660,000 立方公分　□　5.66 立方公尺',
+    opts:['＞','＜','＝'], ans:2,
+    exp:'5.66 立方公尺 × 1,000,000 = 5,660,000 cm³，兩邊相等，填 ＝' },
+
+  // ── 四、填填看 ──
+  { s:'fill', label:'四、填填看',
+    q:'12.18 立方公尺 ＝ ＿ 公秉',
+    opts:['1,218','121.8','12.18','0.1218'], ans:2,
+    exp:'1 立方公尺 = 1 公秉，1:1 換算，12.18 立方公尺 = 12.18 公秉' },
+  { s:'fill', label:'四、填填看',
+    q:'12.18 立方公尺 ＝ ＿ 公升',
+    opts:['1,218','12,180','121,800','1,218,000'], ans:1,
+    exp:'1 公秉 = 1,000 公升，12.18 × 1,000 = 12,180 公升' },
+  { s:'fill', label:'四、填填看',
+    q:'1 公升 600 毫升 ＝ ＿ 立方公分',
+    opts:['160','16,000','1,060','1,600'], ans:3,
+    exp:'1 公升 600 毫升 = 1,600 毫升，1 mL = 1 cm³，所以 = 1,600 立方公分' },
+  { s:'fill', label:'四、填填看',
+    q:'1 公升 600 毫升 ＝ ＿ 立方公尺',
+    opts:['0.0016','0.016','0.16','0.00016'], ans:0,
+    exp:'1,600 cm³ ÷ 1,000,000 = 0.0016 立方公尺（小數點左移 6 位）' },
+  { s:'fill', label:'四、填填看',
+    q:'1 公升 600 毫升 ＝ ＿ 公秉',
+    opts:['0.016','0.0016','0.16','0.00016'], ans:1,
+    exp:'1 立方公尺 = 1 公秉，0.0016 立方公尺 = 0.0016 公秉' },
+  { s:'fill', label:'四、填填看',
+    q:'620 公升 ＝ ＿ 公秉',
+    opts:['6.2','62','0.62','0.062'], ans:2,
+    exp:'公升換公秉除以 1,000，620 ÷ 1,000 = 0.62 公秉' },
+  { s:'fill', label:'四、填填看',
+    q:'620 公升 ＝ ＿ 立方公尺',
+    opts:['0.62','6.2','62','0.062'], ans:0,
+    exp:'1 公秉 = 1 立方公尺，0.62 公秉 = 0.62 立方公尺' },
+  { s:'fill', label:'四、填填看',
+    q:'7.23 度 ＝ ＿ 立方公尺',
+    opts:['72.3','0.723','723','7.23'], ans:3,
+    exp:'1 度 = 1 立方公尺，1:1 換算，7.23 度 = 7.23 立方公尺' },
+  { s:'fill', label:'四、填填看',
+    q:'7.23 度 ＝ ＿ 立方公分',
+    opts:['723,000','72,300,000','7,230,000','730,000'], ans:2,
+    exp:'7.23 立方公尺 × 1,000,000 = 7,230,000 cm³（小數點右移 6 位）' },
+  { s:'fill', label:'四、填填看',
+    q:'一個容器可裝滿 800 個 1 cm³ 的積木，容量是 ＿ 公升',
+    opts:['8','0.8','80','0.08'], ans:1,
+    exp:'800 cm³ = 800 mL，800 ÷ 1,000 = 0.8 公升' },
+  { s:'fill', label:'四、填填看',
+    q:'一個容積 9,300 毫升的蓄水容器，最多可裝入 ＿ 個 1 cm³ 的積木',
+    opts:['9,300','930','93,000','9.3'], ans:0,
+    exp:'1 mL = 1 cm³，9,300 mL = 9,300 cm³，可以裝 9,300 個' },
+  { s:'fill', label:'四、填填看',
+    q:'王伯伯魚塭（長 12m × 寬 6m × 高 2m），需要 ＿ 公秉的水',
+    opts:['14.4','1,440','1.44','144'], ans:3,
+    exp:'12 × 6 × 2 = 144 立方公尺，1 立方公尺 = 1 公秉，共需 144 公秉' },
+  { s:'fill', label:'四、填填看',
+    q:'王伯伯魚塭（長 12m × 寬 6m × 高 2m），需要 ＿ 公升的水',
+    opts:['14,400','1,440,000','144,000','1,440'], ans:2,
+    exp:'144 公秉 × 1,000 = 144,000 公升' },
+];
+
+let qi = 0, correctCount = 0, sessionStars = 0, answered = false, hadMistake = false;
+
+function getCDs(){return JSON.parse(localStorage.getItem('xr_cooldowns')||'{}');}
+function saveCDs(cd){localStorage.setItem('xr_cooldowns',JSON.stringify(cd));}
+function isLocked(){const g=getCDs()[GAME_ID];return !!(g&&g.locked&&(g.unlockBy||[]).length<2);}
+function reportComplete(perfect){
+  const cds=getCDs();
+  if(!cds[GAME_ID])cds[GAME_ID]={streak:0,locked:false,unlockBy:[]};
+  const me=cds[GAME_ID];
+  if(!me.locked){me.streak=perfect?(me.streak||0)+1:0;if(me.streak>=2){me.locked=true;me.unlockBy=[];}}
+  Object.keys(cds).forEach(id=>{
+    if(id===GAME_ID||!cds[id].locked)return;
+    if(!(cds[id].unlockBy||[]).includes(GAME_ID)){
+      cds[id].unlockBy=[...(cds[id].unlockBy||[]),GAME_ID];
+      if(cds[id].unlockBy.length>=2){cds[id].locked=false;cds[id].streak=0;cds[id].unlockBy=[];}
+    }
+  });
+  saveCDs(cds);pushToCloud();
+}
+async function pushToCloud(){
+  const name=localStorage.getItem('xr_name');if(!name)return;
+  const d={stars:parseInt(localStorage.getItem('xr_stars')||'0'),records:JSON.parse(localStorage.getItem('xr_records')||'[]'),mistakes:JSON.parse(localStorage.getItem('xr_mistakes')||'{}'),cooldowns:getCDs(),updated:Date.now()};
+  try{await fetch(`${FB_URL}/accounts/${encodeURIComponent(name)}.json`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});}catch(e){}
+}
+function showLockOverlay(){
+  const cds=getCDs(),me=cds[GAME_ID]||{},done=(me.unlockBy||[]).length;
+  document.getElementById('lock-remain').textContent=2-done;
+  document.getElementById('lock-others').textContent=Object.keys(GAME_LABELS).filter(k=>k!==GAME_ID).map(k=>GAME_LABELS[k]).join('、');
+  document.getElementById('lock-overlay').style.display='flex';
+}
+function getStars(){return parseInt(localStorage.getItem('xr_stars')||'0');}
+function addStars(n){
+  const s=getStars()+n;localStorage.setItem('xr_stars',s);
+  document.getElementById('hdr-star-count').textContent=s;
+  sessionStars+=n;
+}
+function recordMistake(word,question){
+  const all=JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
+  if(!all[word])all[word]={word,question:question||word,meaning:'',source:GAME_SOURCE,wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
+  all[word].wrongCount++;all[word].lastWrong=new Date().toLocaleDateString('zh-TW');
+  localStorage.setItem('xr_mistakes',JSON.stringify(all));
+}
+
+function init(){document.getElementById('hdr-star-count').textContent=getStars();startGame();}
+
+function startGame(){
+  if(isLocked()){showLockOverlay();return;}
+  qi=0;correctCount=0;sessionStars=0;answered=false;hadMistake=false;
+  renderQ();
+}
+
+function renderQ(){
+  const total=QUESTIONS.length;
+  const q=QUESTIONS[qi];
+  document.getElementById('q-counter').textContent=`題 ${qi+1} / ${total}`;
+  document.getElementById('prog').style.width=`${(qi/total)*100}%`;
+  document.getElementById('q-label').textContent=q.label;
+
+  const qtEl=document.getElementById('q-text');
+  qtEl.textContent=q.q;
+  if(q.s==='compare'){qtEl.classList.add('q-compare');}
+  else{qtEl.classList.remove('q-compare');}
+
+  const cmpEl=document.getElementById('opts-compare');
+  const lstEl=document.getElementById('opts');
+  cmpEl.innerHTML='';lstEl.innerHTML='';
+
+  if(q.s==='compare'){
+    cmpEl.style.display='flex';lstEl.style.display='none';
+    q.opts.forEach((opt,i)=>{
+      const btn=document.createElement('button');
+      btn.className='opt-cmp';btn.textContent=opt;
+      btn.onclick=()=>selectCmp(i,btn);
+      cmpEl.appendChild(btn);
+    });
+  } else {
+    cmpEl.style.display='none';lstEl.style.display='flex';
+    ['A','B','C','D'].slice(0,q.opts.length).forEach((lbl,i)=>{
+      const btn=document.createElement('button');
+      btn.className='opt-btn';
+      btn.innerHTML=`<span class="opt-label">${lbl}</span><span class="opt-text">${q.opts[i]}</span>`;
+      btn.onclick=()=>selectOpt(i,btn);
+      lstEl.appendChild(btn);
+    });
+  }
+
+  document.getElementById('exp-box').classList.remove('show');
+  document.getElementById('exp-box').textContent='';
+  document.getElementById('next-btn').classList.remove('show');
+  answered=false;
+}
+
+function selectCmp(idx,btn){
+  if(answered)return;answered=true;
+  const q=QUESTIONS[qi];
+  document.querySelectorAll('.opt-cmp').forEach(b=>b.disabled=true);
+  if(idx===q.ans){btn.classList.add('correct');correctCount++;addStars(15);showStarPop(btn,'+15 ⭐');}
+  else{btn.classList.add('wrong');hadMistake=true;recordMistake(q.q,q.q);document.querySelectorAll('.opt-cmp')[q.ans].classList.add('correct');addStars(5);showStarPop(btn,'+5 ⭐');}
+  showExp(q.exp);
+}
+
+function selectOpt(idx,btn){
+  if(answered)return;answered=true;
+  const q=QUESTIONS[qi];
+  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  if(idx===q.ans){btn.classList.add('correct');correctCount++;addStars(15);showStarPop(btn,'+15 ⭐');}
+  else{btn.classList.add('wrong');hadMistake=true;recordMistake(q.q,q.q);document.querySelectorAll('.opt-btn')[q.ans].classList.add('correct');addStars(5);showStarPop(btn,'+5 ⭐');}
+  showExp(q.exp);
+}
+
+function showExp(text){
+  const e=document.getElementById('exp-box');
+  e.textContent='💡 '+text;e.classList.add('show');
+  document.getElementById('next-btn').classList.add('show');
+}
+
+function showStarPop(el,text){
+  const r=el.getBoundingClientRect();
+  const pop=document.createElement('div');
+  pop.className='star-pop';pop.textContent=text;
+  pop.style.left=(r.left+r.width/2-30)+'px';pop.style.top=(r.top-10)+'px';
+  document.body.appendChild(pop);setTimeout(()=>pop.remove(),1000);
+}
+
+function nextQ(){
+  qi++;
+  if(qi>=QUESTIONS.length){showFinal();}
+  else{renderQ();window.scrollTo({top:0,behavior:'smooth'});}
+}
+
+function showFinal(){
+  const total=QUESTIONS.length,acc=Math.round(correctCount/total*100);
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('final-score').textContent=`${correctCount} / ${total} 題正確`;
+  document.getElementById('final-stars-txt').textContent=`+${sessionStars} ⭐`;
+  document.getElementById('final-sub').textContent=acc===100?'🏆 全對！單位換算超厲害！':acc>=80?'👍 答得很好！繼續保持！':'繼續加油！再練習一次吧！';
+  const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
+  recs.unshift({unit:GAME_ID,accuracy:acc,stars:sessionStars,date:new Date().toLocaleDateString('zh-TW')});
+  localStorage.setItem('xr_records',JSON.stringify(recs.slice(0,20)));
+  reportComplete(!hadMistake);
+  if(acc===100)launchConfetti();
+  document.getElementById('final-screen').classList.add('show');
+}
+
+function restartGame(){
+  document.getElementById('final-screen').classList.remove('show');
+  startGame();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function launchConfetti(){
+  const colors=['#f5a623','#4caf50','#2196f3','#e91e63','#9c27b0'];
+  for(let i=0;i<40;i++){
+    const el=document.createElement('div');el.className='confetti-piece';
+    el.style.cssText=`left:${Math.random()*100}%;background:${colors[i%5]};animation-duration:${1.2+Math.random()*1.2}s;animation-delay:${Math.random()*0.5}s`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),3000);
+  }
+}
+
+function getQText(){return QUESTIONS[Math.min(qi,QUESTIONS.length-1)].q;}
+function showReport(){document.getElementById('report-q').textContent=getQText();document.getElementById('report-note').value='';document.getElementById('report-overlay').classList.add('show');}
+function closeReport(){document.getElementById('report-overlay').classList.remove('show');}
+async function submitReport(){const data={game:GAME_ID,source:GAME_SOURCE,qText:document.getElementById('report-q').textContent,note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+
+init();
+</script>
+
+<div id="report-overlay">
+  <div class="report-box">
+    <div class="report-title">⚠️ 回報題目錯誤</div>
+    <div class="report-sub">這題有問題嗎？說明後老師會來確認</div>
+    <div class="report-q" id="report-q"></div>
+    <textarea class="report-note" id="report-note" placeholder="說明錯誤（可不填）"></textarea>
+    <div class="report-btns">
+      <button class="report-btn-cancel" onclick="closeReport()">取消</button>
+      <button class="report-btn-send" onclick="submitReport()">確認回報</button>
+    </div>
+  </div>
+</div>
+
+<div id="lock-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:22px;padding:32px 24px 28px;width:88%;max-width:340px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <div style="font-size:56px;line-height:1">🔒</div>
+    <div style="font-size:22px;font-weight:bold;margin:12px 0 6px;color:#e67e22">關卡暫時鎖定</div>
+    <div style="font-size:15px;color:#555;line-height:1.9;margin-bottom:6px">連續兩次全對！<br>請再完成其他 <b id="lock-remain">2</b> 個關卡再回來。</div>
+    <div style="font-size:13px;color:#999;margin-bottom:20px">可去玩：<span id="lock-others"></span></div>
+    <a href="index.html" style="display:block;padding:13px;background:linear-gradient(135deg,#2980b9,#3498db);color:#fff;border-radius:12px;font-size:17px;font-family:標楷體,DFKai-SB,serif;font-weight:bold;text-decoration:none">🏠 去選其他關卡</a>
+  </div>
+</div>
+</body>
+</html>
