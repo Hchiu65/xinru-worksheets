@@ -228,7 +228,7 @@ const ZIYIN = [
   { phrase:'「沂」水縣', char:'沂', correct:'ㄧˊ', opts:['ㄧ','ㄧˇ','ㄧˋ'], meaning:'河川名，山東的縣名' },
   { phrase:'「俄」羅斯', char:'俄', correct:'ㄜˊ', opts:['ㄜ','ㄜˇ','ㄜˋ'], meaning:'外來音譯，俄羅斯國名' },
   { phrase:'高「句」麗', char:'句', correct:'ㄍㄡ', opts:['ㄐㄩˋ','ㄍㄡˊ','ㄍㄡˋ'], meaning:'古國名特殊讀音，古代東北亞國家' },
-  { phrase:'吐「谷」渾', char:'谷', correct:'ㄩˋ', opts:['ㄍㄨˇ','ㄩˊ','ㄩˇ'], meaning:'音譯特殊讀音，古代民族' },
+  { phrase:'吐「谷」渾', char:'谷', correct:'ㄩˋ', opts:['ㄍㄨˇ','ㄩˊ','ㄩˇ'], meaning:'音譯特殊讀音，古代民族', tts:'吐育渾' },
   { phrase:'琅「琊」郡', char:'琊', correct:'ㄧㄚˊ', opts:['ㄧㄚ','ㄧㄚˇ','ㄧㄚˋ'], meaning:'地名用字，古代郡名' },
   { phrase:'諸「暨」縣', char:'暨', correct:'ㄐㄧˋ', opts:['ㄐㄧ','ㄐㄧˊ','ㄐㄧˇ'], meaning:'地名用字' },
   { phrase:'山東「濟」南', char:'濟', correct:'ㄐㄧˇ', opts:['ㄐㄧˋ','ㄐㄧˊ','ㄐㄧ'], meaning:'河名特殊讀音，山東省會' },
@@ -306,7 +306,7 @@ function showFeedback(correct,earned,item){
   document.getElementById('fb-stars').textContent=earned?`+${earned} ⭐`:'';
   document.getElementById('fb-meaning').innerHTML=`<b>「${item.char}」</b> ${item.correct}<br>意思：${item.meaning}`;
   document.getElementById('feedback').classList.add('show');
-  if(correct) speak(item.phrase.replace(/「([^」]+)」/,'$1'));
+  if(correct) speak(item.tts || item.phrase.replace(/「([^」]+)」/,'$1'));
 }
 
 function nextQ(){
