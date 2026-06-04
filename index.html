@@ -1028,6 +1028,10 @@ function showAuthPanel(p) {
 async function authStep1() {
   const name = document.getElementById('auth-name').value.trim();
   if (!name) return;
+  if (name === '訪客') {
+    document.getElementById('auth-err').textContent = '「訪客」是保留名稱，請使用其他帳號名稱';
+    showAuthPanel('s1'); return;
+  }
   _authName = name;
   if (!FB_URL) {
     localStorage.setItem('xr_name', name);
@@ -1267,6 +1271,8 @@ async function loadAdminBadge() {
 function isGuest() { return localStorage.getItem('xr_bday') === 'guest'; }
 
 function loginAsGuest() {
+  ['xr_stars','xr_owned','xr_equipped','xr_redeemed',
+   'xr_records','xr_mistakes','xr_cooldowns'].forEach(k=>localStorage.removeItem(k));
   localStorage.setItem('xr_name', '訪客');
   localStorage.setItem('xr_bday', 'guest');
   document.getElementById('auth-modal').classList.remove('show');
@@ -1283,7 +1289,7 @@ async function syncToCloud() {
     badge: (eq.badge&&owned[eq.badge])?BADGES[eq.badge]:'',
     title: (eq.title&&owned[eq.title])?TITLES[eq.title]:'',
     totalEarned,
-    owned, equipped, redeemed, records,
+    owned, equipped: eq, redeemed, records,
     mistakes: getMistakes(),
     cooldowns: getCDs(),
     updated: Date.now()
@@ -1348,6 +1354,15 @@ function render() {
   const last20=records.slice(-20);
   const recentAcc=last20.length?Math.round(last20.reduce((s,r)=>s+(r.acc||r.accuracy||0),0)/last20.length):0;
   const totalEarned=records.reduce((s,r)=>s+(r.stars||0),0);
+
+  // Self-heal: if no shop purchases and xr_stars < totalEarned, correct it (sync conflict recovery)
+  const redeemed=JSON.parse(localStorage.getItem('xr_redeemed')||'[]');
+  const hasNoPurchases = Object.keys(owned).length===0 && redeemed.length===0;
+  if (hasNoPurchases && totalEarned > getStars()) {
+    localStorage.setItem('xr_stars', totalEarned);
+    document.getElementById('star-count').textContent = totalEarned;
+  }
+
   document.getElementById('stat-plays').querySelector('.stat-val').textContent=records.length;
   document.getElementById('stat-acc').querySelector('.stat-val').textContent=recentAcc+'%';
   document.getElementById('stat-stars').querySelector('.stat-val').textContent=getStars();
