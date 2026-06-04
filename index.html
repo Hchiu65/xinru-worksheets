@@ -1469,7 +1469,21 @@ function toggleHistory() {
   sec.style.display='block';
 }
 
-render();
+async function loadAndRender() {
+  const name = getName();
+  const bday = localStorage.getItem('xr_bday');
+  if (!name || !bday || isGuest() || !FB_URL) { render(); return; }
+  try {
+    const res = await fetch(`${FB_URL}/accounts/${encodeURIComponent(name)}.json`);
+    const remote = await res.json();
+    if (remote && (remote.stars || 0) > getStars()) {
+      applyData(remote);
+    }
+  } catch(e) {}
+  render();
+}
+
+loadAndRender();
 </script>
 </body>
 </html>
