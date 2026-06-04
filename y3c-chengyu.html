@@ -250,6 +250,7 @@ function getSentence(b){
 // ── 互動 ──
 let selected=null;
 let hadMistake=false;
+let scored=false;
 
 function selectChip(el){
   if(el.classList.contains('used'))return;
@@ -288,10 +289,12 @@ function checkAll(){
     else{b.classList.add('wrong');hadMistake=true;recordMistake(b.dataset.answer,getSentence(b));}
   });
   document.getElementById('score-display').textContent=correct+'/'+blanks.length;
-  if(correct===blanks.length){
-    addStars(hadMistake?10:20);
+  if(correct===blanks.length&&!scored){
+    scored=true;
+    const earn=hadMistake?Math.round(blanks.length*2.5):blanks.length*5;
+    addStars(earn);
     const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
-    recs.push({game:GAME_ID,unit:GAME_ID,stars:hadMistake?10:20,acc:Math.round(correct/blanks.length*100),ts:Date.now()});
+    recs.push({game:GAME_ID,unit:GAME_ID,stars:earn,acc:Math.round(correct/blanks.length*100),ts:Date.now()});
     if(recs.length>200)recs.splice(0,recs.length-200);
     localStorage.setItem('xr_records',JSON.stringify(recs));
     reportComplete(!hadMistake);
@@ -305,7 +308,7 @@ function resetAll(){
     b.classList.remove('correct','wrong','highlight');
   });
   selected=null;hadMistake=false;
-  document.getElementById('score-display').textContent='';
+  document.getElementById('score-display').textContent=scored?'✅ 已獲得星星':'';
 }
 
 // ── 錯誤回報 ──
