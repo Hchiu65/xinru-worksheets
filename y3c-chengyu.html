@@ -249,8 +249,8 @@ function getSentence(b){
 
 // ── 互動 ──
 let selected=null;
-let hadMistake=false;
 let scored=false;
+const wrongSet=new Set(); // 曾填錯的空格（reset 後仍保留，防止刷分）
 
 function selectChip(el){
   if(el.classList.contains('used'))return;
@@ -286,18 +286,23 @@ function checkAll(){
     b.classList.remove('correct','wrong');
     const filled=b.dataset.chipId?document.getElementById(b.dataset.chipId)?.dataset.word:'';
     if(filled&&filled===b.dataset.answer){b.classList.add('correct');correct++;}
-    else{b.classList.add('wrong');hadMistake=true;recordMistake(b.dataset.answer,getSentence(b));}
+    else{
+      b.classList.add('wrong');
+      if(filled) wrongSet.add(b.dataset.answer); // 有填但填錯才扣分，空白不算
+      recordMistake(b.dataset.answer,getSentence(b));
+    }
   });
-  document.getElementById('score-display').textContent=correct+'/'+blanks.length;
+  const earn=Math.max(0, blanks.length*5 - wrongSet.size*5);
+  const earnHint=scored?'　✅已得星':`　→ +${earn}⭐`;
+  document.getElementById('score-display').textContent=correct+'/'+blanks.length+earnHint;
   if(correct===blanks.length&&!scored){
     scored=true;
-    const earn=hadMistake?Math.round(blanks.length*2.5):blanks.length*5;
     addStars(earn);
     const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
     recs.push({game:GAME_ID,unit:GAME_ID,stars:earn,acc:Math.round(correct/blanks.length*100),ts:Date.now()});
     if(recs.length>200)recs.splice(0,recs.length-200);
     localStorage.setItem('xr_records',JSON.stringify(recs));
-    reportComplete(!hadMistake);
+    reportComplete(wrongSet.size===0);
   }
 }
 
@@ -307,7 +312,7 @@ function resetAll(){
     b.textContent='';delete b.dataset.chipId;
     b.classList.remove('correct','wrong','highlight');
   });
-  selected=null;hadMistake=false;
+  selected=null;
   document.getElementById('score-display').textContent=scored?'✅ 已獲得星星':'';
 }
 
