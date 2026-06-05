@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>有得3C 字義選詞</title>
+<title>有得3C 改錯字②</title>
 <style>
 * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
 body { font-family:"標楷體","DFKai-SB",serif; background:#fff9f0; min-height:100vh; color:#333; }
@@ -20,16 +20,14 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
 .q-card { background:#fff; border-radius:20px; padding:22px 18px 20px; box-shadow:0 4px 20px rgba(243,156,18,.18); margin-bottom:18px; text-align:center; }
 .q-num { font-size:13px; color:#aaa; margin-bottom:8px; }
 .q-label { font-size:15px; color:#e67e22; font-weight:bold; margin-bottom:14px; background:#fef5ec; border-radius:8px; padding:6px 12px; display:inline-block; }
-.q-def { font-size:22px; font-weight:bold; line-height:1.7; letter-spacing:1px; color:#333; min-height:60px; display:flex; align-items:center; justify-content:center; }
-.correct-reveal { display:none; margin-top:12px; background:#e8f5e9; border-radius:10px; padding:10px 14px; font-size:15px; color:#2e7d32; font-weight:bold; }
+.q-idiom { font-size:34px; font-weight:bold; letter-spacing:6px; margin-bottom:16px; line-height:1.3; }
+.wrong-char { display:inline-block; background:#e67e22; color:#fff; border-radius:8px; padding:2px 4px; margin:0 1px; animation:pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{ box-shadow:0 0 0 0 rgba(230,126,34,.5); } 50%{ box-shadow:0 0 0 8px rgba(230,126,34,0); } }
+.q-instruction { font-size:14px; color:#888; }
+.correct-reveal { display:none; margin-top:14px; background:#e8f5e9; border-radius:10px; padding:10px 14px; font-size:16px; color:#2e7d32; font-weight:bold; }
 .correct-reveal.show { display:block; }
 .opts-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px; }
-.opt-btn {
-  background:#fff; border:2px solid #fad589; border-radius:14px;
-  padding:18px 8px; font-size:24px; font-family:inherit; cursor:pointer;
-  color:#333; font-weight:bold; transition:background .12s,border-color .12s,transform .1s;
-  text-align:center; letter-spacing:2px;
-}
+.opt-btn { background:#fff; border:2px solid #fad589; border-radius:14px; padding:20px 8px; font-size:32px; font-family:inherit; cursor:pointer; color:#333; font-weight:bold; transition:background .12s, border-color .12s, transform .1s; text-align:center; }
 .opt-btn:active { transform:scale(.95); }
 .opt-btn.correct { background:#e8f5e9; border-color:#4caf50; }
 .opt-btn.wrong   { background:#fce4ec; border-color:#ef9a9a; animation:shake .35s; }
@@ -41,7 +39,7 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
 .fb-icon { font-size:52px; margin-bottom:8px; line-height:1; }
 .fb-title { font-size:21px; font-weight:bold; margin-bottom:6px; }
 .fb-stars { font-size:20px; color:#f5a623; margin-bottom:8px; }
-.fb-word { font-size:26px; font-weight:bold; letter-spacing:3px; color:#e67e22; margin-bottom:6px; }
+.fb-idiom { font-size:24px; font-weight:bold; letter-spacing:4px; color:#e67e22; margin-bottom:4px; }
 .fb-detail { font-size:14px; color:#555; margin-bottom:18px; line-height:1.7; }
 .fb-next { width:100%; padding:13px; background:linear-gradient(135deg,#f39c12,#e67e22); color:#fff; border:none; border-radius:12px; font-size:17px; font-family:inherit; cursor:pointer; font-weight:bold; }
 .star-pop { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:28px; font-weight:bold; color:#f5a623; pointer-events:none; z-index:600; animation:popUp .7s ease-out forwards; }
@@ -54,8 +52,47 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
 .done-score { font-size:18px; color:#666; margin-bottom:8px; }
 .done-stars { font-size:32px; color:#f5a623; font-weight:bold; margin-bottom:24px; }
 .done-btn { display:block; width:100%; padding:14px; background:linear-gradient(135deg,#f39c12,#e67e22); color:#fff; border:none; border-radius:14px; font-size:18px; font-family:inherit; cursor:pointer; font-weight:bold; margin-bottom:12px; text-decoration:none; text-align:center; }
-.done-btn.secondary { background:#fff3e0; color:#e67e22; }
+.done-btn.secondary { background:#fef5ec; color:#e67e22; }
 
+/* ── 13吋 iPad（≥1000px）── */
+@media (min-width: 1000px) {
+  header          { padding:18px 28px 16px; }
+  .btn-home       { font-size:30px; }
+  .hdr-title      { font-size:26px; letter-spacing:4px; }
+  .star-pill      { font-size:22px; padding:8px 18px; }
+  .progress-text  { font-size:18px; }
+  .prog-bar-wrap  { height:7px; }
+  .prog-bar       { height:7px; }
+  .main           { max-width:720px; padding:22px 20px 60px; }
+  .q-card         { padding:32px 28px 28px; margin-bottom:24px; border-radius:26px; }
+  .q-num          { font-size:18px; margin-bottom:10px; }
+  .q-label        { font-size:20px; padding:8px 16px; }
+  .q-idiom        { font-size:50px; letter-spacing:8px; margin-bottom:20px; }
+  .q-instruction  { font-size:20px; }
+  .correct-reveal { font-size:22px; padding:14px 18px; }
+  .opts-grid      { gap:14px; margin-bottom:24px; }
+  .opt-btn        { font-size:46px; padding:32px 10px; border-radius:18px; border-width:3px; }
+  .fb-box         { max-width:560px; padding:40px 36px 34px; border-radius:28px; }
+  .fb-icon        { font-size:76px; }
+  .fb-title       { font-size:30px; }
+  .fb-stars       { font-size:30px; }
+  .fb-idiom       { font-size:36px; }
+  .fb-detail      { font-size:22px; }
+  .fb-next        { font-size:24px; padding:17px; border-radius:16px; }
+  .done-box       { max-width:560px; }
+  .done-icon      { font-size:100px; }
+  .done-title     { font-size:38px; }
+  .done-score     { font-size:26px; }
+  .done-stars     { font-size:48px; margin-bottom:32px; }
+  .done-btn       { font-size:26px; padding:18px; border-radius:18px; }
+  .btn-report     { font-size:20px; padding:9px 22px; }
+  .report-box     { max-width:520px; }
+  .report-title   { font-size:24px; }
+  .report-sub     { font-size:17px; }
+  .report-q       { font-size:20px; }
+  .report-note    { font-size:18px; }
+  .report-btn-cancel,.report-btn-send { font-size:20px; padding:16px; }
+}
 /* ── Error report ── */
 .btn-report{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:16px;padding:6px 14px;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;font-family:inherit;flex-shrink:0;}
 .btn-report:active{background:rgba(255,255,255,.28);}
@@ -70,51 +107,16 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
 .report-btns{display:flex;gap:10px;}
 .report-btn-cancel{flex:1;padding:12px;background:#f2f2f2;border:none;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;color:#666;}
 .report-btn-send{flex:1;padding:12px;background:#e74c3c;color:#fff;border:none;border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;font-weight:bold;}
-
-/* ── 13吋 iPad（≥1000px） ── */
-@media (min-width: 1000px) {
-  header         { padding:18px 28px 16px; }
-  .btn-home      { font-size:30px; }
-  .hdr-title     { font-size:26px; letter-spacing:4px; }
-  .star-pill     { font-size:22px; padding:8px 18px; }
-  .progress-text { font-size:18px; }
-  .prog-bar-wrap { height:7px; }
-  .prog-bar      { height:7px; }
-  .main          { max-width:720px; padding:22px 20px 60px; }
-  .q-card        { padding:32px 28px 28px; margin-bottom:24px; border-radius:26px; }
-  .q-num         { font-size:18px; margin-bottom:10px; }
-  .q-label       { font-size:20px; padding:8px 16px; }
-  .q-def         { font-size:32px; min-height:80px; }
-  .correct-reveal{ font-size:22px; padding:14px 18px; }
-  .opts-grid     { gap:16px; margin-bottom:28px; }
-  .opt-btn       { font-size:34px; padding:28px 10px; border-radius:18px; border-width:3px; }
-  .fb-box        { max-width:560px; padding:40px 36px 34px; border-radius:28px; }
-  .fb-icon       { font-size:76px; }
-  .fb-title      { font-size:30px; }
-  .fb-stars      { font-size:30px; }
-  .fb-word       { font-size:38px; }
-  .fb-detail     { font-size:22px; }
-  .fb-next       { font-size:24px; padding:17px; border-radius:16px; }
-  .done-box      { max-width:560px; }
-  .done-icon     { font-size:100px; }
-  .done-title    { font-size:38px; }
-  .done-score    { font-size:26px; }
-  .done-stars    { font-size:48px; margin-bottom:32px; }
-  .done-btn      { font-size:26px; padding:18px; border-radius:18px; }
-  .btn-report    { font-size:20px; padding:9px 22px; }
-  .report-box    { max-width:520px; }
-  .report-title  { font-size:24px; }
-}
 </style>
 </head>
 <body>
 <header>
   <div class="hdr-left">
     <a class="btn-home" href="index.html">🏠</a>
-    <div class="hdr-title">有得3C　字義選詞</div>
+    <div class="hdr-title">有得3C 改錯字②</div>
   </div>
   <div class="hdr-right">
-    <div class="progress-text" id="prog-text">1 / 14</div>
+    <div class="progress-text" id="prog-text">1 / 12</div>
     <div class="star-pill">⭐ <span id="star-display">0</span></div>
     <button class="btn-report" onclick="showReport()">⚠️ 回報</button>
   </div>
@@ -123,9 +125,10 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
 
 <div class="main">
   <div class="q-card">
-    <div class="q-num" id="q-num">第 1 題 / 共 14 題</div>
-    <div class="q-label">📖 看定義，選出正確的詞語！</div>
-    <div class="q-def" id="q-def"></div>
+    <div class="q-num" id="q-num">第 1 題 / 共 12 題</div>
+    <div class="q-label">🔍 紅色的字寫錯了，選出正確的字！</div>
+    <div class="q-idiom" id="q-idiom"></div>
+    <div class="q-instruction">（點選下方正確的字來替換紅色的錯別字）</div>
     <div class="correct-reveal" id="correct-reveal"></div>
   </div>
   <div class="opts-grid" id="opts-grid"></div>
@@ -136,7 +139,7 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
     <div class="fb-icon" id="fb-icon"></div>
     <div class="fb-title" id="fb-title"></div>
     <div class="fb-stars" id="fb-stars"></div>
-    <div class="fb-word" id="fb-word"></div>
+    <div class="fb-idiom" id="fb-idiom"></div>
     <div class="fb-detail" id="fb-detail"></div>
     <button class="fb-next" onclick="nextQ()">繼續 →</button>
   </div>
@@ -144,8 +147,8 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
 
 <div id="done-screen">
   <div class="done-box">
-    <div class="done-icon">🎉</div>
-    <div class="done-title">字義選詞完成！</div>
+    <div class="done-icon">🏆</div>
+    <div class="done-title">有得3C 改錯字②完成！</div>
     <div class="done-score" id="done-score"></div>
     <div class="done-stars" id="done-stars"></div>
     <button class="done-btn" onclick="replay()">🔁 再玩一次</button>
@@ -164,25 +167,11 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
 </div>
 
 <script>
-// ── 常數 ──
-const GAME_ID     = 'y3c-vocab';
-const GAME_SOURCE = '有得3C　字義選詞';
+const GAME_ID     = 'y3c-gaicuo2';
+const GAME_SOURCE = '有得3C　改錯字②';
 const FB_URL      = 'https://xinru-class-default-rtdb.firebaseio.com';
-const GAME_LABELS = {
-  u1ziyin:'字音辨正(一)',u1bianzi:'找錯別字(一)',u1match:'連連看(一)',u2ziyin:'字音辨正(二)',u2bianzi:'找錯別字(二)',u2match:'連連看(二)',
-  u3ziyin:'字音辨正(三)',u3bianzi:'找錯別字(三)',u3match:'連連看(三)',u4ziyin:'字音辨正(四)',u4bianzi:'找錯別字(四)',u4match:'連連看(四)',u5ziyin:'字音辨正(五)',u5bianzi:'找錯別字(五)',u5match:'連連看(五)',unit6:'詞語填空', unit6m:'成語連連看',
-  u7ziyin:'字音辨正', u7bianzi:'找錯別字',
-  u7gaicuo:'改錯字(作業)', u7bopomo:'字音辨字(作業)',
-  u7vocab:'字彙練習(作業)', u7chengyu:'成語填空',
-  u7match:'連連看(七)',
-  'y3c-match':'連連看(3C)', 'y3c-chengyu':'填空(3C)', 'y3c-vocab':'字義選詞(3C)',
-  'y3c-gaicuo':'改錯字(3C)',
-  'y3c-match2':'連連看2(3C)', 'y3c-chengyu2':'填空2(3C)',
-  'y3c-vocab2':'字義選詞2(3C)', 'y3c-gaicuo2':'改錯字2(3C)',
-  'math-vol':'單位換算'
-};
+const GAME_LABELS = {u1ziyin:'字音辨正(一)',u1bianzi:'找錯別字(一)',u1match:'連連看(一)',u2ziyin:'字音辨正(二)',u2bianzi:'找錯別字(二)',u2match:'連連看(二)',u3ziyin:'字音辨正(三)',u3bianzi:'找錯別字(三)',u3match:'連連看(三)',u4ziyin:'字音辨正(四)',u4bianzi:'找錯別字(四)',u4match:'連連看(四)',u5ziyin:'字音辨正(五)',u5bianzi:'找錯別字(五)',u5match:'連連看(五)',unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正(七)',u7bianzi:'找錯別字(七)',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)',u8ziyin:'字音辨正(八)',u8bianzi:'找錯別字(八)',u8match:'連連看(八)',u8mingyan:'名言填空(八)','u8mingyan-match':'名言連連看(八)','u8mingyan-mcq':'名言選擇題(八)',u8gaicuo:'改錯字(八作業)',u8bopomo:'字音辨字(八作業)',u8ziyin2:'字音辨正(八作業)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)','y3c-match2':'連連看2(3C)','y3c-chengyu2':'填空2(3C)','y3c-vocab2':'字義選詞2(3C)','y3c-gaicuo2':'改錯字2(3C)','math-diag':'四則運算診斷','math-vol':'單位換算'};
 
-// ── 冷卻系統 ──
 function getCDs(){return JSON.parse(localStorage.getItem('xr_cooldowns')||'{}');}
 function saveCDs(cd){localStorage.setItem('xr_cooldowns',JSON.stringify(cd));}
 function isLocked(){const g=getCDs()[GAME_ID];return !!(g&&g.locked&&(g.unlockBy||[]).length<2);}
@@ -202,10 +191,8 @@ function reportComplete(perfect){
 }
 async function pushToCloud(){
   const name=localStorage.getItem('xr_name'); if(!name)return;
-  const d={stars:getStars(),records:JSON.parse(localStorage.getItem('xr_records')||'[]'),
-    mistakes:JSON.parse(localStorage.getItem('xr_mistakes')||'{}'),cooldowns:getCDs(),updated:Date.now()};
-  try{await fetch(`${FB_URL}/accounts/${encodeURIComponent(name)}.json`,
-    {method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});}catch(e){}
+  const d={stars:parseInt(localStorage.getItem('xr_stars')||'0'),records:JSON.parse(localStorage.getItem('xr_records')||'[]'),mistakes:JSON.parse(localStorage.getItem('xr_mistakes')||'{}'),cooldowns:getCDs(),updated:Date.now()};
+  try{await fetch(`${FB_URL}/accounts/${encodeURIComponent(name)}.json`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});}catch(e){}
 }
 function showLockOverlay(){
   const cds=getCDs(),me=cds[GAME_ID]||{},done=(me.unlockBy||[]).length;
@@ -214,59 +201,38 @@ function showLockOverlay(){
   document.getElementById('lock-overlay').style.display='flex';
 }
 
-// ── 題目資料 ──
-// def: 顯示的定義；correct: 正確詞語；opts: 四個選項（含正確答案）
-const VOCAB = [
-  // 第十課 地球的眼淚
-  { def:'液體轉化成氣體的現象',                           correct:'蒸發',   opts:['蒸發','凝結','沖刷','下降'] },
-  { def:'科學上指氣體變成液體的現象',                     correct:'凝結',   opts:['凝結','蒸發','雜質','岩石'] },
-  { def:'水流衝擊，使土石流失或脫落、損壞',               correct:'沖刷',   opts:['沖刷','蒸發','凝結','下降'] },
-  { def:'構成地球外殼的主要物質，多為礦物集合體',         correct:'岩石',   opts:['岩石','雜質','河川','凝結'] },
-  { def:'大小河流的通稱',                                 correct:'河川',   opts:['河川','岩石','蒸發','下降'] },
-  { def:'不屬於該物質的其他成分',                         correct:'雜質',   opts:['雜質','岩石','凝結','沖刷'] },
-  // 第九課 三峽老街樂藍染
-  { def:'貫穿山脈或地下，供行人、車輛通行的通道',         correct:'隧道',   opts:['隧道','拱廊','騎樓','展示間'] },
-  { def:'用柱子支撐，帶有圓弧形頂部的開放式通道',         correct:'拱廊',   opts:['拱廊','隧道','騎樓','燈籠'] },
-  { def:'建築物一樓靠馬路的部分建成走廊，可遮風避雨',     correct:'騎樓',   opts:['騎樓','拱廊','隧道','展示間'] },
-  { def:'以竹或鐵絲為骨架、外糊紙或紗，供裝飾或照明的籠狀燈具', correct:'燈籠', opts:['燈籠','拱廊','騎樓','隧道'] },
-  { def:'臺灣於西元一八九五年至一九四五年，由日本統治的時期', correct:'日治時期', opts:['日治時期','展示間','三峽老街','隧道'] },
-  { def:'擺出供人觀賞的場所',                             correct:'展示間', opts:['展示間','隧道','施展','騎樓'] },
-  { def:'發揮、展露（才能或技藝）',                       correct:'施展',   opts:['施展','展示間','開獎','傻笑'] },
-  { def:'揭曉中獎號碼或中獎人',                           correct:'開獎',   opts:['開獎','施展','展示間','傻笑'] },
+const ITEMS = [
+  { wrong:'精雕細鑿', wrongChar:'鑿', correct:'琢', full:'精雕細琢', meaning:'形容做事仔細用心，多指藝術品的創作', opts:['琢','鑿','斲','雕'] },
+  { wrong:'煥然一心', wrongChar:'心', correct:'新', full:'煥然一新', meaning:'形容光耀明亮，有一番全新的氣象', opts:['新','心','辛','薪'] },
+  { wrong:'聚沙成墮', wrongChar:'墮', correct:'塔', full:'聚沙成塔', meaning:'比喻積少成多，點滴累積終能成就大事', opts:['塔','墮','達','踏'] },
+  { wrong:'破斧沉舟', wrongChar:'斧', correct:'釜', full:'破釜沉舟', meaning:'比喻不惜切斷退路，下定決心做到底', opts:['釜','斧','父','腑'] },
+  { wrong:'傾巢而去', wrongChar:'去', correct:'出', full:'傾巢而出', meaning:'比喻全部人員出動，一個不留', opts:['出','去','逃','動'] },
+  { wrong:'飛沙走石', wrongChar:'沙', correct:'砂', full:'飛砂走石', meaning:'形容風力迅猛，砂石飛揚', opts:['砂','沙','泥','礫'] },
+  { wrong:'旗開得剩', wrongChar:'剩', correct:'勝', full:'旗開得勝', meaning:'比喻事情一開始就獲得成功', opts:['勝','剩','盛','乘'] },
+  { wrong:'華而不食', wrongChar:'食', correct:'實', full:'華而不實', meaning:'比喻外表好看但虛浮不切實際', opts:['實','食','蝕','失'] },
+  { wrong:'輾轉反則', wrongChar:'則', correct:'側', full:'輾轉反側', meaning:'形容心事重重，翻來覆去睡不著覺', opts:['側','則','測','惻'] },
+  { wrong:'炒色盤', wrongChar:'炒', correct:'調', full:'調色盤', meaning:'用來調配顏料，使其混合均勻的繪畫器具', opts:['調','炒','鈔','吵'] },
+  { wrong:'珊胡', wrongChar:'胡', correct:'瑚', full:'珊瑚', meaning:'珊瑚蟲的泛稱，形狀如樹枝，色彩鮮豔美麗', opts:['瑚','胡','湖','葫'] },
+  { wrong:'築朝', wrongChar:'朝', correct:'巢', full:'築巢', meaning:'修建居住的巢穴', opts:['巢','朝','潮','超'] },
 ];
 
-// ── 狀態 ──
 let order=[], idx=0, sessionStars=0, mistakeCount=0, totalCorrect=0, anyMistake=false;
-
 function getStars(){return parseInt(localStorage.getItem('xr_stars')||'0');}
 function addStars(n){const s=getStars()+n;localStorage.setItem('xr_stars',s);document.getElementById('star-display').textContent=s;sessionStars+=n;}
-
-function recordMistake(word, def){
+function recordMistake(word,meaning,question){
   const all=JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
-  if(!all[word])all[word]={word,question:def||word,meaning:def,source:GAME_SOURCE,wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
+  if(!all[word])all[word]={word,question:question||word,meaning,source:GAME_SOURCE,wrongCount:0,practiceCount:0,lastWrong:'',mastered:false};
+  if(question&&!all[word].question)all[word].question=question;
   if(!all[word].source)all[word].source=GAME_SOURCE;
   all[word].wrongCount++;all[word].lastWrong=new Date().toLocaleDateString('zh-TW');
   localStorage.setItem('xr_mistakes',JSON.stringify(all));
 }
-
-function speak(text){
-  if(!window.speechSynthesis)return;
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang='zh-TW';u.rate=0.8;u.pitch=1.0;
-  window.speechSynthesis.cancel();
-  const go=()=>{
-    const v=speechSynthesis.getVoices();
-    const vv=v.find(x=>x.lang==='zh-TW')||v.find(x=>x.lang.startsWith('zh'));
-    if(vv)u.voice=vv; speechSynthesis.speak(u);
-  };
-  speechSynthesis.getVoices().length?go():(speechSynthesis.onvoiceschanged=go);
-}
-
+function speak(text){if(!window.speechSynthesis)return;const u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';u.rate=0.8;speechSynthesis.cancel();speechSynthesis.speak(u);}
 function shuffle(arr){return [...arr].sort(()=>Math.random()-.5);}
 
 function startGame(){
   if(isLocked()){showLockOverlay();return;}
-  order=shuffle([...Array(VOCAB.length).keys()]);
+  order=shuffle([...Array(ITEMS.length).keys()]);
   idx=0;sessionStars=0;totalCorrect=0;anyMistake=false;
   document.getElementById('star-display').textContent=getStars();
   document.getElementById('done-screen').classList.remove('show');
@@ -274,12 +240,13 @@ function startGame(){
 }
 
 function showQ(){
-  const item=VOCAB[order[idx]]; mistakeCount=0;
-  document.getElementById('prog-text').textContent=`${idx+1} / ${VOCAB.length}`;
-  document.getElementById('q-num').textContent=`第 ${idx+1} 題 / 共 ${VOCAB.length} 題`;
-  document.getElementById('prog-bar').style.width=`${(idx/VOCAB.length)*100}%`;
+  const item=ITEMS[order[idx]]; mistakeCount=0;
+  document.getElementById('prog-text').textContent=`${idx+1} / ${ITEMS.length}`;
+  document.getElementById('q-num').textContent=`第 ${idx+1} 題 / 共 ${ITEMS.length} 題`;
+  document.getElementById('prog-bar').style.width=`${(idx/ITEMS.length)*100}%`;
   document.getElementById('correct-reveal').classList.remove('show');
-  document.getElementById('q-def').textContent=item.def;
+  const idiomHtml=item.wrong.split('').map(ch=>ch===item.wrongChar?`<span class="wrong-char">${ch}</span>`:ch).join('');
+  document.getElementById('q-idiom').innerHTML=idiomHtml;
   const shuffledOpts=shuffle(item.opts);
   const grid=document.getElementById('opts-grid'); grid.innerHTML='';
   shuffledOpts.forEach(opt=>{
@@ -296,14 +263,13 @@ function onPick(btn,picked,item){
     const earned=mistakeCount===0?5:1;
     if(mistakeCount===0)totalCorrect++;
     addStars(earned); showStarPop(`+${earned}⭐`);
-    const cr=document.getElementById('correct-reveal');
-    cr.textContent=`✅ 正確答案：${item.correct}`; cr.classList.add('show');
-    speak(item.correct); showFeedback(true,earned,item);
+    const cr=document.getElementById('correct-reveal'); cr.textContent=`✅ 正確寫法：${item.full}`; cr.classList.add('show');
+    speak(item.full); showFeedback(true,earned,item);
   } else {
     btn.classList.add('wrong');
     mistakeCount++;
-    if(mistakeCount===1){anyMistake=true;recordMistake(item.correct,item.def);}
-    addStars(-1); showStarPop('-1⭐');
+    if(mistakeCount===1){anyMistake=true;recordMistake(item.full,item.meaning,item.wrong);}
+    addStars(-mistakeCount); showStarPop(`-${mistakeCount}⭐`);
     setTimeout(()=>{btn.classList.remove('wrong');btn.disabled=false;btns.forEach(b=>{if(b!==btn)b.disabled=false;});},500);
   }
 }
@@ -311,26 +277,26 @@ function onPick(btn,picked,item){
 function showFeedback(correct,earned,item){
   document.getElementById('fb-icon').textContent=correct?'🎯':'💪';
   document.getElementById('fb-title').textContent=correct?'答對了！':'繼續加油！';
-  document.getElementById('fb-stars').textContent=earned>0?`+${earned} ⭐`:'';
-  document.getElementById('fb-word').textContent=item.correct;
-  document.getElementById('fb-detail').textContent=item.def;
+  document.getElementById('fb-stars').textContent=earned?`+${earned} ⭐`:'';
+  document.getElementById('fb-idiom').textContent=item.full;
+  document.getElementById('fb-detail').innerHTML=`<b>「${item.wrongChar}」</b> → <b>「${item.correct}」</b><br>${item.meaning}`;
   document.getElementById('feedback').classList.add('show');
 }
 
 function nextQ(){
   document.getElementById('feedback').classList.remove('show'); idx++;
-  if(idx>=VOCAB.length)showDone(); else showQ();
+  if(idx>=ITEMS.length)showDone(); else showQ();
 }
 
 function showDone(){
   document.getElementById('prog-bar').style.width='100%';
-  document.getElementById('done-score').textContent=`首次答對 ${totalCorrect} / ${VOCAB.length} 題`;
+  document.getElementById('done-score').textContent=`首次答對 ${totalCorrect} / ${ITEMS.length} 題`;
   document.getElementById('done-stars').textContent=`本次獲得 ⭐ ${sessionStars}`;
   const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
-  recs.push({unit:GAME_ID,acc:Math.round(totalCorrect/VOCAB.length*100),stars:sessionStars,date:new Date().toLocaleDateString('zh-TW')});
-  if(recs.length>200)recs.splice(0,recs.length-200);
+  recs.push({unit:GAME_ID,acc:Math.round(totalCorrect/ITEMS.length*100),stars:sessionStars,date:new Date().toLocaleDateString('zh-TW')});
+  if(recs.length>50)recs.splice(0,recs.length-50);
   localStorage.setItem('xr_records',JSON.stringify(recs));
-  reportComplete(totalCorrect===VOCAB.length&&!anyMistake);
+  reportComplete(totalCorrect===ITEMS.length&&!anyMistake);
   document.getElementById('done-screen').classList.add('show');
 }
 
@@ -338,12 +304,11 @@ function showStarPop(text){const el=document.createElement('div');el.className='
 function replay(){startGame();}
 startGame();
 
-function getQText(){return document.getElementById('q-def')?.textContent||GAME_SOURCE;}
+function getQText(){const el=document.getElementById('q-idiom');return el?el.innerText.replace(/\s+/g,' ').trim().slice(0,60):'（無法取得題目）';}
 function showReport(){document.getElementById('report-q').textContent=getQText();document.getElementById('report-note').value='';document.getElementById('report-overlay').classList.add('show');}
 function closeReport(){document.getElementById('report-overlay').classList.remove('show');}
 async function submitReport(){const data={game:GAME_ID,source:GAME_SOURCE,qText:document.getElementById('report-q').textContent,note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
 </script>
-
 <div id="report-overlay">
   <div class="report-box">
     <div class="report-title">⚠️ 回報題目錯誤</div>

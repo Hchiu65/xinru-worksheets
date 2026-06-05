@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>有得3C 成語填空</title>
+<title>有得3C 成語填空②</title>
 <style>
 * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:"標楷體","DFKai-SB",serif; font-size:18px; line-height:1.9; background:#fff9f0; margin:0; padding:0 0 100px; color:#222; }
@@ -71,8 +71,8 @@ ol li { margin-bottom:6px; }
 <header>
   <a class="btn-home" href="index.html">🏠</a>
   <div class="hdr-body">
-    有得3C　成語填空
-    <small>12 題｜點選詞語 → 點空格填入 ｜ 再點空格可清除 ｜ 🔊 點詞語可聽讀音</small>
+    有得3C　成語填空②
+    <small>15 題｜點選詞語 → 點空格填入 ｜ 再點空格可清除 ｜ 🔊 點詞語可聽讀音</small>
   </div>
   <button class="btn-report" onclick="showReport()">⚠️ 回報</button>
   <div class="star-badge">⭐ <span id="star-display">0</span></div>
@@ -80,34 +80,40 @@ ol li { margin-bottom:6px; }
 
 <!-- 成語填空 -->
 <div class="section">
-  <div class="section-title">成語填空　請將下列答案填入正確空格（共 12 題）</div>
+  <div class="section-title">成語填空　請將下列答案填入正確空格（共 15 題）</div>
   <div class="word-bank" id="bank1">
-    <span class="chip" id="c_0"  data-word="甘之如飴" onclick="selectChip(this)">甘之如飴</span>
-    <span class="chip" id="c_1"  data-word="蒸蒸日上" onclick="selectChip(this)">蒸蒸日上</span>
-    <span class="chip" id="c_2"  data-word="三令五申" onclick="selectChip(this)">三令五申</span>
-    <span class="chip" id="c_3"  data-word="屏氣凝神" onclick="selectChip(this)">屏氣凝神</span>
-    <span class="chip" id="c_4"  data-word="不可或缺" onclick="selectChip(this)">不可或缺</span>
-    <span class="chip" id="c_5"  data-word="古道熱腸" onclick="selectChip(this)">古道熱腸</span>
-    <span class="chip" id="c_6"  data-word="冤家路窄" onclick="selectChip(this)">冤家路窄</span>
-    <span class="chip" id="c_7"  data-word="騎虎難下" onclick="selectChip(this)">騎虎難下</span>
-    <span class="chip" id="c_8"  data-word="不甘示弱" onclick="selectChip(this)">不甘示弱</span>
-    <span class="chip" id="c_9"  data-word="東施效顰" onclick="selectChip(this)">東施效顰</span>
-    <span class="chip" id="c_10" data-word="日積月累" onclick="selectChip(this)">日積月累</span>
-    <span class="chip" id="c_11" data-word="古色古香" onclick="selectChip(this)">古色古香</span>
+    <span class="chip" id="c_0"  data-word="擠眉弄眼" onclick="selectChip(this)">擠眉弄眼</span>
+    <span class="chip" id="c_1"  data-word="煥然一新" onclick="selectChip(this)">煥然一新</span>
+    <span class="chip" id="c_2"  data-word="海枯石爛" onclick="selectChip(this)">海枯石爛</span>
+    <span class="chip" id="c_3"  data-word="聚沙成塔" onclick="selectChip(this)">聚沙成塔</span>
+    <span class="chip" id="c_4"  data-word="精雕細琢" onclick="selectChip(this)">精雕細琢</span>
+    <span class="chip" id="c_5"  data-word="枯木逢春" onclick="selectChip(this)">枯木逢春</span>
+    <span class="chip" id="c_6"  data-word="債台高築" onclick="selectChip(this)">債台高築</span>
+    <span class="chip" id="c_7"  data-word="傾巢而出" onclick="selectChip(this)">傾巢而出</span>
+    <span class="chip" id="c_8"  data-word="破釜沉舟" onclick="selectChip(this)">破釜沉舟</span>
+    <span class="chip" id="c_9"  data-word="斷章取義" onclick="selectChip(this)">斷章取義</span>
+    <span class="chip" id="c_10" data-word="淋漓盡致" onclick="selectChip(this)">淋漓盡致</span>
+    <span class="chip" id="c_11" data-word="輾轉反側" onclick="selectChip(this)">輾轉反側</span>
+    <span class="chip" id="c_12" data-word="旗開得勝" onclick="selectChip(this)">旗開得勝</span>
+    <span class="chip" id="c_13" data-word="飛砂走石" onclick="selectChip(this)">飛砂走石</span>
+    <span class="chip" id="c_14" data-word="華而不實" onclick="selectChip(this)">華而不實</span>
   </div>
   <ol>
-    <li>表哥為了完成夢想，即便每天都十分勞累，也（<span class="blank" data-answer="甘之如飴" onclick="tapBlank(this)"></span>）。</li>
-    <li>在大家的努力下，公司業績（<span class="blank" data-answer="蒸蒸日上" onclick="tapBlank(this)"></span>）。</li>
-    <li>老師（<span class="blank" data-answer="三令五申" onclick="tapBlank(this)"></span>），告誡我們不要亂丟垃圾，以維持環境整潔。</li>
-    <li>在發令槍響前，選手們都（<span class="blank" data-answer="屏氣凝神" onclick="tapBlank(this)"></span>），準備大展身手。</li>
-    <li>想要滷出好吃的滷味，醬油是（<span class="blank" data-answer="不可或缺" onclick="tapBlank(this)"></span>）的調味品。</li>
-    <li>他每天練習書法，（<span class="blank" data-answer="日積月累" onclick="tapBlank(this)"></span>）之下，字跡越來越工整。</li>
-    <li>阿姨（<span class="blank" data-answer="古道熱腸" onclick="tapBlank(this)"></span>），自願擔任育幼院的志工。</li>
-    <li>他們昨天才剛吵架，今天就在市場相遇，真是（<span class="blank" data-answer="冤家路窄" onclick="tapBlank(this)"></span>）。</li>
-    <li>面對（<span class="blank" data-answer="騎虎難下" onclick="tapBlank(this)"></span>）的窘境，叔叔只能硬著頭皮做下去。</li>
-    <li>對方不斷進球得分，我們也（<span class="blank" data-answer="不甘示弱" onclick="tapBlank(this)"></span>），終於在最終局逆轉獲勝。</li>
-    <li>如果不了解自身的條件，而盲目模仿別人，只是（<span class="blank" data-answer="東施效顰" onclick="tapBlank(this)"></span>）而已。</li>
-    <li>三峽老街保存完好，散發著（<span class="blank" data-answer="古色古香" onclick="tapBlank(this)"></span>）的氣息，吸引許多遊客前來。</li>
+    <li>弟弟對著我（<span class="blank" data-answer="擠眉弄眼" onclick="tapBlank(this)"></span>），但我完全不知道他想告訴我什麼。</li>
+    <li>經一番打掃，原本髒亂的教室（<span class="blank" data-answer="煥然一新" onclick="tapBlank(this)"></span>）。</li>
+    <li>他們之間的感情十分堅定，（<span class="blank" data-answer="海枯石爛" onclick="tapBlank(this)"></span>）也不會改變。</li>
+    <li>每個月儲存少量的金錢，幾年後（<span class="blank" data-answer="聚沙成塔" onclick="tapBlank(this)"></span>），就會有一筆可觀的財富。</li>
+    <li>經過藝術家的（<span class="blank" data-answer="精雕細琢" onclick="tapBlank(this)"></span>），這塊朽木化身為美麗的木雕作品。</li>
+    <li>經過醫生的治療，姑姑（<span class="blank" data-answer="枯木逢春" onclick="tapBlank(this)"></span>），恢復健康。</li>
+    <li>舅舅年輕時十分揮霍，導致現在（<span class="blank" data-answer="債台高築" onclick="tapBlank(this)"></span>）。</li>
+    <li>軍方（<span class="blank" data-answer="傾巢而出" onclick="tapBlank(this)"></span>），預防恐怖份子的襲擊。</li>
+    <li>電影中主角決定（<span class="blank" data-answer="破釜沉舟" onclick="tapBlank(this)"></span>），與對方一決死戰。</li>
+    <li>我們不應該（<span class="blank" data-answer="斷章取義" onclick="tapBlank(this)"></span>）去評論他人的文章，以免扭曲原意。</li>
+    <li>這位演員將角色的性格演繹得（<span class="blank" data-answer="淋漓盡致" onclick="tapBlank(this)"></span>）。</li>
+    <li>明天就要考試了，姐姐緊張得（<span class="blank" data-answer="輾轉反側" onclick="tapBlank(this)"></span>），無法入眠。</li>
+    <li>第一場比賽我們就（<span class="blank" data-answer="旗開得勝" onclick="tapBlank(this)"></span>），拿到複賽的門票。</li>
+    <li>沙漠中（<span class="blank" data-answer="飛砂走石" onclick="tapBlank(this)"></span>），不適合人類居住。</li>
+    <li>這篇文章（<span class="blank" data-answer="華而不實" onclick="tapBlank(this)"></span>），只是詞藻華麗而已，沒有什麼實質內容。</li>
   </ol>
 </div>
 
@@ -144,36 +150,27 @@ ol li { margin-bottom:6px; }
 
 <script>
 // ── 常數 ──
-const GAME_ID     = 'y3c-chengyu';
-const GAME_SOURCE = '有得3C　成語填空';
+const GAME_ID     = 'y3c-chengyu2';
+const GAME_SOURCE = '有得3C　成語填空②';
 const FB_URL      = 'https://xinru-class-default-rtdb.firebaseio.com';
-const GAME_LABELS = {
-  u1ziyin:'字音辨正(一)',u1bianzi:'找錯別字(一)',u1match:'連連看(一)',u2ziyin:'字音辨正(二)',u2bianzi:'找錯別字(二)',u2match:'連連看(二)',
-  u3ziyin:'字音辨正(三)',u3bianzi:'找錯別字(三)',u3match:'連連看(三)',u4ziyin:'字音辨正(四)',u4bianzi:'找錯別字(四)',u4match:'連連看(四)',u5ziyin:'字音辨正(五)',u5bianzi:'找錯別字(五)',u5match:'連連看(五)',unit6:'詞語填空', unit6m:'成語連連看',
-  u7ziyin:'字音辨正', u7bianzi:'找錯別字',
-  u7gaicuo:'改錯字(作業)', u7bopomo:'字音辨字(作業)',
-  u7vocab:'字彙練習(作業)', u7chengyu:'成語填空',
-  u7match:'連連看(七)',
-  'y3c-match':'連連看(3C)', 'y3c-chengyu':'填空(3C)',
-  'y3c-vocab':'字義選詞(3C)', 'y3c-gaicuo':'改錯字(3C)',
-  'y3c-match2':'連連看2(3C)', 'y3c-chengyu2':'填空2(3C)',
-  'y3c-vocab2':'字義選詞2(3C)', 'y3c-gaicuo2':'改錯字2(3C)',
-  'math-vol':'單位換算'
-};
+const GAME_LABELS = {u1ziyin:'字音辨正(一)',u1bianzi:'找錯別字(一)',u1match:'連連看(一)',u2ziyin:'字音辨正(二)',u2bianzi:'找錯別字(二)',u2match:'連連看(二)',u3ziyin:'字音辨正(三)',u3bianzi:'找錯別字(三)',u3match:'連連看(三)',u4ziyin:'字音辨正(四)',u4bianzi:'找錯別字(四)',u4match:'連連看(四)',u5ziyin:'字音辨正(五)',u5bianzi:'找錯別字(五)',u5match:'連連看(五)',unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正(七)',u7bianzi:'找錯別字(七)',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)',u8ziyin:'字音辨正(八)',u8bianzi:'找錯別字(八)',u8match:'連連看(八)',u8mingyan:'名言填空(八)','u8mingyan-match':'名言連連看(八)','u8mingyan-mcq':'名言選擇題(八)',u8gaicuo:'改錯字(八作業)',u8bopomo:'字音辨字(八作業)',u8ziyin2:'字音辨正(八作業)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)','y3c-match2':'連連看2(3C)','y3c-chengyu2':'填空2(3C)','y3c-vocab2':'字義選詞2(3C)','y3c-gaicuo2':'改錯字2(3C)','math-diag':'四則運算診斷','math-vol':'單位換算'};
 
 const MEANINGS = {
-  '甘之如飴':'比喻樂意承擔艱苦的事情，或處於困境卻能甘心忍受',
-  '蒸蒸日上':'形容事物不斷進步發展，蓬勃興盛',
-  '三令五申':'再三叮嚀告誡',
-  '屏氣凝神':'屏住呼吸，集中精神，專心一意',
-  '不可或缺':'必須，不能缺少',
-  '古道熱腸':'形容待人仁愛寬厚、熱心',
-  '冤家路窄':'仇人或不願見到的人，偏偏越容易相遇，無法躲避',
-  '騎虎難下':'比喻事情迫於情勢，無法中止，只好繼續做下去',
-  '不甘示弱':'不情願表現得比別人差',
-  '東施效顰':'比喻盲目模仿他人，結果適得其反',
-  '日積月累':'逐日逐月長時間不斷累積，比喻歷時久遠',
-  '古色古香':'形容年代久遠，具有古典色彩和情調的書畫、器物、建築、藝術品等',
+  '擠眉弄眼':'擠弄眉毛眼睛以向人暗指或表達情意',
+  '煥然一新':'形容光耀明亮，有一番全新的氣象',
+  '海枯石爛':'比喻意志堅定，永不改變',
+  '聚沙成塔':'比喻積少成多，點滴累積終能成就大事',
+  '精雕細琢':'形容做事仔細用心，多指藝術品的創作',
+  '枯木逢春':'比喻雖處於絕境卻重獲生機，恢復健康',
+  '債台高築':'形容欠債很多，負債累累',
+  '傾巢而出':'比喻全部人員出動，一個不留',
+  '破釜沉舟':'比喻不惜切斷退路，下定決心做到底',
+  '斷章取義':'截取文章某段，不依循全篇原意，曲解原意',
+  '淋漓盡致':'形容文章或言語表達得非常透徹詳盡',
+  '輾轉反側':'形容心事重重，翻來覆去睡不著覺',
+  '旗開得勝':'比喻事情一開始就獲得成功',
+  '飛砂走石':'形容風力迅猛，砂石飛揚',
+  '華而不實':'比喻外表好看但虛浮不切實際',
 };
 
 // ── 冷卻系統 ──
@@ -253,7 +250,7 @@ function getSentence(b){
 // ── 互動 ──
 let selected=null;
 let scored=false;
-const wrongSet=new Set(); // 曾填錯的空格（reset 後仍保留，防止刷分）
+const wrongSet=new Set();
 
 function selectChip(el){
   if(el.classList.contains('used'))return;
@@ -291,7 +288,7 @@ function checkAll(){
     if(filled&&filled===b.dataset.answer){b.classList.add('correct');correct++;}
     else{
       b.classList.add('wrong');
-      if(filled) wrongSet.add(b.dataset.answer); // 有填但填錯才扣分，空白不算
+      if(filled) wrongSet.add(b.dataset.answer);
       recordMistake(b.dataset.answer,getSentence(b));
     }
   });

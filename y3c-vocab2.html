@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>有得3C 字義選詞</title>
+<title>有得3C 字義選詞②</title>
 <style>
 * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
 body { font-family:"標楷體","DFKai-SB",serif; background:#fff9f0; min-height:100vh; color:#333; }
@@ -111,10 +111,10 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
 <header>
   <div class="hdr-left">
     <a class="btn-home" href="index.html">🏠</a>
-    <div class="hdr-title">有得3C　字義選詞</div>
+    <div class="hdr-title">有得3C　字義選詞②</div>
   </div>
   <div class="hdr-right">
-    <div class="progress-text" id="prog-text">1 / 14</div>
+    <div class="progress-text" id="prog-text">1 / 16</div>
     <div class="star-pill">⭐ <span id="star-display">0</span></div>
     <button class="btn-report" onclick="showReport()">⚠️ 回報</button>
   </div>
@@ -123,7 +123,7 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
 
 <div class="main">
   <div class="q-card">
-    <div class="q-num" id="q-num">第 1 題 / 共 14 題</div>
+    <div class="q-num" id="q-num">第 1 題 / 共 16 題</div>
     <div class="q-label">📖 看定義，選出正確的詞語！</div>
     <div class="q-def" id="q-def"></div>
     <div class="correct-reveal" id="correct-reveal"></div>
@@ -145,7 +145,7 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
 <div id="done-screen">
   <div class="done-box">
     <div class="done-icon">🎉</div>
-    <div class="done-title">字義選詞完成！</div>
+    <div class="done-title">字義選詞②完成！</div>
     <div class="done-score" id="done-score"></div>
     <div class="done-stars" id="done-stars"></div>
     <button class="done-btn" onclick="replay()">🔁 再玩一次</button>
@@ -165,22 +165,40 @@ header { background:linear-gradient(135deg,#f39c12,#e67e22); padding:14px 16px 1
 
 <script>
 // ── 常數 ──
-const GAME_ID     = 'y3c-vocab';
-const GAME_SOURCE = '有得3C　字義選詞';
+const GAME_ID     = 'y3c-vocab2';
+const GAME_SOURCE = '有得3C　字義選詞②';
 const FB_URL      = 'https://xinru-class-default-rtdb.firebaseio.com';
-const GAME_LABELS = {
-  u1ziyin:'字音辨正(一)',u1bianzi:'找錯別字(一)',u1match:'連連看(一)',u2ziyin:'字音辨正(二)',u2bianzi:'找錯別字(二)',u2match:'連連看(二)',
-  u3ziyin:'字音辨正(三)',u3bianzi:'找錯別字(三)',u3match:'連連看(三)',u4ziyin:'字音辨正(四)',u4bianzi:'找錯別字(四)',u4match:'連連看(四)',u5ziyin:'字音辨正(五)',u5bianzi:'找錯別字(五)',u5match:'連連看(五)',unit6:'詞語填空', unit6m:'成語連連看',
-  u7ziyin:'字音辨正', u7bianzi:'找錯別字',
-  u7gaicuo:'改錯字(作業)', u7bopomo:'字音辨字(作業)',
-  u7vocab:'字彙練習(作業)', u7chengyu:'成語填空',
-  u7match:'連連看(七)',
-  'y3c-match':'連連看(3C)', 'y3c-chengyu':'填空(3C)', 'y3c-vocab':'字義選詞(3C)',
-  'y3c-gaicuo':'改錯字(3C)',
-  'y3c-match2':'連連看2(3C)', 'y3c-chengyu2':'填空2(3C)',
-  'y3c-vocab2':'字義選詞2(3C)', 'y3c-gaicuo2':'改錯字2(3C)',
-  'math-vol':'單位換算'
-};
+const GAME_LABELS = {u1ziyin:'字音辨正(一)',u1bianzi:'找錯別字(一)',u1match:'連連看(一)',u2ziyin:'字音辨正(二)',u2bianzi:'找錯別字(二)',u2match:'連連看(二)',u3ziyin:'字音辨正(三)',u3bianzi:'找錯別字(三)',u3match:'連連看(三)',u4ziyin:'字音辨正(四)',u4bianzi:'找錯別字(四)',u4match:'連連看(四)',u5ziyin:'字音辨正(五)',u5bianzi:'找錯別字(五)',u5match:'連連看(五)',unit6:'詞語填空',unit6m:'成語連連看',u7ziyin:'字音辨正(七)',u7bianzi:'找錯別字(七)',u7gaicuo:'改錯字(作業)',u7bopomo:'字音辨字(作業)',u7vocab:'字彙練習(作業)',u7chengyu:'成語填空',u7match:'連連看(七)',u8ziyin:'字音辨正(八)',u8bianzi:'找錯別字(八)',u8match:'連連看(八)',u8mingyan:'名言填空(八)','u8mingyan-match':'名言連連看(八)','u8mingyan-mcq':'名言選擇題(八)',u8gaicuo:'改錯字(八作業)',u8bopomo:'字音辨字(八作業)',u8ziyin2:'字音辨正(八作業)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)','y3c-match2':'連連看2(3C)','y3c-chengyu2':'填空2(3C)','y3c-vocab2':'字義選詞2(3C)','y3c-gaicuo2':'改錯字2(3C)','math-diag':'四則運算診斷','math-vol':'單位換算'};
+
+// ── 題目資料 ──
+const VOCAB = [
+  // 第七課
+  { def:'用來調配顏料，使其混合均勻的繪畫器具',               correct:'調色盤', opts:['調色盤','西洋棋子','鹽耙','教堂'] },
+  { def:'用來收集兼清洗鹽田結晶池池面的工具',                 correct:'鹽耙',   opts:['鹽耙','調色盤','光雕','彩霞'] },
+  { def:'透過操縱光的顏色和陰影，創造出視覺效果的藝術形式',   correct:'光雕',   opts:['光雕','彩霞','雲霄','金字塔'] },
+  { def:'因陽光照射而產生多種顏色變化的雲層',                 correct:'彩霞',   opts:['彩霞','雲霄','光雕','燦爛'] },
+  // 第八課
+  { def:'頭戴面鏡，腳穿蛙鞋，透過呼吸管換氣的水中活動',     correct:'浮潛',   opts:['浮潛','潛水','航行','上岸'] },
+  { def:'浮潛時穿著的衣物，用來防晒、防擦傷',                 correct:'水母衣', opts:['水母衣','浮潛','珊瑚','小丑魚'] },
+  { def:'生活在淺海珊瑚礁附近，色澤鮮豔，身上有明顯白色條紋的熱帶魚', correct:'小丑魚', opts:['小丑魚','珊瑚','水母衣','海底'] },
+  { def:'郵局設立供人投寄郵件的筒子',                         correct:'郵筒',   opts:['郵筒','寄','船','展示館'] },
+  { def:'在水上航行的交通工具',                               correct:'船',     opts:['船','郵筒','上岸','海底'] },
+  // 第十一課
+  { def:'修建居住的巢穴',                                     correct:'築巢',   opts:['築巢','洞穴','腐木','枯木'] },
+  { def:'由菌絲組成的植物，無莖、葉，常寄生於他物，無毒的可供食用', correct:'菇類', opts:['菇類','築巢','腐木','沉木'] },
+  { def:'倒下許久，出現腐爛現象的樹木',                       correct:'腐木',   opts:['腐木','沉木','枯木','柴火'] },
+  { def:'長時間半埋在土地裡的枯木',                           correct:'沉木',   opts:['沉木','腐木','枯木','柴火'] },
+  // 第十二課
+  { def:'由砂粒組成的岩石',                                   correct:'砂岩',   opts:['砂岩','堆砌','建築','展示館'] },
+  { def:'陳列物品供人觀賞的場所',                             correct:'展示館', opts:['展示館','砂岩','社區','建築'] },
+  { def:'一群人生活在同一區域範圍內，彼此有共同利害關係的群體', correct:'社區', opts:['社區','展示館','萬華','商店'] },
+];
+
+// ── 狀態 ──
+let order=[], idx=0, sessionStars=0, mistakeCount=0, totalCorrect=0, anyMistake=false;
+
+function getStars(){return parseInt(localStorage.getItem('xr_stars')||'0');}
+function addStars(n){const s=getStars()+n;localStorage.setItem('xr_stars',s);document.getElementById('star-display').textContent=s;sessionStars+=n;}
 
 // ── 冷卻系統 ──
 function getCDs(){return JSON.parse(localStorage.getItem('xr_cooldowns')||'{}');}
@@ -213,33 +231,6 @@ function showLockOverlay(){
   document.getElementById('lock-others').textContent=Object.keys(GAME_LABELS).filter(k=>k!==GAME_ID).map(k=>GAME_LABELS[k]).join('、');
   document.getElementById('lock-overlay').style.display='flex';
 }
-
-// ── 題目資料 ──
-// def: 顯示的定義；correct: 正確詞語；opts: 四個選項（含正確答案）
-const VOCAB = [
-  // 第十課 地球的眼淚
-  { def:'液體轉化成氣體的現象',                           correct:'蒸發',   opts:['蒸發','凝結','沖刷','下降'] },
-  { def:'科學上指氣體變成液體的現象',                     correct:'凝結',   opts:['凝結','蒸發','雜質','岩石'] },
-  { def:'水流衝擊，使土石流失或脫落、損壞',               correct:'沖刷',   opts:['沖刷','蒸發','凝結','下降'] },
-  { def:'構成地球外殼的主要物質，多為礦物集合體',         correct:'岩石',   opts:['岩石','雜質','河川','凝結'] },
-  { def:'大小河流的通稱',                                 correct:'河川',   opts:['河川','岩石','蒸發','下降'] },
-  { def:'不屬於該物質的其他成分',                         correct:'雜質',   opts:['雜質','岩石','凝結','沖刷'] },
-  // 第九課 三峽老街樂藍染
-  { def:'貫穿山脈或地下，供行人、車輛通行的通道',         correct:'隧道',   opts:['隧道','拱廊','騎樓','展示間'] },
-  { def:'用柱子支撐，帶有圓弧形頂部的開放式通道',         correct:'拱廊',   opts:['拱廊','隧道','騎樓','燈籠'] },
-  { def:'建築物一樓靠馬路的部分建成走廊，可遮風避雨',     correct:'騎樓',   opts:['騎樓','拱廊','隧道','展示間'] },
-  { def:'以竹或鐵絲為骨架、外糊紙或紗，供裝飾或照明的籠狀燈具', correct:'燈籠', opts:['燈籠','拱廊','騎樓','隧道'] },
-  { def:'臺灣於西元一八九五年至一九四五年，由日本統治的時期', correct:'日治時期', opts:['日治時期','展示間','三峽老街','隧道'] },
-  { def:'擺出供人觀賞的場所',                             correct:'展示間', opts:['展示間','隧道','施展','騎樓'] },
-  { def:'發揮、展露（才能或技藝）',                       correct:'施展',   opts:['施展','展示間','開獎','傻笑'] },
-  { def:'揭曉中獎號碼或中獎人',                           correct:'開獎',   opts:['開獎','施展','展示間','傻笑'] },
-];
-
-// ── 狀態 ──
-let order=[], idx=0, sessionStars=0, mistakeCount=0, totalCorrect=0, anyMistake=false;
-
-function getStars(){return parseInt(localStorage.getItem('xr_stars')||'0');}
-function addStars(n){const s=getStars()+n;localStorage.setItem('xr_stars',s);document.getElementById('star-display').textContent=s;sessionStars+=n;}
 
 function recordMistake(word, def){
   const all=JSON.parse(localStorage.getItem('xr_mistakes')||'{}');
