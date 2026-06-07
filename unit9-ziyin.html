@@ -314,9 +314,11 @@ function recordMistake(char, meaning, question, correct) {
   all[key].lastWrong = new Date().toLocaleDateString('zh-TW');
   localStorage.setItem('xr_mistakes', JSON.stringify(all));
 }
+const SPEAK_FIX = { '幢':'床' }; // TTS 對罕用字發音不準，替換成同音字朗讀（畫面文字不受影響）
 function speak(text) {
   if (!window.speechSynthesis) return;
-  const u = new SpeechSynthesisUtterance(text);
+  const fixed = [...text].map(c => SPEAK_FIX[c] || c).join('');
+  const u = new SpeechSynthesisUtterance(fixed);
   u.lang = 'zh-TW'; u.rate = 0.8;
   speechSynthesis.cancel();
   speechSynthesis.speak(u);
