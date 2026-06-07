@@ -221,7 +221,7 @@ function speakWord(word){if(!('speechSynthesis' in window))return;window.speechS
 function getStars(){return parseInt(localStorage.getItem('xr_stars')||'0');}
 function addStars(n){const total=getStars()+n;localStorage.setItem('xr_stars',total);document.getElementById('hdr-star-count').textContent=total;sessionStars+=n;roundStars+=n;}
 function getPlayerName(){return localStorage.getItem('xr_name')||'';}
-function saveRecord(accuracy){const records=JSON.parse(localStorage.getItem('xr_records')||'[]');records.unshift({unit:'u5match',accuracy,stars:sessionStars,date:new Date().toLocaleDateString('zh-TW')});localStorage.setItem('xr_records',JSON.stringify(records.slice(0,20)));}
+function saveRecord(accuracy){const records=JSON.parse(localStorage.getItem('xr_records')||'[]');records.push({unit:'u5match',accuracy,stars:sessionStars,date:new Date().toLocaleDateString('zh-TW')});if(records.length>50)records.splice(0,records.length-50);localStorage.setItem('xr_records',JSON.stringify(records));}
 function init(){const name=getPlayerName();if(!name){document.getElementById('name-modal').style.display='flex';}else{document.getElementById('name-modal').style.display='none';startGame();}document.getElementById('hdr-star-count').textContent=getStars();}
 function saveName(){const val=document.getElementById('name-input').value.trim();if(!val)return;localStorage.setItem('xr_name',val);document.getElementById('name-modal').style.display='none';startGame();}
 document.getElementById('name-input').addEventListener('keydown',e=>{if(e.key==='Enter')saveName();});

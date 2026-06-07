@@ -468,8 +468,9 @@ function getPlayerName() { return localStorage.getItem('xr_name') || ''; }
 
 function saveRecord(accuracy) {
   const records = JSON.parse(localStorage.getItem('xr_records') || '[]');
-  records.unshift({ unit:'u7match', accuracy, stars: sessionStars, date: new Date().toLocaleDateString('zh-TW') });
-  localStorage.setItem('xr_records', JSON.stringify(records.slice(0,20)));
+  records.push({ unit:'u7match', accuracy, stars: sessionStars, date: new Date().toLocaleDateString('zh-TW') });
+  if (records.length > 50) records.splice(0, records.length - 50);
+  localStorage.setItem('xr_records', JSON.stringify(records));
 }
 
 /* ── Init ── */

@@ -469,8 +469,9 @@ function showFinal(){
   document.getElementById('final-sub').textContent=acc===100?'🏆 全對！太厲害了！':acc>=80?'👍 答得很好！':'繼續加油！';
 
   const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
-  recs.unshift({unit:'u9mingyan-mcq',accuracy:acc,stars:sessionStars,date:new Date().toLocaleDateString('zh-TW')});
-  localStorage.setItem('xr_records',JSON.stringify(recs.slice(0,20)));
+  recs.push({unit:'u9mingyan-mcq',accuracy:acc,stars:sessionStars,date:new Date().toLocaleDateString('zh-TW')});
+  if (recs.length > 50) recs.splice(0, recs.length - 50);
+  localStorage.setItem('xr_records', JSON.stringify(recs));
   reportComplete(!hadMistake);
   if(acc===100)launchConfetti();
   document.getElementById('final-screen').classList.add('show');

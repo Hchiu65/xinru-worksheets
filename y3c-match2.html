@@ -380,8 +380,9 @@ function addStars(n) {
 
 function saveRecord(accuracy) {
   const records = JSON.parse(localStorage.getItem('xr_records') || '[]');
-  records.unshift({ unit:'y3c-match2', accuracy, stars: sessionStars, date: new Date().toLocaleDateString('zh-TW') });
-  localStorage.setItem('xr_records', JSON.stringify(records.slice(0,200)));
+  records.push({ unit:'y3c-match2', accuracy, stars: sessionStars, date: new Date().toLocaleDateString('zh-TW') });
+  if (records.length > 50) records.splice(0, records.length - 50);
+  localStorage.setItem('xr_records', JSON.stringify(records));
 }
 
 // ── 初始化 ──
