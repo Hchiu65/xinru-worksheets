@@ -422,15 +422,13 @@ function selectOpt(idx,btn){
   if(idx===q.ans){
     btn.classList.add('correct');
     correctCount++;
-    addStars(15);
-    showStarPop(btn,'+15 ⭐');
+    addStars(5);
+    showStarPop(btn,'+5 ⭐');
   } else {
     btn.classList.add('wrong');
     hadMistake=true;
     recordMistake(q.opts[idx], q.q);
     allBtns[q.ans].classList.add('correct');
-    addStars(5);
-    showStarPop(btn,'+5 ⭐');
   }
 
   const exp=document.getElementById('exp-box');

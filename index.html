@@ -1196,6 +1196,8 @@ async function authStep2() {
     document.getElementById('auth-err').textContent = '請輸入4位數字（月月日日，如0115）'; return;
   }
   showAuthPanel('loading');
+  const clearLocalGameData = () => ['xr_stars','xr_owned','xr_equipped','xr_redeemed',
+    'xr_records','xr_mistakes','xr_cooldowns'].forEach(k=>localStorage.removeItem(k));
   if (_authExists) {
     try {
       const res  = await fetch(`${FB_URL}/accounts/${encodeURIComponent(_authName)}.json`);
@@ -1209,6 +1211,7 @@ async function authStep2() {
         await fetch(`${FB_URL}/accounts/${encodeURIComponent(_authName)}/bday.json`,
           {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(bday)});
       }
+      clearLocalGameData();
       applyData(data);
     } catch(e) {
       document.getElementById('auth-err').textContent = '連線失敗，請重試';
@@ -1219,6 +1222,8 @@ async function authStep2() {
       const newData = {bday,stars:0,owned:{},equipped:{},redeemed:[],records:[],mistakes:{},cooldowns:{},updated:Date.now()};
       await fetch(`${FB_URL}/accounts/${encodeURIComponent(_authName)}.json`,
         {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(newData)});
+      clearLocalGameData();
+      applyData(newData);
     } catch(e) {
       document.getElementById('auth-err').textContent = '建立帳號失敗，請重試';
       showAuthPanel('s2'); return;
