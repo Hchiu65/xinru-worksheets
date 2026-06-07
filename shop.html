@@ -179,6 +179,13 @@ function getEquipped(){ return JSON.parse(localStorage.getItem('xr_equipped')||'
 function getRedeemed(){ return JSON.parse(localStorage.getItem('xr_redeemed')||'[]'); }
 function getName()    { return localStorage.getItem('xr_name')||'同學'; }
 
+// Track lifetime spending so totalEarned (= stars + spent) stays accurate
+// even though xr_records (used for recent-accuracy) gets trimmed over time.
+function addSpent(cost) {
+  const spent = parseInt(localStorage.getItem('xr_spent')||'0') + cost;
+  localStorage.setItem('xr_spent', spent);
+}
+
 let currentTab = 'badges';
 
 function showTab(tab) {
@@ -239,6 +246,7 @@ function buyItem(id) {
   const stars = getStars();
   if (!item || stars < item.cost) return;
   localStorage.setItem('xr_stars', stars - item.cost);
+  addSpent(item.cost);
   const owned = getOwned();
   owned[id] = true;
   localStorage.setItem('xr_owned', JSON.stringify(owned));
@@ -252,6 +260,7 @@ function buyConsumable(id) {
   const stars = getStars();
   if (!item || stars < item.cost) return;
   localStorage.setItem('xr_stars', stars - item.cost);
+  addSpent(item.cost);
   const redeemed = getRedeemed();
   redeemed.push({ id, date: new Date().toLocaleDateString('zh-TW'), used: false });
   localStorage.setItem('xr_redeemed', JSON.stringify(redeemed));

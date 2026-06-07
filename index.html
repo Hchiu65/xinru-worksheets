@@ -1066,6 +1066,7 @@ function getName()     { return localStorage.getItem('xr_name')||''; }
 function getOwned()    { return JSON.parse(localStorage.getItem('xr_owned')||'{}'); }
 function getEquipped() { return JSON.parse(localStorage.getItem('xr_equipped')||'{}'); }
 function getRecords()  { return JSON.parse(localStorage.getItem('xr_records')||'[]'); }
+function getSpent()    { return parseInt(localStorage.getItem('xr_spent')||'0'); }
 function getMistakes() { return JSON.parse(localStorage.getItem('xr_mistakes')||'{}'); }
 function getCDs()      { return JSON.parse(localStorage.getItem('xr_cooldowns')||'{}'); }
 
@@ -1339,7 +1340,9 @@ async function syncToCloud() {
   if (!FB_URL || !getName() || isGuest()) return;
   const eq=getEquipped(), owned=getOwned(), records=getRecords();
   const redeemed=JSON.parse(localStorage.getItem('xr_redeemed')||'[]');
-  const totalEarned=records.reduce((s,r)=>s+(r.stars||0),0);
+  // stars + spent = lifetime total earned. xr_records gets trimmed over time
+  // (see showDone), so summing records.stars undercounts active players.
+  const totalEarned=getStars()+getSpent();
   const patch = {
     stars: getStars(),
     badge: (eq.badge&&owned[eq.badge])?BADGES[eq.badge]:'',
@@ -1409,15 +1412,21 @@ function render() {
 
   const last20=records.slice(-20);
   const recentAcc=last20.length?Math.round(last20.reduce((s,r)=>s+(r.acc||r.accuracy||0),0)/last20.length):0;
-  const totalEarned=records.reduce((s,r)=>s+(r.stars||0),0);
 
-  // Self-heal: if no shop purchases and xr_stars < totalEarned, correct it (sync conflict recovery)
+  // Self-heal: if no shop purchases and records show more than current balance,
+  // xr_stars likely got overwritten by a stale sync — restore it (sync conflict recovery)
+  const recordsEarned=records.reduce((s,r)=>s+(r.stars||0),0);
   const redeemed=JSON.parse(localStorage.getItem('xr_redeemed')||'[]');
   const hasNoPurchases = Object.keys(owned).length===0 && redeemed.length===0;
-  if (hasNoPurchases && totalEarned > getStars()) {
-    localStorage.setItem('xr_stars', totalEarned);
-    document.getElementById('star-count').textContent = totalEarned;
+  if (hasNoPurchases && recordsEarned > getStars()) {
+    localStorage.setItem('xr_stars', recordsEarned);
+    document.getElementById('star-count').textContent = recordsEarned;
   }
+
+  // Lifetime total = current balance + lifetime spending. xr_records gets
+  // trimmed over time (see showDone in game files), so summing records.stars
+  // alone undercounts active players — stars+spent never loses history.
+  const totalEarned=getStars()+getSpent();
 
   document.getElementById('stat-plays').querySelector('.stat-val').textContent=records.length;
   document.getElementById('stat-acc').querySelector('.stat-val').textContent=recentAcc+'%';

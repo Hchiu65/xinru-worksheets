@@ -178,6 +178,7 @@ function getOwned(){ return JSON.parse(localStorage.getItem('xr_owned')||'{}'); 
 function getEquipped(){ return JSON.parse(localStorage.getItem('xr_equipped')||'{}'); }
 function getRedeemed(){ return JSON.parse(localStorage.getItem('xr_redeemed')||'[]'); }
 function getRecords(){ return JSON.parse(localStorage.getItem('xr_records')||'[]'); }
+function getSpent()  { return parseInt(localStorage.getItem('xr_spent')||'0'); }
 
 const BADGE_MAP = {
   b_panda:'🐼', b_fox:'🦊', b_penguin:'🐧', b_butterfly:'🦋',
@@ -224,7 +225,10 @@ async function syncSelf() {
   const acc = recentAccuracy();
   const redeemed = countRedeemed();
   const plays = getRecords().length;
-  const data = { name, stars, badge, title, acc, plays, redeemed, updated: Date.now() };
+  // stars + spent = lifetime total earned. xr_records gets trimmed over time
+  // (see showDone in game files), so summing records.stars undercounts active players.
+  const totalEarned = stars + getSpent();
+  const data = { name, stars, totalEarned, badge, title, acc, plays, redeemed, updated: Date.now() };
   try {
     await fetch(`${FB_URL}/accounts/${encodeURIComponent(name)}.json`, {
       method: 'PATCH',
