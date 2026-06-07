@@ -160,6 +160,10 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
 /* Lock chip on unit cards */
 .lock-chip { background:#fee2e2;color:#c0392b;font-size:11px;padding:2px 7px;border-radius:10px; }
 
+/* ── Guest Limit Modal ── */
+#guest-limit-modal { display:none; position:fixed; inset:0; background:rgba(50,30,80,.55); align-items:center; justify-content:center; z-index:910; }
+#guest-limit-modal.show { display:flex; }
+
 /* ── Switch Modal ── */
 #switch-modal { display:none; position:fixed; inset:0; background:rgba(50,30,80,.55); align-items:center; justify-content:center; z-index:900; }
 #switch-modal.show { display:flex; }
@@ -1098,7 +1102,7 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
       <p>請選擇登入方式</p>
       <button class="modal-btn" onclick="showAuthPanel('s1')" style="margin-bottom:10px">🙋 帳號登入 / 註冊</button>
       <button class="modal-btn" onclick="loginAsGuest()" style="background:linear-gradient(135deg,#aaa,#888)">👀 訪客瀏覽</button>
-      <p style="font-size:11px;color:#ccc;margin-top:10px">訪客模式不儲存任何紀錄</p>
+      <p style="font-size:11px;color:#ccc;margin-top:10px">訪客模式不儲存任何紀錄，僅能試玩一個關卡</p>
     </div>
     <!-- Step 1: username -->
     <div id="auth-s1" style="display:none">
@@ -1123,6 +1127,16 @@ body { font-family:"標楷體","DFKai-SB",serif; background:#f0f4ff; color:#333;
     <div id="auth-loading" style="display:none">
       <div class="auth-loading">⌛ 連線中…</div>
     </div>
+  </div>
+</div>
+
+<div id="guest-limit-modal">
+  <div class="modal-box">
+    <div class="modal-emoji">🔒</div>
+    <h3>訪客只能試玩一關喔</h3>
+    <p>註冊免費帳號就能解鎖所有關卡、保存遊玩紀錄與星星，還可以加入排行榜！</p>
+    <button class="modal-btn" onclick="guestWantsRegister()">🙋 馬上註冊帳號</button>
+    <button class="modal-btn-sub" onclick="closeGuestLimitModal()">先繼續訪客瀏覽</button>
   </div>
 </div>
 
@@ -1408,11 +1422,30 @@ function isGuest() { return localStorage.getItem('xr_bday') === 'guest'; }
 function loginAsGuest() {
   ['xr_stars','xr_owned','xr_equipped','xr_redeemed',
    'xr_records','xr_mistakes','xr_cooldowns'].forEach(k=>localStorage.removeItem(k));
+  localStorage.removeItem('xr_guest_game');
   localStorage.setItem('xr_name', '訪客');
   localStorage.setItem('xr_bday', 'guest');
   document.getElementById('auth-modal').classList.remove('show');
   render();
 }
+
+/* ── Guest play limit: only one game, then prompt to register ── */
+function showGuestLimitModal() { document.getElementById('guest-limit-modal').classList.add('show'); }
+function closeGuestLimitModal() { document.getElementById('guest-limit-modal').classList.remove('show'); }
+function guestWantsRegister() {
+  closeGuestLimitModal();
+  document.getElementById('auth-modal').classList.add('show');
+  showAuthPanel('s1');
+}
+document.getElementById('unit-card-list').addEventListener('click', e => {
+  if (!isGuest()) return;
+  const card = e.target.closest('.unit-card[data-gid]');
+  if (!card) return;
+  const gid = card.dataset.gid;
+  const played = localStorage.getItem('xr_guest_game');
+  if (!played) { localStorage.setItem('xr_guest_game', gid); return; }
+  if (played !== gid) { e.preventDefault(); showGuestLimitModal(); }
+});
 
 async function syncToCloud() {
   if (!FB_URL || !getName() || isGuest()) return;

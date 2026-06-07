@@ -352,8 +352,7 @@ function reportComplete(perfect){
   pushToCloud();
 }
 async function pushToCloud(){
-  const name=localStorage.getItem('xr_name');
-  if(!name)return;
+  const name=localStorage.getItem('xr_name'); if(!name||localStorage.getItem('xr_bday')==='guest')return;
   const d={stars:parseInt(localStorage.getItem('xr_stars')||'0'),
     records:JSON.parse(localStorage.getItem('xr_records')||'[]'),
     mistakes:JSON.parse(localStorage.getItem('xr_mistakes')||'{}'),
