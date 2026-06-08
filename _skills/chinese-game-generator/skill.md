@@ -7,6 +7,11 @@ description: >
   所有遊戲皆包含冷卻系統、星星獎勵、錯題記錄、Firebase cloud sync、iPad 觸控優化。
   使用者說「幫我做一個XXX遊戲」、「把這些題目做成互動遊戲」、「新增一個單元的練習」時必須觸發此 skill。
   也適用於：「第X單元要出新的練習」、「這些成語要做成遊戲」、「把Word檔的題目做成選擇題」等情境。
+  除了「從題目資料產生全新遊戲」，也適用於要在多個現有遊戲檔案中新增、修改、或修復共用功能時
+  （例如：錯誤回報系統、計分機制、UI 元件、統一某個樣式或行為）。這類情境下，skill 內建的範本是
+  已驗證過的標準版本——使用它比直接照抄某個「看起來很像」的現成檔案更可靠，能避免把該檔案裡尚未發現的
+  bug 一併複製過去。觸發語句例如：「幫所有遊戲加上/改成 XX 功能」、「統一一下所有遊戲的回報機制」、
+  「修一下 XX 機制的 bug，順便檢查其他檔案有沒有一樣的問題」。
 ---
 
 # 國語互動遊戲生成器
@@ -56,6 +61,8 @@ curl -s -X DELETE "https://xinru-class-default-rtdb.firebaseio.com/accounts/{舊
 3. **GAME_ID**：簡短英文ID，如 `u8gaicuo`（現有：unit6, unit6m, u7ziyin, u7bianzi, u7gaicuo, u7bopomo, u7vocab, u7chengyu, u7match）
 4. **題目資料**：從 Word/圖片/使用者直接提供的文字中提取
 5. **主題色**：若未指定，依單元選預設色（第六單元藍、第七單元橙紅、第八單元綠）
+
+> 📌 **`hdr-title` 命名慣例**：ziyin / find-wrong / fix-wrong / bopomo / vocab 這類「單元作業練習」頁面，頁面內顯示的標題要在遊戲名稱後加上「・第X單元」，例如「字音辨正（四）・第四單元」、「找錯別字・第九單元」。日後學生回報某題有誤時，老師或 Claude 只看截圖就能立刻判斷是哪個單元的檔案，不必再去猜測或逐一翻檔名比對。（fill-in、matching 類型維持原本標題格式即可，因為它們通常已經用 `<small>` 顯示其他資訊。）
 
 ## 各遊戲資料格式
 
@@ -131,6 +138,8 @@ const GAME_LABELS = {
 
 每個遊戲右上角都有 `⚠️ 回報` 按鈕，讓學生回報題目錯誤。管理員（查理布朗、艾美女）在 `error-reports.html` 查看並處理。
 
+> 📌 **直接複製這裡（或 `boilerplate.md`）目前的程式碼，不要挑一個「長得像」的現成檔案重新組裝**：這套系統的 CSS／HTML／JS 彼此綁定——例如下面 `id="report-cats"` 必須跟 JS 裡的 `querySelectorAll('#report-cats...')` 完全對上，任何一處 id／class 寫岔了，整個分類功能就會悄悄失效：checkbox 照樣能勾、畫面完全正常，只有資料真正送進 Firebase 時才會發現是空的（這正是某次升級時實際發生過的事）。從這裡複製，永遠拿到當下已驗證過的版本；改抄別的檔案，等於在賭那個檔案當初有沒有寫對。
+
 ### CSS（加在現有樣式後）
 ```css
 .btn-report{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:16px;padding:6px 14px;font-size:16px;color:rgba(255,255,255,.8);cursor:pointer;font-family:inherit;flex-shrink:0;}
@@ -141,6 +150,9 @@ const GAME_LABELS = {
 .report-title{font-size:18px;font-weight:bold;color:#e74c3c;margin-bottom:6px;}
 .report-sub{font-size:13px;color:#aaa;margin-bottom:12px;}
 .report-q{font-size:14px;color:#555;background:#f8f8f8;border-radius:10px;padding:10px 12px;margin-bottom:14px;line-height:1.7;text-align:left;word-break:break-all;}
+.report-cats{text-align:left;font-size:14px;line-height:2.1;margin:4px 0 12px;color:#555;}
+.report-cats label{display:block;cursor:pointer;}
+.report-cats input{margin-right:6px;vertical-align:middle;}
 .report-note{width:100%;padding:10px;font-size:14px;font-family:inherit;border:1.5px solid #eee;border-radius:10px;margin-bottom:14px;resize:none;height:60px;outline:none;box-sizing:border-box;}
 .report-note:focus{border-color:#e74c3c;}
 .report-btns{display:flex;gap:10px;}
@@ -170,10 +182,25 @@ function getQText() {
   const el = document.getElementById('question-text');
   return el ? el.textContent : GAME_SOURCE;
 }
-function showReport(){document.getElementById('report-q').textContent=getQText();document.getElementById('report-note').value='';document.getElementById('report-overlay').classList.add('show');}
+function showReport(){document.getElementById('report-q').textContent=getQText();document.getElementById('report-note').value='';document.querySelectorAll('#report-cats input').forEach(c=>c.checked=false);document.getElementById('report-overlay').classList.add('show');}
 function closeReport(){document.getElementById('report-overlay').classList.remove('show');}
-async function submitReport(){const data={game:GAME_ID,source:GAME_SOURCE,qText:document.getElementById('report-q').textContent,note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+async function submitReport(){const data={game:GAME_ID,source:GAME_SOURCE,qText:document.getElementById('report-q').textContent,categories:Array.from(document.querySelectorAll('#report-cats input:checked')).map(c=>c.value),note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
 ```
+
+### MCQ 類遊戲（fix-wrong / find-wrong / bopomo / ziyin）：feedback 層內加回報入口
+
+這四種遊戲答題後會跳出全螢幕的「揭曉答案」層（`#feedback` / `.fb-box`，`z-index:500`），疊在 header 上方，導致 header 的 `⚠️ 回報` 按鈕被蓋住按不到。但這正是學生最需要回報的時刻——他們剛看到（可能有誤的）正確答案、注音或解釋說明。
+
+解法：在 `.fb-box` 內「繼續 →」按鈕之後，加一個低調的文字連結直接呼叫已存在的 `showReport()`：
+
+```html
+<button class="fb-next" onclick="nextQ()">繼續 →</button>
+<button onclick="showReport()" style="margin-top:10px;background:none;border:none;color:#999;font-size:13px;font-family:inherit;text-decoration:underline;cursor:pointer;">⚠️ 這題有問題？回報</button>
+```
+
+不需要額外處理：`#report-overlay` 的 `z-index`（950）高於 `#feedback`（500），從 feedback 層觸發時會自動疊在最上層；`getQText()` 讀取的 DOM（如 `#q-phrase`）在 `nextQ()` 執行前不會變動，所以即使在揭曉答案當下觸發回報，仍會正確帶出剛剛那一題的內容。
+
+> fill-in 和 matching 沒有這種全螢幕揭曉層（fill-in 用內嵌標示對錯，matching 用配對選擇器回報），所以不需要加這個連結。
 
 ### matching（連連看）類遊戲的 JS — 使用配對選擇器
 連連看不用靜態 `report-q` 文字，改用 pair picker 讓學生點選哪一對有問題：
@@ -186,10 +213,10 @@ async function submitReport(){const data={game:GAME_ID,source:GAME_SOURCE,qText:
 // .pair-meaning{font-size:12px;color:#888;}
 
 let reportSelectedPair=null;
-function showReport(){reportSelectedPair=null;const pk=document.getElementById('pair-picker');pk.innerHTML=pairs.map((p,i)=>`<button class="pair-item" onclick="selectPair(${i})" id="pi-${i}"><span class="pair-word">${p.word}</span><span class="pair-meaning">${p.meaning}</span></button>`).join('');document.getElementById('report-note').value='';document.getElementById('report-overlay').classList.add('show');}
+function showReport(){reportSelectedPair=null;const pk=document.getElementById('pair-picker');pk.innerHTML=pairs.map((p,i)=>`<button class="pair-item" onclick="selectPair(${i})" id="pi-${i}"><span class="pair-word">${p.word}</span><span class="pair-meaning">${p.meaning}</span></button>`).join('');document.getElementById('report-note').value='';document.querySelectorAll('#report-cats input').forEach(c=>c.checked=false);document.getElementById('report-overlay').classList.add('show');}
 function selectPair(idx){reportSelectedPair=pairs[idx];document.querySelectorAll('.pair-item').forEach((el,i)=>el.classList.toggle('selected',i===idx));}
 function closeReport(){document.getElementById('report-overlay').classList.remove('show');}
-async function submitReport(){const qt=reportSelectedPair?reportSelectedPair.word+' → '+reportSelectedPair.meaning:GAME_SOURCE;const data={game:GAME_ID,source:GAME_SOURCE,qText:qt,note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+async function submitReport(){const qt=reportSelectedPair?reportSelectedPair.word+' → '+reportSelectedPair.meaning:GAME_SOURCE;const data={game:GAME_ID,source:GAME_SOURCE,qText:qt,categories:Array.from(document.querySelectorAll('#report-cats input:checked')).map(c=>c.value),note:document.getElementById('report-note').value.trim(),player:localStorage.getItem('xr_name')||'匿名',date:new Date().toLocaleDateString('zh-TW'),ts:Date.now(),resolved:false};try{await fetch(`${FB_URL}/error_reports.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){}closeReport();const t=document.createElement('div');t.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;z-index:999;pointer-events:none;';t.textContent='✓ 已通知老師，謝謝！';document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
 ```
 
 ### Overlay HTML（連連看用 pair-picker，其他用 report-q）
@@ -200,6 +227,13 @@ async function submitReport(){const qt=reportSelectedPair?reportSelectedPair.wor
     <div class="report-title">⚠️ 回報題目錯誤</div>
     <div class="report-sub">這題有問題嗎？說明後老師會來確認</div>
     <div class="report-q" id="report-q"></div>
+    <div class="report-cats" id="report-cats">
+      <label><input type="checkbox" value="讀音／注音錯誤">讀音／注音錯誤</label>
+      <label><input type="checkbox" value="文字／錯字">文字／錯字（題目或選項打錯字）</label>
+      <label><input type="checkbox" value="答案標示錯誤">答案標示錯誤</label>
+      <label><input type="checkbox" value="解釋說明錯誤">解釋說明錯誤</label>
+      <label><input type="checkbox" value="其他">其他（請說明）</label>
+    </div>
     <textarea class="report-note" id="report-note" placeholder="說明錯誤（可不填）"></textarea>
     <div class="report-btns">
       <button class="report-btn-cancel" onclick="closeReport()">取消</button>
@@ -208,12 +242,19 @@ async function submitReport(){const qt=reportSelectedPair?reportSelectedPair.wor
   </div>
 </div>
 
-<!-- matching 類：把 report-q 換成 pair-picker -->
+<!-- matching 類：把 report-q 換成 pair-picker，report-cats 不變 -->
 <div id="report-overlay">
   <div class="report-box">
     <div class="report-title">⚠️ 回報題目錯誤</div>
     <div class="report-sub">點選哪個詞語有問題</div>
     <div class="pair-picker" id="pair-picker"></div>
+    <div class="report-cats" id="report-cats">
+      <label><input type="checkbox" value="讀音／注音錯誤">讀音／注音錯誤</label>
+      <label><input type="checkbox" value="文字／錯字">文字／錯字（題目或選項打錯字）</label>
+      <label><input type="checkbox" value="答案標示錯誤">答案標示錯誤</label>
+      <label><input type="checkbox" value="解釋說明錯誤">解釋說明錯誤</label>
+      <label><input type="checkbox" value="其他">其他（請說明）</label>
+    </div>
     <textarea class="report-note" id="report-note" placeholder="說明錯誤（可不填）"></textarea>
     <div class="report-btns">
       <button class="report-btn-cancel" onclick="closeReport()">取消</button>
@@ -222,6 +263,8 @@ async function submitReport(){const qt=reportSelectedPair?reportSelectedPair.wor
   </div>
 </div>
 ```
+
+> 5 個分類值必須與 `error-reports.html` 顯示用的紅色標籤完全一致（含全形／符號），否則管理後台無法正確歸類。`categories` 是陣列且可能為空（學生不勾選也能送出），收到後存入 Firebase `/error_reports/{key}/categories`。
 
 ## 響應式設計（13吋 iPad，≥1000px）
 
@@ -333,7 +376,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 - [ ] 星星計算正確（完美 +20，有錯 +10）
 - [ ] 完成後出現結果畫面
 - [ ] 鎖定覆蓋層正常顯示
-- [ ] ⚠️ 回報按鈕可以開啟 overlay
+- [ ] ⚠️ 回報按鈕可以開啟 overlay，5 個分類 checkbox 正常勾選／重置
+- [ ] MCQ 類型（fix-wrong/find-wrong/bopomo/ziyin）：答案揭曉層內的「這題有問題？回報」連結可正常開啟 overlay 並帶出當題內容
 - [ ] 13吋 iPad（≥1000px）版面正常放大
 - [ ] 填空遊戲：每次重新整理詞庫順序不同（洗牌有效）
 

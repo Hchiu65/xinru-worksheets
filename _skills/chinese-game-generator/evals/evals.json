@@ -54,6 +54,30 @@
           "type": "file_contains",
           "file": "unit8-gaicuo.html",
           "pattern": "e67e22"
+        },
+        {
+          "text": "hdr-title 顯示的標題含「・第八單元」單元後綴（不只是 GAME_SOURCE 常數裡有）",
+          "type": "regex_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "hdr-title\">[^<]*第八單元"
+        },
+        {
+          "text": "答案揭曉層（#feedback / .fb-box）內含「這題有問題？回報」連結，讓學生看到答案當下就能回報",
+          "type": "file_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "這題有問題？回報"
+        },
+        {
+          "text": "回報視窗包含 5 類錯誤分類 checkbox（report-cats 區塊）",
+          "type": "file_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "report-cats"
+        },
+        {
+          "text": "report-cats 容器確實帶有 id（不是只有 class），讓 querySelectorAll('#report-cats...') 選擇器選得到元素、分類資料才送得出去",
+          "type": "regex_contains",
+          "file": "unit8-gaicuo.html",
+          "pattern": "(?=[^]*id=\"report-cats\")(?=[^]*querySelectorAll\\('#report-cats)"
         }
       ]
     },
@@ -104,6 +128,18 @@
           "type": "file_contains",
           "file": "unit8-fillin.html",
           "pattern": "pushToCloud"
+        },
+        {
+          "text": "回報視窗包含 5 類錯誤分類 checkbox（report-cats 區塊）",
+          "type": "file_contains",
+          "file": "unit8-fillin.html",
+          "pattern": "report-cats"
+        },
+        {
+          "text": "report-cats 容器確實帶有 id（不是只有 class），讓 querySelectorAll('#report-cats...') 選擇器選得到元素、分類資料才送得出去",
+          "type": "regex_contains",
+          "file": "unit8-fillin.html",
+          "pattern": "(?=[^]*id=\"report-cats\")(?=[^]*querySelectorAll\\('#report-cats)"
         }
       ]
     },
@@ -148,6 +184,30 @@
           "type": "file_contains",
           "file": "unit8-ziyin.html",
           "pattern": "recordMistake"
+        },
+        {
+          "text": "hdr-title 顯示的標題含「・第八單元」單元後綴（不只是 GAME_SOURCE 常數裡有）",
+          "type": "regex_contains",
+          "file": "unit8-ziyin.html",
+          "pattern": "hdr-title\">[^<]*第八單元"
+        },
+        {
+          "text": "答案揭曉層（#feedback / .fb-box）內含「這題有問題？回報」連結，讓學生看到答案當下就能回報",
+          "type": "file_contains",
+          "file": "unit8-ziyin.html",
+          "pattern": "這題有問題？回報"
+        },
+        {
+          "text": "回報視窗包含 5 類錯誤分類 checkbox（report-cats 區塊）",
+          "type": "file_contains",
+          "file": "unit8-ziyin.html",
+          "pattern": "report-cats"
+        },
+        {
+          "text": "report-cats 容器確實帶有 id（不是只有 class），讓 querySelectorAll('#report-cats...') 選擇器選得到元素、分類資料才送得出去",
+          "type": "regex_contains",
+          "file": "unit8-ziyin.html",
+          "pattern": "(?=[^]*id=\"report-cats\")(?=[^]*querySelectorAll\\('#report-cats)"
         }
       ]
     }

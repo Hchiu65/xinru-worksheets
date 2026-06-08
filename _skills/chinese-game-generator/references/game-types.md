@@ -226,7 +226,7 @@ header { background:linear-gradient(135deg,#e67e22,#c0392b); }
 <header>
   <div class="hdr-left">
     <a class="btn-home" href="index.html">🏠</a>
-    <div class="hdr-title">【遊戲標題】</div>
+    <div class="hdr-title">【遊戲標題】・第X單元</div>
   </div>
   <div class="hdr-right">
     <div class="progress-text" id="prog-text">1 / 【N】</div>
@@ -255,6 +255,7 @@ header { background:linear-gradient(135deg,#e67e22,#c0392b); }
     <div class="fb-idiom" id="fb-idiom"></div>
     <div class="fb-detail" id="fb-detail"></div>
     <button class="fb-next" onclick="nextQ()">繼續 →</button>
+    <button onclick="showReport()" style="margin-top:10px;background:none;border:none;color:#999;font-size:13px;font-family:inherit;text-decoration:underline;cursor:pointer;">⚠️ 這題有問題？回報</button>
   </div>
 </div>
 
@@ -420,7 +421,7 @@ header { background:linear-gradient(135deg,#2980b9,#1a5276); }
 <header>
   <div class="hdr-left">
     <a class="btn-home" href="index.html">🏠</a>
-    <div class="hdr-title">【標題】</div>
+    <div class="hdr-title">【標題】・第X單元</div>
   </div>
   <div class="hdr-right">
     <div class="progress-text" id="prog-text">1 / 【N】</div>
@@ -448,6 +449,7 @@ header { background:linear-gradient(135deg,#2980b9,#1a5276); }
     <div class="fb-phrase" id="fb-phrase"></div>
     <div class="fb-detail" id="fb-detail"></div>
     <button class="fb-next" onclick="nextQ()">繼續 →</button>
+    <button onclick="showReport()" style="margin-top:10px;background:none;border:none;color:#999;font-size:13px;font-family:inherit;text-decoration:underline;cursor:pointer;">⚠️ 這題有問題？回報</button>
   </div>
 </div>
 
@@ -594,6 +596,7 @@ header { background:linear-gradient(135deg,#5b6de6,#9b59b6); }
   <div class="fb-stars" id="fb-stars"></div>
   <div class="fb-meaning" id="fb-meaning"></div>  <!-- ziyin 用 fb-meaning，不是 fb-detail -->
   <button class="fb-next" onclick="nextQ()">繼續 →</button>
+  <button onclick="showReport()" style="margin-top:10px;background:none;border:none;color:#999;font-size:13px;font-family:inherit;text-decoration:underline;cursor:pointer;">⚠️ 這題有問題？回報</button>
 </div>
 ```
 
