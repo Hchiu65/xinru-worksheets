@@ -38,6 +38,8 @@ header h1 { font-size:18px; flex:1; }
 .rc-date { font-size:12px; color:#bbb; white-space:nowrap; }
 .rc-qtext { font-size:15px; color:#333; background:#f8f4f2; border-radius:8px; padding:8px 10px; margin-bottom:8px; line-height:1.7; }
 .rc-note { font-size:16px; color:#444; margin-bottom:10px; font-weight:bold; }
+.rc-cats { margin-bottom:8px; }
+.rc-cat-tag { display:inline-block; background:#fdecea; color:#c0392b; font-size:12px; font-weight:bold; border-radius:10px; padding:3px 10px; margin:0 6px 6px 0; }
 .rc-foot { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
 .rc-player { font-size:13px; color:#aaa; }
 .rc-actions { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
@@ -397,6 +399,7 @@ function renderReports() {
         <div class="rc-date">${escHtml(r.date || '')}</div>
       </div>
       <div class="rc-qtext">${escHtml(r.qText || '（無題目內容）')}</div>
+      ${(r.categories && r.categories.length) ? `<div class="rc-cats">${r.categories.map(c=>`<span class="rc-cat-tag">${escHtml(c)}</span>`).join('')}</div>` : ''}
       ${r.note ? `<div class="rc-note">💬 ${escHtml(r.note)}</div>` : ''}
       ${reviewSection}
       <div class="rc-foot">
@@ -507,7 +510,7 @@ function renderStudents() {
     const rCls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
     const rIcon= i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}`;
     const locked = Object.values(s.cooldowns).filter(g=>g.locked&&(g.unlockBy||[]).length<2).length;
-    const lastOn = s.updated ? new Date(s.updated).toLocaleDateString('zh-TW') : '—';
+    const lastOn = s.updated ? new Date(s.updated).toLocaleString('zh-TW', {year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Taipei'}) : '—';
     const inactive = s.records===0?'未遊玩':s.records===1?'僅1次':'';
     return `
     <div class="stu-card">
