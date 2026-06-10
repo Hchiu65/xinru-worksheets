@@ -319,6 +319,7 @@ function recordMistake(char, meaning, question, correct){
   all[char].lastWrong=new Date().toLocaleDateString('zh-TW');
   localStorage.setItem('xr_mistakes',JSON.stringify(all));
 }
+function speak(text){if(!window.speechSynthesis)return;const u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';u.rate=0.8;speechSynthesis.cancel();speechSynthesis.speak(u);}
 function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
 
 function startGame(){
@@ -384,6 +385,7 @@ function showFeedback(correct, earned, item){
   document.getElementById('fb-stars').textContent=earned>0?`+${earned} ⭐`:'';
   document.getElementById('fb-meaning').innerHTML=`<b>「${item.char}」</b> ${item.correct}<br>意思：${item.meaning}`;
   document.getElementById('feedback').classList.add('show');
+  if(correct) speak(item.phrase.replace(/「([^」]+)」/,'$1'));
 }
 
 function nextQ(){
