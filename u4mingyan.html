@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>第九單元 名言填空</title>
+<title>第四單元 名言填空</title>
 <style>
 * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:"標楷體","DFKai-SB",serif; font-size:18px; line-height:1.9; background:#f0f7f5; margin:0; padding:0 0 100px; color:#222; }
@@ -16,6 +16,7 @@ header small { display:block; font-size:14px; opacity:.75; margin-top:4px; lette
 .section { background:#fff; border-radius:12px; margin:14px 12px; padding:14px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
 .section-title { font-size:16px; font-weight:bold; color:#16a085; border-left:4px solid #16a085; padding-left:10px; margin-bottom:12px; }
 .section-title.s2 { color:#16a085; border-color:#1abc9c; }
+.section-title.s3 { color:#16a085; border-color:#0e7060; }
 
 .word-bank { display:flex; flex-wrap:wrap; gap:8px; background:#e8f8f5; border-radius:8px; padding:10px 12px; margin-bottom:14px; }
 .chip { background:#fff; border:2px solid #16a085; border-radius:20px; padding:6px 14px; font-size:16px; cursor:pointer; transition:background .15s,opacity .15s; user-select:none; -webkit-user-select:none; }
@@ -70,8 +71,8 @@ ol li { margin-bottom:10px; line-height:1.8; }
 <header>
   <a class="btn-home" href="index.html">🏠</a>
   <div class="hdr-body">
-    第九單元　名言填空
-    <small>15 句名言，選詞填入空格</small>
+    第四單元　名言填空
+    <small>23 句名言，選詞填入空格</small>
   </div>
   <button class="btn-report" onclick="showReport()">⚠️ 回報</button>
   <div class="star-badge">⭐ <span id="star-display">0</span></div>
@@ -81,47 +82,72 @@ ol li { margin-bottom:10px; line-height:1.8; }
 <div class="section">
   <div class="section-title">（一）名言填空　第 1–8 句</div>
   <div class="word-bank" id="bank1">
-    <span class="chip" id="c1_0" data-word="舍"     onclick="selectChip(this,'s1')">舍</span>
-    <span class="chip" id="c1_1" data-word="良醫"   onclick="selectChip(this,'s1')">良醫</span>
-    <span class="chip" id="c1_2" data-word="罔"     onclick="selectChip(this,'s1')">罔</span>
-    <span class="chip" id="c1_3" data-word="樂之者" onclick="selectChip(this,'s1')">樂之者</span>
-    <span class="chip" id="c1_4" data-word="不濟事" onclick="selectChip(this,'s1')">不濟事</span>
-    <span class="chip" id="c1_5" data-word="懦"     onclick="selectChip(this,'s1')">懦</span>
-    <span class="chip" id="c1_6" data-word="羞不能" onclick="selectChip(this,'s1')">羞不能</span>
-    <span class="chip" id="c1_7" data-word="識器"   onclick="selectChip(this,'s1')">識器</span>
+    <span class="chip" id="c1_0" data-word="兼善天下"   onclick="selectChip(this,'s1')">兼善天下</span>
+    <span class="chip" id="c1_1" data-word="損其志"     onclick="selectChip(this,'s1')">損其志</span>
+    <span class="chip" id="c1_2" data-word="不處也"     onclick="selectChip(this,'s1')">不處也</span>
+    <span class="chip" id="c1_3" data-word="常窮"       onclick="selectChip(this,'s1')">常窮</span>
+    <span class="chip" id="c1_4" data-word="無形"       onclick="selectChip(this,'s1')">無形</span>
+    <span class="chip" id="c1_5" data-word="不堪大用"   onclick="selectChip(this,'s1')">不堪大用</span>
+    <span class="chip" id="c1_6" data-word="不說"       onclick="selectChip(this,'s1')">不說</span>
+    <span class="chip" id="c1_7" data-word="後事之師"   onclick="selectChip(this,'s1')">後事之師</span>
   </div>
   <ol>
-    <li>騏驥一躍，不能十步；駑馬十駕，功在不（<span class="blank" data-answer="舍" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—《荀子．勸學》</span></li>
-    <li>三折肱而成（<span class="blank" data-answer="良醫" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—《左傳》</span></li>
-    <li>學而不思則（<span class="blank" data-answer="罔" onclick="tapBlank(this,'s1')"></span>），思而不學則殆。<span class="src">—《論語．為政》</span></li>
-    <li>知之者不如好之者，好之者不如（<span class="blank" data-answer="樂之者" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—《論語．雍也》</span></li>
-    <li>讀書以過目成誦為能，最是（<span class="blank" data-answer="不濟事" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—鄭燮</span></li>
-    <li>火形嚴，故人鮮灼；水形（<span class="blank" data-answer="懦" onclick="tapBlank(this,'s1')"></span>），故人多溺。<span class="src">—《韓非子．內儲說上》</span></li>
-    <li>君子下學而無常師，小人恥學而（<span class="blank" data-answer="羞不能" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—魏徵</span></li>
-    <li>操千曲而後曉聲，觀千劍而後（<span class="blank" data-answer="識器" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—劉勰《文心雕龍．知音》</span></li>
+    <li>君子窮則獨善其身，達則（<span class="blank" data-answer="兼善天下" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—《孟子．盡心上》</span></li>
+    <li>賢者多財則（<span class="blank" data-answer="損其志" onclick="tapBlank(this,'s1')"></span>），愚者多財則益其過。<span class="src">—《漢書．疏廣傳》</span></li>
+    <li>富與貴，是人之所欲也，不以其道得之，（<span class="blank" data-answer="不處也" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—《論語．里仁》</span></li>
+    <li>先義後利者榮，先利後義者辱；榮者常通，辱者（<span class="blank" data-answer="常窮" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—《荀子．榮辱》</span></li>
+    <li>明者遠見於未萌，知者避危於（<span class="blank" data-answer="無形" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—《史記．司馬相如列傳》</span></li>
+    <li>量不寬不能容眾，識不明（<span class="blank" data-answer="不堪大用" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—修身格言</span></li>
+    <li>天地有大美而不言，萬物有成理而（<span class="blank" data-answer="不說" onclick="tapBlank(this,'s1')"></span>）。<span class="src">—《莊子．知北遊》</span></li>
+    <li>前事之不忘，（<span class="blank" data-answer="後事之師" onclick="tapBlank(this,'s1')"></span>）也。<span class="src">—《戰國策》</span></li>
   </ol>
 </div>
 
 <!-- Section 2 -->
 <div class="section">
-  <div class="section-title s2">（二）名言填空　第 9–15 句</div>
+  <div class="section-title s2">（二）名言填空　第 9–16 句</div>
   <div class="word-bank" id="bank2">
-    <span class="chip" id="c2_0" data-word="成"   onclick="selectChip(this,'s2')">成</span>
-    <span class="chip" id="c2_1" data-word="恆志" onclick="selectChip(this,'s2')">恆志</span>
-    <span class="chip" id="c2_2" data-word="結網" onclick="selectChip(this,'s2')">結網</span>
-    <span class="chip" id="c2_3" data-word="難成" onclick="selectChip(this,'s2')">難成</span>
-    <span class="chip" id="c2_4" data-word="斯夫" onclick="selectChip(this,'s2')">斯夫</span>
-    <span class="chip" id="c2_5" data-word="兩度" onclick="selectChip(this,'s2')">兩度</span>
-    <span class="chip" id="c2_6" data-word="新"   onclick="selectChip(this,'s2')">新</span>
+    <span class="chip" id="c2_0" data-word="善下之"     onclick="selectChip(this,'s2')">善下之</span>
+    <span class="chip" id="c2_1" data-word="相濟"       onclick="selectChip(this,'s2')">相濟</span>
+    <span class="chip" id="c2_2" data-word="宜寬"       onclick="selectChip(this,'s2')">宜寬</span>
+    <span class="chip" id="c2_3" data-word="不可忍"     onclick="selectChip(this,'s2')">不可忍</span>
+    <span class="chip" id="c2_4" data-word="心常富"     onclick="selectChip(this,'s2')">心常富</span>
+    <span class="chip" id="c2_5" data-word="亦為奢"     onclick="selectChip(this,'s2')">亦為奢</span>
+    <span class="chip" id="c2_6" data-word="內自省"     onclick="selectChip(this,'s2')">內自省</span>
+    <span class="chip" id="c2_7" data-word="反中庸"     onclick="selectChip(this,'s2')">反中庸</span>
   </div>
   <ol start="9">
-    <li>道雖邇，不行不至；事雖小，不為不（<span class="blank" data-answer="成" onclick="tapBlank(this,'s2')"></span>）。<span class="src">—《荀子．修身》</span></li>
-    <li>君子立（<span class="blank" data-answer="恆志" onclick="tapBlank(this,'s2')"></span>），小人恆立志。<span class="src">—證嚴法師</span></li>
-    <li>臨淵羨魚，莫若退而（<span class="blank" data-answer="結網" onclick="tapBlank(this,'s2')"></span>）。<span class="src">—《淮南子》</span></li>
-    <li>時過然後學，則勤苦而（<span class="blank" data-answer="難成" onclick="tapBlank(this,'s2')"></span>）。<span class="src">—《禮記．學記》</span></li>
-    <li>逝者如（<span class="blank" data-answer="斯夫" onclick="tapBlank(this,'s2')"></span>），不舍晝夜。<span class="src">—《論語．子罕》</span></li>
-    <li>枯木逢春猶再發，人無（<span class="blank" data-answer="兩度" onclick="tapBlank(this,'s2')"></span>）再少年。<span class="src">—《增廣賢文》</span></li>
-    <li>一歲之事慎在春，一日之事慎在晨，一生之事慎在少，一端之事慎在（<span class="blank" data-answer="新" onclick="tapBlank(this,'s2')"></span>）。<span class="src">—邵雍</span></li>
+    <li>江海所以能為百谷王者，以其（<span class="blank" data-answer="善下之" onclick="tapBlank(this,'s2')"></span>）。<span class="src">—《老子》</span></li>
+    <li>和羹之美，在於合異；上下之益，在能（<span class="blank" data-answer="相濟" onclick="tapBlank(this,'s2')"></span>）。<span class="src">—《三國志．夏侯玄傳》</span></li>
+    <li>律己宜嚴，待人（<span class="blank" data-answer="宜寬" onclick="tapBlank(this,'s2')"></span>）。<span class="src">—修身格言</span></li>
+    <li>人之過誤宜恕，而在己則不可恕；己之困辱宜忍，而在人則（<span class="blank" data-answer="不可忍" onclick="tapBlank(this,'s2')"></span>）。<span class="src">—《菜根譚》</span></li>
+    <li>奢者心常貧，儉者（<span class="blank" data-answer="心常富" onclick="tapBlank(this,'s2')"></span>）。<span class="src">—修身格言</span></li>
+    <li>合義則千金不為多，妄用則一毫（<span class="blank" data-answer="亦為奢" onclick="tapBlank(this,'s2')"></span>）。<span class="src">—修身格言</span></li>
+    <li>見賢思齊焉，見不賢而（<span class="blank" data-answer="內自省" onclick="tapBlank(this,'s2')"></span>）也。<span class="src">—《論語．里仁》</span></li>
+    <li>君子中庸，小人（<span class="blank" data-answer="反中庸" onclick="tapBlank(this,'s2')"></span>）。<span class="src">—《中庸》</span></li>
+  </ol>
+</div>
+
+<!-- Section 3 -->
+<div class="section">
+  <div class="section-title s3">（三）名言填空　第 17–23 句</div>
+  <div class="word-bank" id="bank3">
+    <span class="chip" id="c3_0" data-word="如探湯"     onclick="selectChip(this,'s3')">如探湯</span>
+    <span class="chip" id="c3_1" data-word="嚴苛謹慎"   onclick="selectChip(this,'s3')">嚴苛謹慎</span>
+    <span class="chip" id="c3_2" data-word="先自信"     onclick="selectChip(this,'s3')">先自信</span>
+    <span class="chip" id="c3_3" data-word="半九十"     onclick="selectChip(this,'s3')">半九十</span>
+    <span class="chip" id="c3_4" data-word="不願乎其外" onclick="selectChip(this,'s3')">不願乎其外</span>
+    <span class="chip" id="c3_5" data-word="量所宜"     onclick="selectChip(this,'s3')">量所宜</span>
+    <span class="chip" id="c3_6" data-word="不苟營"     onclick="selectChip(this,'s3')">不苟營</span>
+  </div>
+  <ol start="17">
+    <li>見善如不及，見不善（<span class="blank" data-answer="如探湯" onclick="tapBlank(this,'s3')"></span>）。<span class="src">—《論語．季氏》</span></li>
+    <li>責人惡宜寬諒，責己過宜（<span class="blank" data-answer="嚴苛謹慎" onclick="tapBlank(this,'s3')"></span>）。<span class="src">—修身格言</span></li>
+    <li>欲人勿惡，先自美；欲人勿疑，（<span class="blank" data-answer="先自信" onclick="tapBlank(this,'s3')"></span>）。<span class="src">—修身格言</span></li>
+    <li>行百里者（<span class="blank" data-answer="半九十" onclick="tapBlank(this,'s3')"></span>）。<span class="src">—《戰國策．秦策》</span></li>
+    <li>君子素其位而行，（<span class="blank" data-answer="不願乎其外" onclick="tapBlank(this,'s3')"></span>）。<span class="src">—《中庸》</span></li>
+    <li>仁者恥貪冒，受祿（<span class="blank" data-answer="量所宜" onclick="tapBlank(this,'s3')"></span>）。<span class="src">—修身格言</span></li>
+    <li>良馬不念秣，烈士（<span class="blank" data-answer="不苟營" onclick="tapBlank(this,'s3')"></span>）。<span class="src">—修身格言</span></li>
   </ol>
 </div>
 
@@ -142,8 +168,8 @@ ol li { margin-bottom:10px; line-height:1.8; }
 </div>
 
 <script>
-const GAME_ID = 'u9mingyan';
-const GAME_SOURCE = '第九單元　名言填空';
+const GAME_ID = 'u4mingyan';
+const GAME_SOURCE = '第四單元　名言填空';
 const FB_URL  = 'https://xinru-class-default-rtdb.firebaseio.com';
 const GAME_LABELS = {u9match:'連連看(九)','u1ziyin':'字音辨正(一)','u1bianzi':'找錯別字(一)','u1match':'連連看(一)','u2ziyin':'字音辨正(二)','u2bianzi':'找錯別字(二)','u2match':'連連看(二)','u3ziyin':'字音辨正(三)','u3bianzi':'找錯別字(三)','u3match':'連連看(三)','u4ziyin':'字音辨正(四)','u4bianzi':'找錯別字(四)','u4match':'連連看(四)','u4mingyan':'名言填空(四)','u4mingyan-match':'名言連連看(四)','u4mingyan-mcq':'名言選擇題(四)','u5ziyin':'字音辨正(五)','u5bianzi':'找錯別字(五)','u5match':'連連看(五)','unit6':'詞語填空','unit6m':'成語連連看',u6ziyin:'字音辨正(六)','u7ziyin':'字音辨正(七)','u7bianzi':'找錯別字(七)','u7gaicuo':'改錯字(作業)','u7bopomo':'字音辨字(作業)','u7vocab':'字彙練習(作業)','u7chengyu':'成語填空','u7match':'連連看(七)','u8ziyin':'字音辨正(八)','u8bianzi':'找錯別字(八)','u8match':'連連看(八)','u8mingyan':'名言填空(八)','u8mingyan-match':'名言連連看(八)','u8mingyan-mcq':'名言選擇題(八)','u8gaicuo':'改錯字(八作業)','u9ziyin':'字音辨正(九)','u9gaicuo':'改錯字(九)','u9mingyan':'名言填空(九)','u9mingyan-match':'名言連連看(九)','u9mingyan-mcq':'名言選擇題(九)','y3c-match':'連連看(3C)','y3c-chengyu':'填空(3C)','y3c-vocab':'字義選詞(3C)','y3c-gaicuo':'改錯字(3C)','math-diag':'四則運算診斷','math-vol':'單位換算'};
 
@@ -178,15 +204,19 @@ function showLockOverlay(){
 
 document.addEventListener('DOMContentLoaded',()=>{
   if(isLocked()) showLockOverlay();
-  ['bank1','bank2'].forEach(id=>{const b=document.getElementById(id);if(!b)return;const c=[...b.children];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));b.appendChild(c[j]);c.splice(j,1);}});
+  ['bank1','bank2','bank3'].forEach(id=>{const b=document.getElementById(id);if(!b)return;const c=[...b.children];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));b.appendChild(c[j]);c.splice(j,1);}});
 });
 
 const MEANINGS = {
-  '舍':'停止、放棄','良醫':'醫術精良的醫生，比喻歷經磨練而成的高手','罔':'迷惑而無所得',
-  '樂之者':'以學習為樂趣的人','不濟事':'沒有用處、無濟於事','懦':'軟弱、不剛強',
-  '羞不能':'因不會而感到羞愧，卻仍不肯求教','識器':'能辨識器物的優劣',
-  '成':'完成、達成','恆志':'長久不變的志向','結網':'採取實際行動，付諸實踐',
-  '難成':'難以有所成就','斯夫':'這樣啊，指流逝的時光','兩度':'兩次','新':'開始、起頭'
+  '兼善天下':'使天下人都能得到恩澤，利益普及眾人','損其志':'使志向、志節受到損耗、消磨','不處也':'不接受、不安於（不正當得來的富貴）',
+  '常窮':'經常陷於困窘、不順遂','無形':'尚未顯現出來的徵兆或形跡','不堪大用':'無法承擔重要的任務',
+  '不說':'無法用言語完全說明清楚','後事之師':'作為後來行事的借鏡、教訓',
+  '善下之':'善於處在低下的位置，比喻謙虛退讓','相濟':'互相補足、配合幫助','宜寬':'應該寬容、寬待',
+  '不可忍':'不可以忽視、不能漠視','心常富':'心靈常感到富足、滿足','亦為奢':'也算是奢侈、浪費',
+  '內自省':'在內心自我反省、檢討','反中庸':'違背中庸之道，偏執而不知節制',
+  '如探湯':'像把手伸進熱水一樣，立刻反射性遠離','嚴苛謹慎':'嚴格而謹慎小心','先自信':'自己先要做到誠實、值得信賴',
+  '半九十':'只能算完成一半，比喻最後階段最艱難','不願乎其外':'不羨慕、不貪求本分以外的事物',
+  '量所宜':'衡量是否符合自己應得的份量','不苟營':'不會苟且地謀求私利'
 };
 
 function getStars(){return parseInt(localStorage.getItem('xr_stars')||'0');}
@@ -261,7 +291,7 @@ function checkAll(){
   if(correct===total){
     const stars=hadMistake?10:20; addStars(stars);
     const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
-    recs.push({unit:'u9mingyan',acc:100,stars:stars,date:new Date().toLocaleDateString('zh-TW')});
+    recs.push({unit:'u4mingyan',acc:100,stars:stars,date:new Date().toLocaleDateString('zh-TW')});
     if(recs.length>50)recs.splice(0,recs.length-50);
     localStorage.setItem('xr_records',JSON.stringify(recs));
     reportComplete(!hadMistake);
