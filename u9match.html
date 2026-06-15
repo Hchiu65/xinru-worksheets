@@ -418,6 +418,7 @@ let streak = 0;
 let sessionStars = 0;
 let roundStars = 0;
 let roundPerfect = [false, false, false, false];
+let roundCompleted = new Array(ROUNDS.length).fill(false);
 const roundMatched = [0, 0, 0, 0];
 let challengeUnlocked = false;
 let challengeTimer = null;
@@ -453,6 +454,7 @@ function speakWord(word) {
 
 function getStars() { return parseInt(localStorage.getItem('xr_stars') || '0'); }
 function addStars(n) {
+  if (roundCompleted[currentRound]) return;
   const total = getStars() + n;
   localStorage.setItem('xr_stars', total);
   document.getElementById('hdr-star-count').textContent = total;
@@ -633,6 +635,7 @@ function showRoundComplete() {
   let bonus=0;
   if(wrongCount===0){ bonus=50; addStars(50); }
   else if(acc>=80)  { bonus=20; addStars(20); }
+  roundCompleted[currentRound]=true;
   document.getElementById('round-title').textContent=`第 ${currentRound+1} 輪完成！`;
   document.getElementById('round-stars').textContent='+'+(roundStars)+' ⭐';
   document.getElementById('round-acc').textContent='正確率 '+acc+'%'+(wrongCount===0?' 🏆 完美！':'');

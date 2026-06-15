@@ -199,7 +199,7 @@ function recentAccuracy() {
   const recs = getRecords();
   if (!recs.length) return null;
   const last20 = recs.slice(-20);
-  return Math.round(last20.reduce((s, r) => s + (r.acc || 0), 0) / last20.length);
+  return Math.round(last20.reduce((s, r) => s + (r.acc ?? r.accuracy ?? 0), 0) / last20.length);
 }
 
 function countRedeemed() {

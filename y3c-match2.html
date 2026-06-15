@@ -338,6 +338,7 @@ let streak = 0;
 let sessionStars = 0;
 let roundStars = 0;
 let roundPerfect = [false, false, false];
+let roundCompleted = new Array(ROUNDS.length).fill(false);
 const roundMatched = [0, 0, 0];
 
 
@@ -370,6 +371,7 @@ function speakWord(word) {
 // ── 星星 ──
 function getStars() { return parseInt(localStorage.getItem('xr_stars') || '0'); }
 function addStars(n) {
+  if (roundCompleted[currentRound]) return;
   const total = getStars() + n;
   localStorage.setItem('xr_stars', total);
   document.getElementById('hdr-star-count').textContent = total;
@@ -554,6 +556,7 @@ function showRoundComplete() {
   let bonus=0;
   if(wrongCount===0){ bonus=30; addStars(30); }
   else if(Math.round(matchedCount/total*100)>=80){ bonus=10; addStars(10); }
+  roundCompleted[currentRound]=true;
 
   document.getElementById('round-title').textContent=`第 ${currentRound+1} 輪完成！`;
   document.getElementById('round-stars').textContent='+'+(roundStars)+' ⭐';
