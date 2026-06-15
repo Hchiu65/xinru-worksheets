@@ -241,6 +241,7 @@ function speakWord(word){
 
 let selected=null, selectedSection=null;
 let hadMistake=false;
+let scored=false;
 
 document.getElementById('star-display').textContent=getStars();
 
@@ -283,7 +284,8 @@ function checkAll(){
   });
   const total=blanks.length;
   document.getElementById('score-display').textContent=`${correct} / ${total}`;
-  if(correct===total){
+  if(correct===total && !scored){
+    scored=true;
     const stars=hadMistake?10:20; addStars(stars);
     const recs=JSON.parse(localStorage.getItem('xr_records')||'[]');
     recs.push({unit:'u7chengyu',acc:100,stars:stars,date:new Date().toLocaleDateString('zh-TW')});
@@ -297,7 +299,7 @@ function checkAll(){
 function resetAll(){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('used','selected'));
   document.querySelectorAll('.blank').forEach(b=>{b.textContent='';delete b.dataset.chipId;b.classList.remove('correct','wrong','highlight');});
-  selected=null; selectedSection=null; hadMistake=false;
+  selected=null; selectedSection=null; hadMistake=false; scored=false;
   document.getElementById('score-display').textContent='';
 }
 
